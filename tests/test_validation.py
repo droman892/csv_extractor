@@ -119,10 +119,10 @@ def test_validate_hours_rejects_negative_number():
 
 
 def test_validate_hours_rejects_number_greater_than_24():
-    result = validate_hours("25")
+    result = validate_hours("41")
 
     assert result["valid"] is False
-    assert result["error"] == "hours cannot be greater than 24"
+    assert result["error"] == "hours cannot be greater than 40"
 
 
 def test_validate_hours_rejects_non_numeric_value():

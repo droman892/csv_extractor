@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch
 from src.processor import process_csv
 
+
 def test_process_csv_returns_summary(tmp_path):
     csv_file = tmp_path / "test.csv"
 
@@ -18,21 +19,38 @@ def test_process_csv_returns_summary(tmp_path):
     result = process_csv(csv_file)
 
     assert result == {
-        "tickets_by_status": {
-            "open": 2,
-            "closed": 2
+        "summary": {
+            "tickets_by_status": {
+                "open": 2,
+                "closed": 2
+            },
+            "tickets_by_priority": {
+                "high": 3,
+                "low": 1
+            },
+            "hours_by_customer": {
+                "Acme Corp": 2.5,
+                "Globex": 3.0,
+                "Initech": 4.5
+            },
+            "total_hours": 10.0
         },
-        "tickets_by_priority": {
-            "high": 3,
-            "low": 1
-        },
-        "hours_by_customer": {
-            "Acme Corp": 2.5,
-            "Globex": 3.0,
-            "Initech": 4.5
-        },
-        "total_hours": 10.0
+        "valid_tickets_count": 4,
+        "invalid_tickets_count": 1,
+        "total_tickets_count": 5,
+        "errors": [
+            {
+                "ticket_id": "1003",
+                "customer": "Acme Corp",
+                "priority": "medium",
+                "status": "open",
+                "hours": None,
+                "invalid_value": "-3.0",
+                "reason": "hours cannot be less than 0"
+            }
+        ]
     }
+
 
 def test_process_csv_passes_valid_records_to_aggregation():
     raw_rows = [
@@ -68,6 +86,14 @@ def test_process_csv_passes_valid_records_to_aggregation():
         "total_hours": 2.5
     }
 
+    expected_result = {
+        "summary": expected_summary,
+        "valid_tickets_count": 1,
+        "invalid_tickets_count": 0,
+        "total_tickets_count": 1,
+        "errors": []
+    }
+
     with patch("src.processor.read_csv", return_value=raw_rows):
         with patch("src.processor.check_rows", return_value=processed_rows):
             with patch(
@@ -77,8 +103,9 @@ def test_process_csv_passes_valid_records_to_aggregation():
 
                 result = process_csv("anything.csv")
 
-    assert result == expected_summary
+    assert result == expected_result
     mock_aggregate.assert_called_once_with(processed_rows["valid_records"])
+
 
 def test_process_csv_passes_raw_rows_to_validation():
     raw_rows = [
@@ -106,6 +133,14 @@ def test_process_csv_passes_raw_rows_to_validation():
         "total_hours": 0
     }
 
+    expected_result = {
+        "summary": expected_summary,
+        "valid_tickets_count": 0,
+        "invalid_tickets_count": 1,
+        "total_tickets_count": 1,
+        "errors": []
+    }
+
     with patch("src.processor.read_csv", return_value=raw_rows):
         with patch(
             "src.processor.check_rows",
@@ -118,8 +153,9 @@ def test_process_csv_passes_raw_rows_to_validation():
 
                 result = process_csv("anything.csv")
 
-    assert result == expected_summary
+    assert result == expected_result
     mock_check_rows.assert_called_once_with(raw_rows)
+
 
 def test_process_csv_propagates_file_not_found_error():
     with patch(
