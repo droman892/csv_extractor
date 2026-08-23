@@ -45,8 +45,13 @@ def test_process_csv_returns_summary(tmp_path):
                 "priority": "medium",
                 "status": "open",
                 "hours": None,
-                "invalid_value": "-3.0",
-                "reason": "hours cannot be less than 0"
+                "errors": [
+                    {
+                        "field": "hours",
+                        "invalid_value": "-3.0",
+                        "reason": "hours cannot be less than 0"
+                    }
+                ]
             }
         ]
     }
@@ -95,7 +100,10 @@ def test_process_csv_passes_valid_records_to_aggregation():
     }
 
     with patch("src.processor.read_csv", return_value=raw_rows):
-        with patch("src.processor.check_rows", return_value=processed_rows):
+        with patch(
+            "src.processor.check_rows",
+            return_value=processed_rows
+        ):
             with patch(
                 "src.processor.aggregate_csv",
                 return_value=expected_summary
@@ -104,7 +112,9 @@ def test_process_csv_passes_valid_records_to_aggregation():
                 result = process_csv("anything.csv")
 
     assert result == expected_result
-    mock_aggregate.assert_called_once_with(processed_rows["valid_records"])
+    mock_aggregate.assert_called_once_with(
+        processed_rows["valid_records"]
+    )
 
 
 def test_process_csv_passes_raw_rows_to_validation():

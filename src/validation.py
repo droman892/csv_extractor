@@ -104,7 +104,7 @@ def validate_ticket_id(ticket_id):
         return result
 
     result["valid"] = True
-    result["value"] = int(ticket_id)
+    result["value"] = ticket_id
 
     return result
 
@@ -229,6 +229,10 @@ def validate_hours(hours):
 
     if clean_hours > 40:
         result["error"] = "hours cannot be greater than 40"
+        return result
+
+    if not math.isclose(clean_hours * 2, round(clean_hours * 2)):
+        result["error"] = f"{hours} must be in increments of 0.5"
         return result
 
     result["valid"] = True
