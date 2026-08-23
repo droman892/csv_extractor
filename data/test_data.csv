@@ -1,6 +1,23 @@
-﻿ticket_id,customer,priority,status,hours
-1001,Acme Corp,high,open,2.5
-1002,Globex,low,closed,1.0
-1003,Acme Corp,medium,open,-3.0
-1004,Initech,high,closed,4.5
-1005,Globex,high,open,2.0
+﻿ticket_id,status,priority,customer,hours
+0001,open,low,Acme Corp,2.5
+0002,closed,medium,Globex,10
+0003,in_progress,high,Initech,40
+0004,open,low,Acme Corp,0
+0005,open,low,Acme Corp,-1
+0006,open,low,Acme Corp,41
+0007,open,low,Acme Corp,2.25
+0008,open,low,Acme Corp,inf
+0009,open,low,Acme Corp,nan
+0010,open,low,Acme Corp,abc
+0011,open,low,Acme Corp,
+0012,open,low,   ,5
+0013,open,invalid_priority,Acme Corp,5
+0014,invalid_status,low,Acme Corp,5
+0015,open,low,Acme Corp,5
+123,open,low,Acme Corp,5
+AB12,open,low,Acme Corp,5
+0000,open,low,Acme Corp,5
+10000,open,low,Acme Corp,5
+0016,open,low,,5
+0017,open,low,Acme Corp,3.1
+0018,bad_status,bad_priority,,41

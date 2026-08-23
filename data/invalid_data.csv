@@ -1,0 +1,7 @@
+ticket_id,status,priority,customer,hours
+123,bad_status,bad_priority,,abc
+AB12,invalid,invalid,   ,-1
+0000,bad_status,medium,Acme Corp,41
+10000,open,bad_priority,,2.25
+0010,invalid_status,invalid_priority,,inf
+0011,open,invalid_priority,   ,nan

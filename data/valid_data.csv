@@ -1,0 +1,8 @@
+ticket_id,status,priority,customer,hours
+0001,open,low,Acme Corp,0
+0002,closed,medium,Globex,0.5
+0003,in_progress,high,Initech,10
+0004,open,low,Acme Corp,39.5
+0005,closed,high,Globex,40
+0010,in_progress,medium,Acme Corp,2.5
+9999,open,high,Initech,20

@@ -12,7 +12,7 @@ def process_csv(filename):
         "valid_tickets_count": processed_rows["valid_tickets_count"],
         "invalid_tickets_count": processed_rows["invalid_tickets_count"],
         "total_tickets_count": processed_rows["total_tickets_count"],
-        "errors": processed_rows["errors"]
+        "invalid_records": processed_rows["errors"]
     }
 
     return result
