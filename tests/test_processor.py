@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from src.processor import process_csv
+from src.processing.processor import process_csv
 
 
 def test_process_csv_returns_summary(tmp_path):
@@ -99,13 +99,13 @@ def test_process_csv_passes_valid_records_to_aggregation():
         "errors": []
     }
 
-    with patch("src.processor.read_csv", return_value=raw_rows):
+    with patch("src.processing.processor.read_csv", return_value=raw_rows):
         with patch(
-            "src.processor.check_rows",
+            "src.processing.processor.check_rows",
             return_value=processed_rows
         ):
             with patch(
-                "src.processor.aggregate_csv",
+                "src.processing.processor.aggregate_csv",
                 return_value=expected_summary
             ) as mock_aggregate:
 
@@ -151,13 +151,13 @@ def test_process_csv_passes_raw_rows_to_validation():
         "errors": []
     }
 
-    with patch("src.processor.read_csv", return_value=raw_rows):
+    with patch("src.processing.processor.read_csv", return_value=raw_rows):
         with patch(
-            "src.processor.check_rows",
+            "src.processing.processor.check_rows",
             return_value=processed_rows
         ) as mock_check_rows:
             with patch(
-                "src.processor.aggregate_csv",
+                "src.processing.processor.aggregate_csv",
                 return_value=expected_summary
             ):
 
@@ -169,7 +169,7 @@ def test_process_csv_passes_raw_rows_to_validation():
 
 def test_process_csv_propagates_file_not_found_error():
     with patch(
-        "src.processor.read_csv",
+        "src.processing.processor.read_csv",
         side_effect=FileNotFoundError
     ):
         with pytest.raises(FileNotFoundError):

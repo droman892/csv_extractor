@@ -1,5 +1,5 @@
 import pytest
-from src.validation import validate_hours, check_rows
+from src.processing.validation import validate_hours, check_rows
 
 
 @pytest.fixture

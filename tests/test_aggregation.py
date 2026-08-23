@@ -1,5 +1,5 @@
 import pytest
-from src.aggregation import aggregate_csv
+from src.processing.aggregation import aggregate_csv
 
 
 @pytest.fixture

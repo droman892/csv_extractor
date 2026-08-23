@@ -1,5 +1,5 @@
 import pytest
-from src.csv_reader import read_csv
+from src.processing.csv_reader import read_csv
 
 def test_read_csv_returns_rows(tmp_path):
     csv_file = tmp_path / "test.csv"
