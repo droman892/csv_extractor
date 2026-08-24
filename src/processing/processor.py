@@ -19,4 +19,4 @@ def process_csv(filename):
     return result
 
 if __name__ == "__main__":
-    print(process_csv("data/test_data.csv"))
+    print(process_csv("data/empty_file.csv"))

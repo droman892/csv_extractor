@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QMessageBox
 from .upload_view import UploadView
 from .results_view import ResultsView
 
@@ -14,12 +14,23 @@ class MainWindow(QMainWindow):
 
     def show_upload_view(self):
         self.upload_view = UploadView()
+
+        self.upload_view.view_model.processing_failed.connect(
+            self.show_processing_error
+        )
         
         self.upload_view.view_model.processing_completed.connect(
             self.show_results_view
         )
 
         self.setCentralWidget(self.upload_view)
+
+    def show_processing_error(self, message):
+        QMessageBox.critical(
+            self,
+            "Unable to Process File",
+            message
+        )
 
     def show_results_view(self, result):
         self.results_view = ResultsView(result)

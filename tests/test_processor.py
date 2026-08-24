@@ -19,6 +19,7 @@ def test_process_csv_returns_summary(tmp_path):
     result = process_csv(csv_file)
 
     assert result == {
+        "filename": tmp_path / "test.csv",
         "summary": {
             "tickets_by_status": {
                 "open": 2,
@@ -92,6 +93,7 @@ def test_process_csv_passes_valid_records_to_aggregation():
     }
 
     expected_result = {
+        "filename": "anything.csv",
         "summary": expected_summary,
         "valid_tickets_count": 1,
         "invalid_tickets_count": 0,
@@ -144,6 +146,7 @@ def test_process_csv_passes_raw_rows_to_validation():
     }
 
     expected_result = {
+        "filename": "anything.csv",
         "summary": expected_summary,
         "valid_tickets_count": 0,
         "invalid_tickets_count": 1,
