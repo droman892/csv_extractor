@@ -1,27 +1,32 @@
-from PySide6.QtCore import Signal
+from .view_models.results_view_model import ResultsViewModel
+from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import (
     QLabel,
     QPushButton,
     QScrollArea,
+    QTableWidget,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
-
 
 class ResultsView(QWidget):
     upload_another_file_requested = Signal()
 
     def __init__(self, result):
         super().__init__()
+        self.view_model = ResultsViewModel(result)
 
-        summary_data = result["summary"]
+        filename = self.view_model.get_filename()
+        summary_data = self.view_model.get_summary()
+        invalid_rows = self.view_model.get_invalid_rows()
 
-        title = QLabel("Results")
+        title = QLabel(f"Results for {filename}")
 
         summary = QLabel(
-            f"Total Tickets: {result['total_tickets_count']}\n"
-            f"Valid Tickets: {result['valid_tickets_count']}\n"
-            f"Invalid Tickets: {result['invalid_tickets_count']}\n"
+            f"Total Tickets: {summary_data['total_tickets_count']}\n"
+            f"Valid Tickets: {summary_data['valid_tickets_count']}\n"
+            f"Invalid Tickets: {summary_data['invalid_tickets_count']}\n"
             f"Total Hours: {summary_data['total_hours']}"
         )
 
@@ -46,23 +51,55 @@ class ResultsView(QWidget):
 
         customer = QLabel(customer_text)
 
-        invalid_text = "Invalid Records\n"
-
-        if not result["invalid_records"]:
-            invalid_text += "0 invalid records"
+        if not invalid_rows:
+            invalid_records = QLabel(
+                "Invalid Records\n"
+                "0 invalid records"
+            )
         else:
-            for record in result["invalid_records"]:
-                invalid_text += f"\nTicket: {record['ticket_id']}\n"
+            invalid_records = QTableWidget()
 
-                for error in record["errors"]:
-                    invalid_text += (
-                        f"Field: {error['field']}\n"
-                        f"Value: {error['invalid_value']}\n"
-                        f"Reason: {error['reason']}\n"
+            invalid_records.setColumnCount(4)
+            invalid_records.setHorizontalHeaderLabels(
+                ["Ticket", "Field", "Invalid Value", "Reason"]
+            )
+
+            invalid_records.setRowCount(len(invalid_rows))
+
+            for row_number, row_data in enumerate(invalid_rows):
+                invalid_records.setItem(
+                    row_number,
+                    0,
+                    QTableWidgetItem(row_data["ticket_id"])
+                )
+                invalid_records.setItem(
+                    row_number,
+                    1,
+                    QTableWidgetItem(row_data["field"])
+                )
+                invalid_records.setItem(
+                    row_number,
+                    2,
+                    QTableWidgetItem(str(row_data["invalid_value"]))
+                )
+                invalid_records.setItem(
+                    row_number,
+                    3,
+                    QTableWidgetItem(row_data["reason"])
+                )
+
+            for row in range(invalid_records.rowCount()):
+                for column in range(invalid_records.columnCount()):
+                    invalid_records.item(row, column).setTextAlignment(
+                        Qt.AlignmentFlag.AlignCenter
                     )
 
-        invalid_records = QLabel(invalid_text)
-        invalid_records.setWordWrap(True)
+            invalid_records.setEditTriggers(
+                QTableWidget.NoEditTriggers
+            )
+
+            invalid_records.resizeColumnsToContents()
+            invalid_records.horizontalHeader().setStretchLastSection(True)
 
         upload_button = QPushButton("Upload Another File")
         upload_button.clicked.connect(

@@ -8,6 +8,7 @@ def process_csv(filename):
     summary = aggregate_csv(processed_rows["valid_records"])
 
     result = {
+        "filename": filename,
         "summary": summary,
         "valid_tickets_count": processed_rows["valid_tickets_count"],
         "invalid_tickets_count": processed_rows["invalid_tickets_count"],

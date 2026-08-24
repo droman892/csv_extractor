@@ -38,7 +38,7 @@ def test_process_csv_returns_summary(tmp_path):
         "valid_tickets_count": 4,
         "invalid_tickets_count": 1,
         "total_tickets_count": 5,
-        "errors": [
+        "invalid_records": [
             {
                 "ticket_id": "1003",
                 "customer": "Acme Corp",
@@ -96,7 +96,7 @@ def test_process_csv_passes_valid_records_to_aggregation():
         "valid_tickets_count": 1,
         "invalid_tickets_count": 0,
         "total_tickets_count": 1,
-        "errors": []
+        "invalid_records": []
     }
 
     with patch("src.processing.processor.read_csv", return_value=raw_rows):
@@ -148,7 +148,7 @@ def test_process_csv_passes_raw_rows_to_validation():
         "valid_tickets_count": 0,
         "invalid_tickets_count": 1,
         "total_tickets_count": 1,
-        "errors": []
+        "invalid_records": []
     }
 
     with patch("src.processing.processor.read_csv", return_value=raw_rows):
