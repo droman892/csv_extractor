@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QFrame,
     QHBoxLayout,
+    QHeaderView,
 )
 
 
@@ -220,7 +221,7 @@ class ResultsView(QWidget):
         title.setObjectName("metricTitle")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        value_label = QLabel(str(value))
+        value_label = QLabel(f"{value:,}")
         value_label.setObjectName("metricValue")
         value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -248,21 +249,55 @@ class ResultsView(QWidget):
         table.setMinimumHeight(120)
 
         for row_number, (category, count) in enumerate(data.items()):
+            display_category = category.replace("_", " ").title()
+
+            category_item = QTableWidgetItem(display_category)
+            category_item.setTextAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
+
+            count_item = QTableWidgetItem(f"{count:,}")
+            count_item.setTextAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
+
             table.setItem(
                 row_number,
                 0,
-                QTableWidgetItem(category)
+                category_item
             )
 
             table.setItem(
                 row_number,
                 1,
-                QTableWidgetItem(str(count))
+                count_item
             )
 
         table.setEditTriggers(QTableWidget.NoEditTriggers)
-        table.resizeColumnsToContents()
-        table.horizontalHeader().setStretchLastSection(True)
+
+        header = table.horizontalHeader()
+
+        header.setSectionResizeMode(
+            0,
+            QHeaderView.Stretch
+        )
+
+        header.setSectionResizeMode(
+            1,
+            QHeaderView.Stretch
+        )
+
+        table.verticalHeader().setDefaultSectionSize(30)
+        table.verticalHeader().setDefaultAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
+        table.verticalHeader().setMinimumWidth(40)
+        table.setSelectionMode(QTableWidget.NoSelection)
+
+        table.verticalHeader().setSectionResizeMode(
+            QHeaderView.Fixed
+        )
+        table.verticalHeader().setDefaultSectionSize(30)
 
         layout.addWidget(title_label)
         layout.addWidget(table)
@@ -320,10 +355,43 @@ class ResultsView(QWidget):
                     Qt.AlignmentFlag.AlignCenter
                 )
 
-        table.setEditTriggers(QTableWidget.NoEditTriggers)
+                table.setEditTriggers(QTableWidget.NoEditTriggers)
 
-        table.resizeColumnsToContents()
-        table.horizontalHeader().setStretchLastSection(True)
+        header = table.horizontalHeader()
+
+        header.setSectionResizeMode(
+            0,
+            QHeaderView.ResizeToContents
+        )
+
+        header.setSectionResizeMode(
+            1,
+            QHeaderView.ResizeToContents
+        )
+
+        header.setSectionResizeMode(
+            2,
+            QHeaderView.ResizeToContents
+        )
+
+        header.setSectionResizeMode(
+            3,
+            QHeaderView.Stretch
+        )
+
+        table.setWordWrap(True)
+        table.resizeRowsToContents()
+
+        table.verticalHeader().setDefaultAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
+
+        table.verticalHeader().setMinimumWidth(40)
+        table.setSelectionMode(QTableWidget.NoSelection)
+
+        table.verticalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
 
         layout.addWidget(title)
         layout.addWidget(table)
