@@ -15,6 +15,11 @@ def read_csv(filename):
         return list(raw_rows)
 
 def validate_columns(fieldnames):
+    if not fieldnames:
+        raise ValueError(
+            "CSV file does not contain a header row."
+        )
+    
     missing_columns = REQUIRED_COLUMNS - set(fieldnames)
 
     if missing_columns:

@@ -1,5 +1,6 @@
 from .view_models.results_view_model import ResultsViewModel
 from PySide6.QtCore import Signal, Qt
+from PySide6.QtGui import QFontMetrics
 from PySide6.QtWidgets import (
     QLabel,
     QPushButton,
@@ -63,6 +64,7 @@ class ResultsView(QWidget):
         QTableWidget::item {
             padding: 4px;
         }
+
         """)
 
         self.view_model = ResultsViewModel(result)
@@ -71,8 +73,21 @@ class ResultsView(QWidget):
         summary_data = self.view_model.get_summary()
         invalid_rows = self.view_model.get_invalid_rows()
 
-        title = QLabel(f"Results for {filename}")
+        title = QLabel()
         title.setObjectName("resultsTitle")
+        title.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        font_metrics = QFontMetrics(title.font())
+        available_width = 600
+
+        display_filename = font_metrics.elidedText(
+            f"Results for {filename}",
+            Qt.TextElideMode.ElideRight,
+            available_width
+        )
+
+        title.setText(display_filename)
+        title.setToolTip(filename)
 
         summary_layout = QHBoxLayout()
 
@@ -110,13 +125,15 @@ class ResultsView(QWidget):
         tickets_by_status_widget = self.create_summary_table(
             "Tickets by Status",
             summary_data["tickets_by_status"],
-            "Count"
+            "Count",
+            "No status data available."
         )
 
         tickets_by_priority_widget = self.create_summary_table(
             "Tickets by Priority",
             summary_data["tickets_by_priority"],
-            "Count"
+            "Count",
+            "No priority data available."
         )
 
         ticket_summary_title = QLabel("Ticket Summary")
@@ -137,7 +154,8 @@ class ResultsView(QWidget):
         hours_by_customer_widget = self.create_summary_table(
             "Hours by Customer",
             summary_data["hours_by_customer"],
-            "Hours"
+            "Hours",
+            "No customer workload data available."
         )
 
         customer_workload_title = QLabel("Customer Workload")
@@ -162,10 +180,14 @@ class ResultsView(QWidget):
             invalid_title = QLabel("Invalid Records")
             invalid_title.setObjectName("summaryTitle")
 
-            invalid_message = QLabel(
-                "0 invalid records\n"
-                "All records passed validation."
-            )
+            if summary_data["total_tickets_count"] == 0:
+                invalid_message = QLabel("No records to validate.")
+            else:
+                invalid_message = QLabel(
+                    "0 invalid records\n"
+                    "All records passed validation."
+                )
+
             invalid_message.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             invalid_layout.addWidget(invalid_title)
@@ -205,6 +227,9 @@ class ResultsView(QWidget):
         scroll_area = QScrollArea()
         scroll_area.setWidget(content_widget)
         scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(scroll_area)
@@ -232,13 +257,30 @@ class ResultsView(QWidget):
 
         return card
 
-    def create_summary_table(self, title, data, value_header):
+    def create_summary_table(
+        self,
+        title,
+        data,
+        value_header,
+        empty_message
+    ):
         frame = QFrame()
 
         layout = QVBoxLayout()
 
         title_label = QLabel(title)
         title_label.setObjectName("summaryTitle")
+
+        layout.addWidget(title_label)
+
+        if not data:
+            empty_label = QLabel(empty_message)
+            empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(empty_label)
+
+            frame.setLayout(layout)
+
+            return frame
 
         table = QTableWidget()
         table.setColumnCount(2)
@@ -274,6 +316,7 @@ class ResultsView(QWidget):
             )
 
         table.setEditTriggers(QTableWidget.NoEditTriggers)
+        table.setSelectionMode(QTableWidget.NoSelection)
 
         header = table.horizontalHeader()
 
@@ -287,19 +330,18 @@ class ResultsView(QWidget):
             QHeaderView.Stretch
         )
 
-        table.verticalHeader().setDefaultSectionSize(30)
-        table.verticalHeader().setDefaultAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
-        table.verticalHeader().setMinimumWidth(40)
-        table.setSelectionMode(QTableWidget.NoSelection)
-
         table.verticalHeader().setSectionResizeMode(
             QHeaderView.Fixed
         )
+
         table.verticalHeader().setDefaultSectionSize(30)
 
-        layout.addWidget(title_label)
+        table.verticalHeader().setDefaultAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
+
+        table.verticalHeader().setMinimumWidth(40)
+
         layout.addWidget(table)
 
         frame.setLayout(layout)
@@ -355,7 +397,10 @@ class ResultsView(QWidget):
                     Qt.AlignmentFlag.AlignCenter
                 )
 
-                table.setEditTriggers(QTableWidget.NoEditTriggers)
+        table.setEditTriggers(QTableWidget.NoEditTriggers)
+        table.setSelectionMode(QTableWidget.NoSelection)
+        table.setWordWrap(True)
+        table.resizeRowsToContents()
 
         header = table.horizontalHeader()
 
@@ -379,19 +424,15 @@ class ResultsView(QWidget):
             QHeaderView.Stretch
         )
 
-        table.setWordWrap(True)
-        table.resizeRowsToContents()
+        table.verticalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
 
         table.verticalHeader().setDefaultAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
 
-        table.verticalHeader().setMinimumWidth(40)
-        table.setSelectionMode(QTableWidget.NoSelection)
-
-        table.verticalHeader().setSectionResizeMode(
-            QHeaderView.ResizeToContents
-        )
+        table.verticalHeader().setMinimumWidth(120)
 
         layout.addWidget(title)
         layout.addWidget(table)

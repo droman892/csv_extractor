@@ -1,0 +1,3 @@
+ticket_id,customer,priority,status,hours
+1001,Acme,high,open,"4.5
+1002,Globex,medium,closed,2.0
