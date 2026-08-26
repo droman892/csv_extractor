@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QCursor
+from PySide6.QtGui import QCursor, QFontMetrics
 from PySide6.QtWidgets import (
     QFileDialog,
     QLabel,
@@ -221,8 +221,29 @@ class UploadView(QWidget):
         self.view_model.upload_file(filename)
 
     def show_processing_error(self, message):
+        available_width = self.error_message.width()
+
+        font_metrics = QFontMetrics(
+            self.error_message.font()
+        )
+
+        prefix = "Unable to process '"
+        suffix = "': "
+
+        remaining_width = (
+            available_width
+            - font_metrics.horizontalAdvance(prefix)
+            - font_metrics.horizontalAdvance(suffix)
+        )
+
+        elided_filename = font_metrics.elidedText(
+            self.selected_filename,
+            Qt.TextElideMode.ElideMiddle,
+            max(remaining_width, 100),
+        )
+
         self.show_error(
-            f"Unable to process '{self.selected_filename}': {message}"
+            f"{prefix}{elided_filename}{suffix}{message}"
         )
 
     def show_error(self, message):
