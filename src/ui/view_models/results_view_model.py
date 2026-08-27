@@ -1,6 +1,7 @@
 import os
 
 class ResultsViewModel:
+
     def __init__(self, result):
         self.result = result
 
@@ -31,3 +32,11 @@ class ResultsViewModel:
                 })
 
         return rows
+
+    def get_customer_rows(self):
+        return list(
+            self.result["summary"]["hours_by_customer"].items()
+        )
+
+    def get_export_data(self):
+        return self.result

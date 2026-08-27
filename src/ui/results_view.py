@@ -1,7 +1,10 @@
 from .view_models.results_view_model import ResultsViewModel
+from ..services.results_export_service import ResultsExportService
+
 from PySide6.QtCore import Signal, Qt
-from PySide6.QtGui import QFontMetrics
+from PySide6.QtGui import QFontMetrics, QCursor
 from PySide6.QtWidgets import (
+    QFileDialog,
     QLabel,
     QPushButton,
     QScrollArea,
@@ -18,11 +21,14 @@ from PySide6.QtWidgets import (
 class ResultsView(QWidget):
     upload_another_file_requested = Signal()
 
+    MAX_DISPLAYED_ROWS = 100
+
     def __init__(self, result):
         super().__init__()
 
         self.setStyleSheet("""
-        QFrame {
+        QFrame#metricCard,
+        QFrame#summaryContainer {
             border: 1px solid #d0d0d0;
             border-radius: 8px;
             background-color: #f7f7f7;
@@ -48,11 +54,6 @@ class ResultsView(QWidget):
             font-weight: bold;
         }
 
-        QLabel#sectionTitle {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
         QHeaderView::section {
             font-weight: bold;
         }
@@ -65,6 +66,24 @@ class ResultsView(QWidget):
             padding: 4px;
         }
 
+        QPushButton {
+            font-size: 15px;
+            font-weight: bold;
+            padding: 10px 24px;
+            background-color: #ffffff;
+            border: 1px solid #bdbdbd;
+            border-radius: 6px;
+        }
+
+        QPushButton:hover {
+            background-color: #eeeeee;
+            border: 1px solid #8f8f8f;
+        }
+
+        QPushButton:pressed {
+            background-color: #e0e0e0;
+            border: 1px solid #7a7a7a;
+        }
         """)
 
         self.view_model = ResultsViewModel(result)
@@ -72,6 +91,7 @@ class ResultsView(QWidget):
         filename = self.view_model.get_filename()
         summary_data = self.view_model.get_summary()
         invalid_rows = self.view_model.get_invalid_rows()
+        customer_rows = self.view_model.get_customer_rows()
 
         title = QLabel()
         title.setObjectName("resultsTitle")
@@ -90,6 +110,7 @@ class ResultsView(QWidget):
         title.setToolTip(filename)
 
         summary_layout = QHBoxLayout()
+        summary_layout.setSpacing(12)
 
         summary_layout.addWidget(
             self.create_metric_card(
@@ -125,6 +146,7 @@ class ResultsView(QWidget):
         tickets_by_status_widget = self.create_summary_table(
             "Tickets by Status",
             summary_data["tickets_by_status"],
+            "Status",
             "Count",
             "No status data available."
         )
@@ -132,94 +154,59 @@ class ResultsView(QWidget):
         tickets_by_priority_widget = self.create_summary_table(
             "Tickets by Priority",
             summary_data["tickets_by_priority"],
+            "Priority",
             "Count",
             "No priority data available."
         )
 
-        ticket_summary_title = QLabel("Ticket Summary")
-        ticket_summary_title.setObjectName("sectionTitle")
-
         summary_tables_layout = QHBoxLayout()
+        summary_tables_layout.setSpacing(12)
         summary_tables_layout.addWidget(tickets_by_status_widget)
         summary_tables_layout.addWidget(tickets_by_priority_widget)
 
-        ticket_summary_widget = QWidget()
-
-        ticket_summary_layout = QVBoxLayout()
-        ticket_summary_layout.addWidget(ticket_summary_title)
-        ticket_summary_layout.addLayout(summary_tables_layout)
-
-        ticket_summary_widget.setLayout(ticket_summary_layout)
-
-        hours_by_customer_widget = self.create_summary_table(
-            "Hours by Customer",
-            summary_data["hours_by_customer"],
-            "Hours",
-            "No customer workload data available."
+        hours_by_customer_widget = self.create_customer_table(
+            customer_rows
         )
 
-        customer_workload_title = QLabel("Customer Workload")
-        customer_workload_title.setObjectName("sectionTitle")
+        validation_widget = self.create_validation_widget(
+            invalid_rows
+        )
 
-        customer_workload_widget = QWidget()
-
-        customer_workload_layout = QVBoxLayout()
-        customer_workload_layout.addWidget(customer_workload_title)
-        customer_workload_layout.addWidget(hours_by_customer_widget)
-
-        customer_workload_widget.setLayout(customer_workload_layout)
-
-        validation_title = QLabel("Validation Issues")
-        validation_title.setObjectName("sectionTitle")
-
-        if not invalid_rows:
-            invalid_records = QFrame()
-
-            invalid_layout = QVBoxLayout()
-
-            invalid_title = QLabel("Invalid Records")
-            invalid_title.setObjectName("summaryTitle")
-
-            if summary_data["total_tickets_count"] == 0:
-                invalid_message = QLabel("No records to validate.")
-            else:
-                invalid_message = QLabel(
-                    "0 invalid records\n"
-                    "All records passed validation."
-                )
-
-            invalid_message.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            invalid_layout.addWidget(invalid_title)
-            invalid_layout.addWidget(invalid_message)
-
-            invalid_records.setLayout(invalid_layout)
-        else:
-            invalid_records = self.create_invalid_records_table(
-                invalid_rows
-            )
-
-        validation_widget = QWidget()
-
-        validation_layout = QVBoxLayout()
-        validation_layout.addWidget(validation_title)
-        validation_layout.addWidget(invalid_records)
-
-        validation_widget.setLayout(validation_layout)
+        export_button = QPushButton("Export Results")
+        export_button.setFixedWidth(190)
+        export_button.setMinimumHeight(40)
+        export_button.setCursor(
+            QCursor(Qt.CursorShape.PointingHandCursor)
+        )
+        export_button.clicked.connect(self.export_results)
 
         upload_button = QPushButton("Upload Another File")
+        upload_button.setFixedWidth(190)
         upload_button.setMinimumHeight(40)
+        upload_button.setCursor(
+            QCursor(Qt.CursorShape.PointingHandCursor)
+        )
         upload_button.clicked.connect(
             self.upload_another_file_requested.emit
         )
 
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(12)
+        button_layout.addStretch()
+        button_layout.addWidget(upload_button)
+        button_layout.addWidget(export_button)
+        button_layout.addStretch()
+
         content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(24, 24, 24, 24)
+        content_layout.setSpacing(20)
+
         content_layout.addWidget(title)
         content_layout.addWidget(summary_widget)
-        content_layout.addWidget(ticket_summary_widget)
-        content_layout.addWidget(customer_workload_widget)
+        content_layout.addLayout(summary_tables_layout)
+        content_layout.addWidget(hours_by_customer_widget)
         content_layout.addWidget(validation_widget)
-        content_layout.addWidget(upload_button)
+        content_layout.addLayout(button_layout)
 
         content_widget = QWidget()
         content_widget.setLayout(content_layout)
@@ -238,6 +225,7 @@ class ResultsView(QWidget):
 
     def create_metric_card(self, label, value):
         card = QFrame()
+        card.setObjectName("metricCard")
         card.setMinimumHeight(120)
 
         layout = QVBoxLayout()
@@ -261,10 +249,12 @@ class ResultsView(QWidget):
         self,
         title,
         data,
+        category_header,
         value_header,
         empty_message
     ):
         frame = QFrame()
+        frame.setObjectName("summaryContainer")
 
         layout = QVBoxLayout()
 
@@ -285,13 +275,16 @@ class ResultsView(QWidget):
         table = QTableWidget()
         table.setColumnCount(2)
         table.setHorizontalHeaderLabels(
-            ["Category", value_header]
+            [category_header, value_header]
         )
         table.setRowCount(len(data))
         table.setMinimumHeight(120)
 
         for row_number, (category, count) in enumerate(data.items()):
-            display_category = category.replace("_", " ").title()
+            display_category = category.replace(
+                "_",
+                " "
+            ).title()
 
             category_item = QTableWidgetItem(display_category)
             category_item.setTextAlignment(
@@ -303,17 +296,8 @@ class ResultsView(QWidget):
                 Qt.AlignmentFlag.AlignCenter
             )
 
-            table.setItem(
-                row_number,
-                0,
-                category_item
-            )
-
-            table.setItem(
-                row_number,
-                1,
-                count_item
-            )
+            table.setItem(row_number, 0, category_item)
+            table.setItem(row_number, 1, count_item)
 
         table.setEditTriggers(QTableWidget.NoEditTriggers)
         table.setSelectionMode(QTableWidget.NoSelection)
@@ -348,59 +332,210 @@ class ResultsView(QWidget):
 
         return frame
 
-    def create_invalid_records_table(self, invalid_rows):
+    def create_customer_table(self, customer_rows):
         frame = QFrame()
+        frame.setObjectName("summaryContainer")
 
         layout = QVBoxLayout()
 
-        title = QLabel("Invalid Records")
+        title_layout = QHBoxLayout()
+
+        title = QLabel("Hours by Customer")
         title.setObjectName("summaryTitle")
 
-        table = QTableWidget()
-        table.setMinimumHeight(120)
-
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(
-            ["Ticket", "Field", "Invalid Value", "Reason"]
+        total_customers = len(customer_rows)
+        displayed_customers = min(
+            total_customers,
+            self.MAX_DISPLAYED_ROWS
         )
 
-        table.setRowCount(len(invalid_rows))
+        count_label = QLabel(
+            f"— Showing {displayed_customers:,} "
+            f"customers out of {total_customers:,}"
+        )
 
-        for row_number, row_data in enumerate(invalid_rows):
+        title_layout.addWidget(title)
+        title_layout.addWidget(count_label)
+        title_layout.addStretch()
+
+        layout.addLayout(title_layout)
+
+        if not customer_rows:
+            empty_label = QLabel(
+                "No customer workload data available."
+            )
+            empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(empty_label)
+
+            frame.setLayout(layout)
+
+            return frame
+
+        displayed_rows = customer_rows[
+            :self.MAX_DISPLAYED_ROWS
+        ]
+
+        table = QTableWidget()
+        table.setColumnCount(2)
+        table.setHorizontalHeaderLabels(
+            ["Customer", "Hours"]
+        )
+        table.setRowCount(len(displayed_rows))
+        table.setMinimumHeight(120)
+
+        for row_number, (customer, hours) in enumerate(
+            displayed_rows
+        ):
+            customer_item = QTableWidgetItem(customer)
+            customer_item.setTextAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
+
+            hours_item = QTableWidgetItem(f"{hours:g}")
+            hours_item.setTextAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
+
+            table.setItem(row_number, 0, customer_item)
+            table.setItem(row_number, 1, hours_item)
+
+        table.setEditTriggers(QTableWidget.NoEditTriggers)
+        table.setSelectionMode(QTableWidget.NoSelection)
+
+        header = table.horizontalHeader()
+
+        header.setSectionResizeMode(
+            0,
+            QHeaderView.Stretch
+        )
+
+        header.setSectionResizeMode(
+            1,
+            QHeaderView.Stretch
+        )
+
+        table.verticalHeader().setSectionResizeMode(
+            QHeaderView.Fixed
+        )
+
+        table.verticalHeader().setDefaultSectionSize(30)
+
+        table.verticalHeader().setDefaultAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
+
+        table.verticalHeader().setMinimumWidth(40)
+
+        layout.addWidget(table)
+
+        frame.setLayout(layout)
+
+        return frame
+
+    def create_validation_widget(self, invalid_rows):
+        frame = QFrame()
+        frame.setObjectName("summaryContainer")
+
+        layout = QVBoxLayout()
+
+        title_layout = QHBoxLayout()
+
+        title = QLabel("Validation Issues")
+        title.setObjectName("summaryTitle")
+
+        total_errors = len(invalid_rows)
+        displayed_errors = min(
+            total_errors,
+            self.MAX_DISPLAYED_ROWS
+        )
+
+        count_label = QLabel(
+            f"— Showing {displayed_errors:,} "
+            f"errors out of {total_errors:,}"
+        )
+
+        title_layout.addWidget(title)
+        title_layout.addWidget(count_label)
+        title_layout.addStretch()
+
+        layout.addLayout(title_layout)
+
+        if not invalid_rows:
+            message = QLabel(
+                "All records passed validation."
+            )
+            message.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+            layout.addWidget(message)
+
+            frame.setLayout(layout)
+
+            return frame
+
+        displayed_rows = invalid_rows[
+            :self.MAX_DISPLAYED_ROWS
+        ]
+
+        table = QTableWidget()
+        table.setColumnCount(4)
+        table.setHorizontalHeaderLabels(
+            [
+                "Ticket",
+                "Field",
+                "Invalid Value",
+                "Validation Error"
+            ]
+        )
+        table.setRowCount(len(displayed_rows))
+        table.setMinimumHeight(120)
+
+        for row_number, row_data in enumerate(
+            displayed_rows
+        ):
             table.setItem(
                 row_number,
                 0,
-                QTableWidgetItem(row_data["ticket_id"])
+                QTableWidgetItem(
+                    str(row_data["ticket_id"])
+                )
             )
 
             table.setItem(
                 row_number,
                 1,
-                QTableWidgetItem(row_data["field"])
+                QTableWidgetItem(
+                    row_data["field"]
+                )
             )
 
             table.setItem(
                 row_number,
                 2,
-                QTableWidgetItem(str(row_data["invalid_value"]))
+                QTableWidgetItem(
+                    str(row_data["invalid_value"])
+                )
             )
 
             table.setItem(
                 row_number,
                 3,
-                QTableWidgetItem(row_data["reason"])
+                QTableWidgetItem(
+                    row_data["reason"]
+                )
             )
 
         for row in range(table.rowCount()):
             for column in range(table.columnCount()):
-                table.item(row, column).setTextAlignment(
+                table.item(
+                    row,
+                    column
+                ).setTextAlignment(
                     Qt.AlignmentFlag.AlignCenter
                 )
 
         table.setEditTriggers(QTableWidget.NoEditTriggers)
         table.setSelectionMode(QTableWidget.NoSelection)
         table.setWordWrap(True)
-        table.resizeRowsToContents()
 
         header = table.horizontalHeader()
 
@@ -424,19 +559,34 @@ class ResultsView(QWidget):
             QHeaderView.Stretch
         )
 
-        table.verticalHeader().setSectionResizeMode(
-            QHeaderView.ResizeToContents
-        )
+        table.verticalHeader().setDefaultSectionSize(30)
 
         table.verticalHeader().setDefaultAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
 
-        table.verticalHeader().setMinimumWidth(120)
+        table.verticalHeader().setMinimumWidth(40)
 
-        layout.addWidget(title)
         layout.addWidget(table)
 
         frame.setLayout(layout)
 
         return frame
+
+    def export_results(self):
+        filename = self.view_model.get_filename()
+
+        destination_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Export Results",
+            f"{filename.rsplit('.', 1)[0]}_results.csv",
+            "CSV Files (*.csv)",
+        )
+
+        if not destination_path:
+            return
+
+        ResultsExportService.export_results(
+            self.view_model.get_export_data(),
+            destination_path
+        )
