@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QCursor, QFontMetrics
 from PySide6.QtWidgets import (
     QFileDialog,
@@ -15,6 +15,8 @@ from .view_models.upload_view_model import UploadViewModel
 
 
 class UploadView(QWidget):
+    processing_started = Signal()
+
     def __init__(self):
         super().__init__()
 
@@ -136,11 +138,13 @@ class UploadView(QWidget):
         test_file.setAlignment(Qt.AlignmentFlag.AlignCenter)
         test_file.linkActivated.connect(self.download_test_file)
 
-        upload_button = QPushButton("Upload CSV File")
-        upload_button.setCursor(
+        self.upload_button = QPushButton("Upload CSV File")
+        self.upload_button.setCursor(
             QCursor(Qt.CursorShape.PointingHandCursor)
         )
-        upload_button.clicked.connect(self.handle_upload_clicked)
+        self.upload_button.clicked.connect(
+            self.handle_upload_clicked
+        )
 
         self.error_message = QLabel()
         self.error_message.setObjectName("errorMessage")
@@ -161,7 +165,7 @@ class UploadView(QWidget):
         card_layout.addSpacing(12)
 
         card_layout.addWidget(
-            upload_button,
+            self.upload_button,
             0,
             Qt.AlignmentFlag.AlignHCenter
         )
@@ -218,9 +222,14 @@ class UploadView(QWidget):
         self.selected_filename = filename.split("/")[-1]
         self.error_message.hide()
 
+        self.upload_button.setEnabled(False)
+        self.processing_started.emit()
+
         self.view_model.upload_file(filename)
 
     def show_processing_error(self, message):
+        self.upload_button.setEnabled(True)
+
         available_width = self.error_message.width()
 
         font_metrics = QFontMetrics(

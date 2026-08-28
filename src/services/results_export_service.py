@@ -1,8 +1,30 @@
 import csv
+import shutil
+import tempfile
 from pathlib import Path
 
-
 class ResultsExportService:
+
+    @staticmethod
+    def create_export_file(result):
+        temp_directory = Path(
+            tempfile.mkdtemp(
+                prefix="csv_extractor_"
+            )
+        )
+
+        export_path = (
+            temp_directory
+            / f"{Path(result['filename']).stem}_results.csv"
+        )
+
+        ResultsExportService.export_results(
+            result,
+            export_path
+        )
+
+        return str(export_path)
+
     @staticmethod
     def export_results(result, destination_path):
         path = Path(destination_path)
@@ -16,22 +38,27 @@ class ResultsExportService:
 
             writer.writerow(["SUMMARY"])
             writer.writerow(["Metric", "Value"])
+
             writer.writerow([
                 "Filename",
                 Path(result["filename"]).name
             ])
+
             writer.writerow([
                 "Total Tickets",
                 result["total_tickets_count"]
             ])
+
             writer.writerow([
                 "Valid Tickets",
                 result["valid_tickets_count"]
             ])
+
             writer.writerow([
                 "Invalid Tickets",
                 result["invalid_tickets_count"]
             ])
+
             writer.writerow([
                 "Total Hours",
                 result["summary"]["total_hours"]
@@ -96,3 +123,10 @@ class ResultsExportService:
                     ])
 
                     issue_number += 1
+
+    @staticmethod
+    def copy_export_file(source_path, destination_path):
+        shutil.copyfile(
+            source_path,
+            destination_path
+        )

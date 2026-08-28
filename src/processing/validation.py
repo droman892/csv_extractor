@@ -1,6 +1,7 @@
 import math
 
 def check_rows(csv_list):
+
     valid_records = []
     errors = []
 
@@ -223,8 +224,8 @@ def validate_hours(hours):
         result["error"] = f"{hours} is not a finite number"
         return result
 
-    if clean_hours < 0:
-        result["error"] = "hours cannot be less than 0"
+    if clean_hours < 0.5:
+        result["error"] = "hours cannot be less than 0.5"
         return result
 
     if clean_hours > 40:

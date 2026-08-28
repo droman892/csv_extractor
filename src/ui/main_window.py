@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QMainWindow
+
 from .upload_view import UploadView
 from .results_view import ResultsView
+from .processing_overlay import ProcessingOverlay
 
 
 class MainWindow(QMainWindow):
@@ -9,17 +11,38 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("CSV Extractor")
         self.resize(800, 600)
+        self.setMinimumSize(800, 600)
 
         self.show_upload_view()
 
     def show_upload_view(self):
+        if hasattr(self, "results_view"):
+            self.results_view.cleanup_export_file()
+            self.results_view = None
+
         self.upload_view = UploadView()
+
+        self.upload_view.processing_started.connect(
+            self.show_processing_overlay
+        )
 
         self.upload_view.view_model.processing_completed.connect(
             self.show_results_view
         )
 
         self.setCentralWidget(self.upload_view)
+
+        self.processing_overlay = ProcessingOverlay(self)
+        self.processing_overlay.setGeometry(
+            self.rect()
+        )
+
+    def show_processing_overlay(self):
+        self.processing_overlay.setGeometry(
+            self.rect()
+        )
+
+        self.processing_overlay.start()
 
     def show_results_view(self, result):
         self.results_view = ResultsView(result)
@@ -29,3 +52,13 @@ class MainWindow(QMainWindow):
         )
 
         self.setCentralWidget(self.results_view)
+
+        self.processing_overlay.stop()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+
+        if hasattr(self, "processing_overlay"):
+            self.processing_overlay.setGeometry(
+                self.rect()
+            )

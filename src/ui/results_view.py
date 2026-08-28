@@ -1,22 +1,24 @@
+from pathlib import Path
+
 from .view_models.results_view_model import ResultsViewModel
 from ..services.results_export_service import ResultsExportService
 
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Signal, Qt, QTimer
 from PySide6.QtGui import QFontMetrics, QCursor
 from PySide6.QtWidgets import (
-    QFileDialog,
-    QLabel,
-    QPushButton,
-    QScrollArea,
-    QTableWidget,
-    QTableWidgetItem,
-    QVBoxLayout,
-    QWidget,
-    QFrame,
-    QHBoxLayout,
-    QHeaderView,
+QFileDialog,
+QLabel,
+QPushButton,
+QScrollArea,
+QTableWidget,
+QTableWidgetItem,
+QVBoxLayout,
+QWidget,
+QFrame,
+QHBoxLayout,
+QHeaderView,
+QSizePolicy,
 )
-
 
 class ResultsView(QWidget):
     upload_another_file_requested = Signal()
@@ -56,14 +58,45 @@ class ResultsView(QWidget):
 
         QHeaderView::section {
             font-weight: bold;
+            background-color: #eeeeee;
+            border: none;
+            border-bottom: 1px solid #d0d0d0;
+            border-right: 1px solid #d8d8d8;
+            padding: 5px;
+        }
+
+        QHeaderView::section:last {
+            border-right: none;
+        }
+
+        QHeaderView::section:hover {
+            background-color: #eeeeee;
         }
 
         QTableWidget {
-            gridline-color: #d0d0d0;
+            gridline-color: #dddddd;
+            border: 1px solid #d8d8d8;
+            border-radius: 4px;
+            alternate-background-color: #f8f8f8;
+            background-color: #ffffff;
         }
 
         QTableWidget::item {
             padding: 4px;
+            border: none;
+        }
+
+        QTableWidget::item:hover {
+            background-color: transparent;
+        }
+
+        QTableWidget::item:selected {
+            background-color: transparent;
+            color: black;
+        }
+
+        QHeaderView {
+            background-color: #eeeeee;
         }
 
         QPushButton {
@@ -88,26 +121,34 @@ class ResultsView(QWidget):
 
         self.view_model = ResultsViewModel(result)
 
+        self.export_file = self.view_model.get_export_file()
+
         filename = self.view_model.get_filename()
         summary_data = self.view_model.get_summary()
         invalid_rows = self.view_model.get_invalid_rows()
         customer_rows = self.view_model.get_customer_rows()
 
-        title = QLabel()
-        title.setObjectName("resultsTitle")
-        title.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
-        font_metrics = QFontMetrics(title.font())
-        available_width = 600
-
-        display_filename = font_metrics.elidedText(
-            f"Results for {filename}",
-            Qt.TextElideMode.ElideRight,
-            available_width
+        total_customers = (
+            self.view_model.get_total_customer_count()
         )
 
-        title.setText(display_filename)
-        title.setToolTip(filename)
+        total_invalid_records = (
+            self.view_model.get_total_invalid_record_count()
+        )
+
+        self.filename = filename
+
+        self.results_title = QLabel()
+        self.results_title.setObjectName("resultsTitle")
+        self.results_title.setAlignment(
+            Qt.AlignmentFlag.AlignLeft
+        )
+        self.results_title.setWordWrap(False)
+        self.results_title.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Preferred
+        )
+        self.results_title.setToolTip(filename)
 
         summary_layout = QHBoxLayout()
         summary_layout.setSpacing(12)
@@ -161,15 +202,21 @@ class ResultsView(QWidget):
 
         summary_tables_layout = QHBoxLayout()
         summary_tables_layout.setSpacing(12)
-        summary_tables_layout.addWidget(tickets_by_status_widget)
-        summary_tables_layout.addWidget(tickets_by_priority_widget)
+        summary_tables_layout.addWidget(
+            tickets_by_status_widget
+        )
+        summary_tables_layout.addWidget(
+            tickets_by_priority_widget
+        )
 
         hours_by_customer_widget = self.create_customer_table(
-            customer_rows
+            customer_rows,
+            total_customers
         )
 
         validation_widget = self.create_validation_widget(
-            invalid_rows
+            invalid_rows,
+            total_invalid_records
         )
 
         export_button = QPushButton("Export Results")
@@ -178,7 +225,9 @@ class ResultsView(QWidget):
         export_button.setCursor(
             QCursor(Qt.CursorShape.PointingHandCursor)
         )
-        export_button.clicked.connect(self.export_results)
+        export_button.clicked.connect(
+            self.export_results
+        )
 
         upload_button = QPushButton("Upload Another File")
         upload_button.setFixedWidth(190)
@@ -201,27 +250,37 @@ class ResultsView(QWidget):
         content_layout.setContentsMargins(24, 24, 24, 24)
         content_layout.setSpacing(20)
 
-        content_layout.addWidget(title)
+        content_layout.addWidget(self.results_title)
         content_layout.addWidget(summary_widget)
         content_layout.addLayout(summary_tables_layout)
         content_layout.addWidget(hours_by_customer_widget)
         content_layout.addWidget(validation_widget)
         content_layout.addLayout(button_layout)
 
-        content_widget = QWidget()
-        content_widget.setLayout(content_layout)
+        self.content_widget = QWidget()
+        self.content_widget.setSizePolicy(
+            QSizePolicy.Policy.Ignored,
+            QSizePolicy.Policy.Preferred
+        )
+        self.content_widget.setLayout(content_layout)
 
-        scroll_area = QScrollArea()
-        scroll_area.setWidget(content_widget)
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setHorizontalScrollBarPolicy(
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidget(self.content_widget)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
 
         main_layout = QVBoxLayout()
-        main_layout.addWidget(scroll_area)
+        main_layout.setContentsMargins(8, 8, 8, 8)
+        main_layout.addWidget(self.scroll_area)
 
         self.setLayout(main_layout)
+
+        QTimer.singleShot(
+            0,
+            self.update_filename_display
+        )
 
     def create_metric_card(self, label, value):
         card = QFrame()
@@ -265,7 +324,9 @@ class ResultsView(QWidget):
 
         if not data:
             empty_label = QLabel(empty_message)
-            empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            empty_label.setAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
             layout.addWidget(empty_label)
 
             frame.setLayout(layout)
@@ -280,27 +341,50 @@ class ResultsView(QWidget):
         table.setRowCount(len(data))
         table.setMinimumHeight(120)
 
-        for row_number, (category, count) in enumerate(data.items()):
+        table.setSelectionMode(
+            QTableWidget.SelectionMode.NoSelection
+        )
+
+        table.setFocusPolicy(
+            Qt.FocusPolicy.NoFocus
+        )
+
+        for row_number, (category, count) in enumerate(
+            data.items()
+        ):
             display_category = category.replace(
                 "_",
                 " "
             ).title()
 
-            category_item = QTableWidgetItem(display_category)
+            category_item = QTableWidgetItem(
+                display_category
+            )
             category_item.setTextAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
 
-            count_item = QTableWidgetItem(f"{count:,}")
+            count_item = QTableWidgetItem(
+                f"{count:,}"
+            )
             count_item.setTextAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
 
-            table.setItem(row_number, 0, category_item)
-            table.setItem(row_number, 1, count_item)
+            table.setItem(
+                row_number,
+                0,
+                category_item
+            )
+            table.setItem(
+                row_number,
+                1,
+                count_item
+            )
 
-        table.setEditTriggers(QTableWidget.NoEditTriggers)
-        table.setSelectionMode(QTableWidget.NoSelection)
+        table.setEditTriggers(
+            QTableWidget.NoEditTriggers
+        )
 
         header = table.horizontalHeader()
 
@@ -332,7 +416,11 @@ class ResultsView(QWidget):
 
         return frame
 
-    def create_customer_table(self, customer_rows):
+    def create_customer_table(
+        self,
+        customer_rows,
+        total_customers
+    ):
         frame = QFrame()
         frame.setObjectName("summaryContainer")
 
@@ -343,9 +431,8 @@ class ResultsView(QWidget):
         title = QLabel("Hours by Customer")
         title.setObjectName("summaryTitle")
 
-        total_customers = len(customer_rows)
         displayed_customers = min(
-            total_customers,
+            len(customer_rows),
             self.MAX_DISPLAYED_ROWS
         )
 
@@ -364,7 +451,9 @@ class ResultsView(QWidget):
             empty_label = QLabel(
                 "No customer workload data available."
             )
-            empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            empty_label.setAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
             layout.addWidget(empty_label)
 
             frame.setLayout(layout)
@@ -383,6 +472,14 @@ class ResultsView(QWidget):
         table.setRowCount(len(displayed_rows))
         table.setMinimumHeight(120)
 
+        table.setSelectionMode(
+            QTableWidget.SelectionMode.NoSelection
+        )
+
+        table.setFocusPolicy(
+            Qt.FocusPolicy.NoFocus
+        )
+
         for row_number, (customer, hours) in enumerate(
             displayed_rows
         ):
@@ -391,16 +488,27 @@ class ResultsView(QWidget):
                 Qt.AlignmentFlag.AlignCenter
             )
 
-            hours_item = QTableWidgetItem(f"{hours:g}")
+            hours_item = QTableWidgetItem(
+                f"{hours:,.1f}"
+            )
             hours_item.setTextAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
 
-            table.setItem(row_number, 0, customer_item)
-            table.setItem(row_number, 1, hours_item)
+            table.setItem(
+                row_number,
+                0,
+                customer_item
+            )
+            table.setItem(
+                row_number,
+                1,
+                hours_item
+            )
 
-        table.setEditTriggers(QTableWidget.NoEditTriggers)
-        table.setSelectionMode(QTableWidget.NoSelection)
+        table.setEditTriggers(
+            QTableWidget.NoEditTriggers
+        )
 
         header = table.horizontalHeader()
 
@@ -432,7 +540,11 @@ class ResultsView(QWidget):
 
         return frame
 
-    def create_validation_widget(self, invalid_rows):
+    def create_validation_widget(
+        self,
+        invalid_rows,
+        total_invalid_records
+    ):
         frame = QFrame()
         frame.setObjectName("summaryContainer")
 
@@ -443,15 +555,14 @@ class ResultsView(QWidget):
         title = QLabel("Validation Issues")
         title.setObjectName("summaryTitle")
 
-        total_errors = len(invalid_rows)
         displayed_errors = min(
-            total_errors,
+            len(invalid_rows),
             self.MAX_DISPLAYED_ROWS
         )
 
         count_label = QLabel(
             f"— Showing {displayed_errors:,} "
-            f"errors out of {total_errors:,}"
+            f"errors out of {total_invalid_records:,}"
         )
 
         title_layout.addWidget(title)
@@ -464,7 +575,9 @@ class ResultsView(QWidget):
             message = QLabel(
                 "All records passed validation."
             )
-            message.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            message.setAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
 
             layout.addWidget(message)
 
@@ -488,6 +601,14 @@ class ResultsView(QWidget):
         )
         table.setRowCount(len(displayed_rows))
         table.setMinimumHeight(120)
+
+        table.setSelectionMode(
+            QTableWidget.SelectionMode.NoSelection
+        )
+
+        table.setFocusPolicy(
+            Qt.FocusPolicy.NoFocus
+        )
 
         for row_number, row_data in enumerate(
             displayed_rows
@@ -533,8 +654,10 @@ class ResultsView(QWidget):
                     Qt.AlignmentFlag.AlignCenter
                 )
 
-        table.setEditTriggers(QTableWidget.NoEditTriggers)
-        table.setSelectionMode(QTableWidget.NoSelection)
+        table.setEditTriggers(
+            QTableWidget.NoEditTriggers
+        )
+
         table.setWordWrap(True)
 
         header = table.horizontalHeader()
@@ -586,7 +709,43 @@ class ResultsView(QWidget):
         if not destination_path:
             return
 
-        ResultsExportService.export_results(
-            self.view_model.get_export_data(),
+        ResultsExportService.copy_export_file(
+            self.export_file,
             destination_path
         )
+
+    def update_filename_display(self):
+        if not hasattr(self, "results_title"):
+            return
+
+        available_width = self.results_title.width()
+
+        if available_width <= 0:
+            return
+
+        font_metrics = QFontMetrics(
+            self.results_title.font()
+        )
+
+        display_filename = font_metrics.elidedText(
+            f"Results for {self.filename}",
+            Qt.TextElideMode.ElideMiddle,
+            available_width
+        )
+
+        self.results_title.setText(display_filename)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+
+        if hasattr(self, "scroll_area"):
+            viewport_width = self.scroll_area.viewport().width()
+
+            self.content_widget.setMinimumWidth(
+                viewport_width
+            )
+
+            QTimer.singleShot(
+                0,
+                self.update_filename_display
+            )
