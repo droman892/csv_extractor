@@ -33,9 +33,14 @@ class MainWindow(QMainWindow):
             self.show_processing_error
         )
 
-        self.setCentralWidget(self.upload_view)
+        self.setCentralWidget(
+            self.upload_view
+        )
 
-        self.processing_overlay = ProcessingOverlay(self)
+        self.processing_overlay = ProcessingOverlay(
+            self
+        )
+
         self.processing_overlay.setGeometry(
             self.rect()
         )
@@ -48,6 +53,8 @@ class MainWindow(QMainWindow):
         self.processing_overlay.start()
 
     def show_results_view(self, result):
+        self.processing_overlay.stop()
+
         display_result = result["display_result"]
         full_result = result["result"]
 
@@ -60,6 +67,18 @@ class MainWindow(QMainWindow):
             self.show_upload_view
         )
 
+        self.results_view.view_model.export_started.connect(
+            self.show_processing_overlay
+        )
+
+        self.results_view.view_model.export_completed.connect(
+            self.hide_processing_overlay
+        )
+
+        self.results_view.view_model.export_failed.connect(
+            self.hide_processing_overlay
+        )
+
         self.setCentralWidget(
             self.results_view
         )
@@ -67,12 +86,20 @@ class MainWindow(QMainWindow):
     def show_processing_error(self, message):
         self.processing_overlay.stop()
 
-        self.upload_view.show_processing_error(message)
+        self.upload_view.show_processing_error(
+            message
+        )
+
+    def hide_processing_overlay(self, *args):
+        self.processing_overlay.stop()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
 
-        if hasattr(self, "processing_overlay"):
+        if hasattr(
+            self,
+            "processing_overlay"
+        ):
             self.processing_overlay.setGeometry(
                 self.rect()
             )

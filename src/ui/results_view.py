@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from .view_models.results_view_model import ResultsViewModel
-from ..services.results_export_service import ResultsExportService
 
 from PySide6.QtCore import Signal, Qt, QTimer
 from PySide6.QtGui import QFontMetrics, QCursor
@@ -18,7 +17,10 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QHeaderView,
     QSizePolicy,
+    QMessageBox,
+    QApplication,
 )
+
 
 class ResultsView(QWidget):
     upload_another_file_requested = Signal()
@@ -120,8 +122,22 @@ class ResultsView(QWidget):
         }
         """)
 
-        self.view_model = ResultsViewModel(result)
-        self.full_result = full_result
+        self.view_model = ResultsViewModel(
+            result,
+            full_result
+        )
+
+        self.view_model.export_started.connect(
+            self.export_started
+        )
+
+        self.view_model.export_completed.connect(
+            self.export_completed
+        )
+
+        self.view_model.export_failed.connect(
+            self.export_failed
+        )
 
         filename = self.view_model.get_filename()
         summary_data = self.view_model.get_summary()
@@ -251,19 +267,19 @@ class ResultsView(QWidget):
             )
         )
 
-        export_button = QPushButton(
+        self.export_button = QPushButton(
             "Export Results"
         )
 
-        export_button.setFixedWidth(190)
-        export_button.setMinimumHeight(40)
-        export_button.setCursor(
+        self.export_button.setFixedWidth(190)
+        self.export_button.setMinimumHeight(40)
+        self.export_button.setCursor(
             QCursor(
                 Qt.CursorShape.PointingHandCursor
             )
         )
 
-        export_button.clicked.connect(
+        self.export_button.clicked.connect(
             self.export_results
         )
 
@@ -287,7 +303,7 @@ class ResultsView(QWidget):
         button_layout.setSpacing(12)
         button_layout.addStretch()
         button_layout.addWidget(upload_button)
-        button_layout.addWidget(export_button)
+        button_layout.addWidget(self.export_button)
         button_layout.addStretch()
 
         content_layout = QVBoxLayout()
@@ -349,6 +365,11 @@ class ResultsView(QWidget):
         )
 
         self.setLayout(main_layout)
+
+        QTimer.singleShot(
+            0,
+            self.finalize_table_heights
+        )
 
         QTimer.singleShot(
             0,
@@ -435,6 +456,7 @@ class ResultsView(QWidget):
 
         table = QTableWidget()
         table.setColumnCount(2)
+
         table.setHorizontalHeaderLabels([
             category_header,
             value_header
@@ -444,14 +466,29 @@ class ResultsView(QWidget):
             len(data)
         )
 
-        table.setMinimumHeight(120)
-
         table.setSelectionMode(
             QTableWidget.SelectionMode.NoSelection
         )
 
         table.setFocusPolicy(
             Qt.FocusPolicy.NoFocus
+        )
+
+        table.setEditTriggers(
+            QTableWidget.NoEditTriggers
+        )
+
+        table.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+
+        table.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+
+        table.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Fixed
         )
 
         for row_number, (
@@ -494,10 +531,6 @@ class ResultsView(QWidget):
                 count_item
             )
 
-        table.setEditTriggers(
-            QTableWidget.NoEditTriggers
-        )
-
         header = table.horizontalHeader()
 
         header.setSectionResizeMode(
@@ -514,10 +547,6 @@ class ResultsView(QWidget):
             QHeaderView.Fixed
         )
 
-        table.verticalHeader().setDefaultSectionSize(
-            30
-        )
-
         table.verticalHeader().setDefaultAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
@@ -529,6 +558,12 @@ class ResultsView(QWidget):
         layout.addWidget(table)
 
         frame.setLayout(layout)
+
+        if title == "Tickets by Status":
+            self.status_table = table
+
+        elif title == "Tickets by Priority":
+            self.priority_table = table
 
         return frame
 
@@ -579,9 +614,7 @@ class ResultsView(QWidget):
                 Qt.AlignmentFlag.AlignCenter
             )
 
-            layout.addWidget(
-                empty_label
-            )
+            layout.addWidget(empty_label)
 
             frame.setLayout(layout)
 
@@ -593,6 +626,7 @@ class ResultsView(QWidget):
 
         table = QTableWidget()
         table.setColumnCount(2)
+
         table.setHorizontalHeaderLabels([
             "Customer",
             "Hours"
@@ -602,14 +636,16 @@ class ResultsView(QWidget):
             len(displayed_rows)
         )
 
-        table.setMinimumHeight(120)
-
         table.setSelectionMode(
             QTableWidget.SelectionMode.NoSelection
         )
 
         table.setFocusPolicy(
             Qt.FocusPolicy.NoFocus
+        )
+
+        table.setEditTriggers(
+            QTableWidget.NoEditTriggers
         )
 
         for row_number, (
@@ -645,10 +681,6 @@ class ResultsView(QWidget):
                 hours_item
             )
 
-        table.setEditTriggers(
-            QTableWidget.NoEditTriggers
-        )
-
         header = table.horizontalHeader()
 
         header.setSectionResizeMode(
@@ -665,10 +697,6 @@ class ResultsView(QWidget):
             QHeaderView.Fixed
         )
 
-        table.verticalHeader().setDefaultSectionSize(
-            30
-        )
-
         table.verticalHeader().setDefaultAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
@@ -677,9 +705,16 @@ class ResultsView(QWidget):
             40
         )
 
+        table.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Fixed
+        )
+
         layout.addWidget(table)
 
         frame.setLayout(layout)
+
+        self.customer_table = table
 
         return frame
 
@@ -754,8 +789,6 @@ class ResultsView(QWidget):
             len(displayed_rows)
         )
 
-        table.setMinimumHeight(120)
-
         table.setSelectionMode(
             QTableWidget.SelectionMode.NoSelection
         )
@@ -763,6 +796,12 @@ class ResultsView(QWidget):
         table.setFocusPolicy(
             Qt.FocusPolicy.NoFocus
         )
+
+        table.setEditTriggers(
+            QTableWidget.NoEditTriggers
+        )
+
+        table.setWordWrap(True)
 
         for row_number, row_data in enumerate(
             displayed_rows
@@ -812,12 +851,6 @@ class ResultsView(QWidget):
                     Qt.AlignmentFlag.AlignCenter
                 )
 
-        table.setEditTriggers(
-            QTableWidget.NoEditTriggers
-        )
-
-        table.setWordWrap(True)
-
         header = table.horizontalHeader()
 
         header.setSectionResizeMode(
@@ -840,8 +873,8 @@ class ResultsView(QWidget):
             QHeaderView.Stretch
         )
 
-        table.verticalHeader().setDefaultSectionSize(
-            30
+        table.verticalHeader().setSectionResizeMode(
+            QHeaderView.Fixed
         )
 
         table.verticalHeader().setDefaultAlignment(
@@ -852,11 +885,95 @@ class ResultsView(QWidget):
             40
         )
 
+        table.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Fixed
+        )
+
         layout.addWidget(table)
 
         frame.setLayout(layout)
 
+        self.validation_table = table
+
         return frame
+
+    def finalize_table_heights(self):
+        tables = []
+
+        if hasattr(self, "status_table"):
+            tables.append(self.status_table)
+
+        if hasattr(self, "priority_table"):
+            tables.append(self.priority_table)
+
+        if hasattr(self, "customer_table"):
+            tables.append(self.customer_table)
+
+        if hasattr(self, "validation_table"):
+            tables.append(self.validation_table)
+
+        if not tables:
+            return
+
+        QApplication.processEvents()
+
+        reference_table = None
+
+        if hasattr(self, "status_table"):
+            reference_table = self.status_table
+        elif hasattr(self, "priority_table"):
+            reference_table = self.priority_table
+
+        if reference_table is None:
+            return
+
+        reference_table.doItemsLayout()
+
+        if reference_table.rowCount() == 0:
+            return
+
+        finalized_row_height = (
+            reference_table.rowHeight(0)
+        )
+
+        if finalized_row_height <= 0:
+            return
+
+        for table in tables:
+            table.verticalHeader().setDefaultSectionSize(
+                finalized_row_height
+            )
+
+            for row in range(
+                table.rowCount()
+            ):
+                table.setRowHeight(
+                    row,
+                    finalized_row_height
+                )
+
+        for table in tables:
+            header_height = (
+                table.horizontalHeader().height()
+            )
+
+            frame_height = (
+                2 * table.frameWidth()
+            )
+
+            required_height = (
+                header_height
+                + (
+                    finalized_row_height
+                    * table.rowCount()
+                )
+                + frame_height
+            )
+
+            table.setFixedHeight(
+                required_height
+            )
 
     def export_results(self):
         filename = self.view_model.get_filename()
@@ -864,23 +981,91 @@ class ResultsView(QWidget):
         destination_path, _ = QFileDialog.getSaveFileName(
             self,
             "Export Results",
-            f"{Path(filename).stem}_results.xlsx",
-            "Excel Files (*.xlsx)",
+            f"{Path(filename).stem}_results.csv",
+            "CSV Files (*.csv)",
         )
 
         if not destination_path:
             return
 
-        try:
-            ResultsExportService.export_results(
-                self.full_result,
-                destination_path
+        self.view_model.export_results(
+            destination_path
+        )
+
+    def export_started(self):
+        self.export_button.setEnabled(False)
+
+    def export_completed(self, destination_path):
+        self.export_button.setEnabled(True)
+
+        message_box = QMessageBox(self)
+
+        message_box.setWindowTitle(
+            "Export Complete"
+        )
+
+        message_box.setIcon(
+            QMessageBox.Icon.Information
+        )
+
+        message_box.setText(
+            "The results were exported successfully."
+        )
+
+        message_box.setStandardButtons(
+            QMessageBox.StandardButton.Ok
+        )
+
+        ok_button = message_box.button(
+            QMessageBox.StandardButton.Ok
+        )
+
+        if ok_button is not None:
+            ok_button.setCursor(
+                QCursor(
+                    Qt.CursorShape.PointingHandCursor
+                )
             )
 
-        except Exception as error:
-            self.show_export_error(
-                str(error)
+        message_box.exec()
+
+    def export_failed(self, message):
+        self.export_button.setEnabled(True)
+
+        message_box = QMessageBox(self)
+
+        message_box.setWindowTitle(
+            "Export Failed"
+        )
+
+        message_box.setIcon(
+            QMessageBox.Icon.Critical
+        )
+
+        message_box.setText(
+            "The results could not be exported."
+        )
+
+        message_box.setInformativeText(
+            message
+        )
+
+        message_box.setStandardButtons(
+            QMessageBox.StandardButton.Ok
+        )
+
+        ok_button = message_box.button(
+            QMessageBox.StandardButton.Ok
+        )
+
+        if ok_button is not None:
+            ok_button.setCursor(
+                QCursor(
+                    Qt.CursorShape.PointingHandCursor
+                )
             )
+
+        message_box.exec()
 
     def update_filename_display(self):
         if not hasattr(

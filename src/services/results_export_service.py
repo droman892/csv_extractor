@@ -1,17 +1,10 @@
 from pathlib import Path
+import csv
 import shutil
 import tempfile
 
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
-
 
 class ResultsExportService:
-
-    HEADER_FILL = "D9EAF7"
-    ALTERNATE_FILL = "F2F2F2"
-    WHITE_FILL = "FFFFFF"
-    BORDER_COLOR = "D0D0D0"
 
     @staticmethod
     def create_export_file(result):
@@ -23,7 +16,7 @@ class ResultsExportService:
 
         export_path = (
             temp_directory
-            / f"{Path(result['filename']).stem}_results.xlsx"
+            / f"{Path(result['filename']).stem}_results.csv"
         )
 
         ResultsExportService.export_results(
@@ -35,470 +28,219 @@ class ResultsExportService:
 
     @staticmethod
     def export_results(result, destination_path):
-        workbook = Workbook()
+        try:
+            with open(
+                destination_path,
+                "w",
+                newline="",
+                encoding="utf-8"
+            ) as csv_file:
 
-        summary_sheet = workbook.active
-        summary_sheet.title = "Summary"
+                writer = csv.writer(csv_file)
 
-        customer_sheet = workbook.create_sheet(
-            "Hours by Customer"
-        )
+                ResultsExportService._write_title_section(
+                    writer,
+                    result
+                )
 
-        validation_sheet = workbook.create_sheet(
-            "Validation Issues"
-        )
+                ResultsExportService._write_overall_section(
+                    writer,
+                    result
+                )
 
-        ResultsExportService._build_summary_sheet(
-            summary_sheet,
-            result
-        )
+                ResultsExportService._write_status_section(
+                    writer,
+                    result
+                )
 
-        ResultsExportService._build_customer_sheet(
-            customer_sheet,
-            result
-        )
+                ResultsExportService._write_priority_section(
+                    writer,
+                    result
+                )
 
-        ResultsExportService._build_validation_sheet(
-            validation_sheet,
-            result
-        )
+                ResultsExportService._write_customer_section(
+                    writer,
+                    result
+                )
 
-        workbook.save(destination_path)
+                ResultsExportService._write_validation_section(
+                    writer,
+                    result
+                )
 
-    @staticmethod
-    def _apply_row_style(
-        sheet,
-        row_number,
-        start_column,
-        end_column,
-        data_row_index
-    ):
-        fill = PatternFill(
-            fill_type="solid",
-            fgColor=(
-                ResultsExportService.ALTERNATE_FILL
-                if data_row_index % 2 == 0
-                else ResultsExportService.WHITE_FILL
-            )
-        )
+        except KeyError as error:
+            raise ValueError(
+                f"Unable to export results because required "
+                f"result data is missing: {error}"
+            ) from error
 
-        alignment = Alignment(
-            horizontal="center",
-            vertical="center"
-        )
+        except OSError as error:
+            raise OSError(
+                f"Unable to write the export file "
+                f"'{destination_path}': {error}"
+            ) from error
 
-        for column in range(
-            start_column,
-            end_column + 1
-        ):
-            cell = sheet.cell(
-                row=row_number,
-                column=column
-            )
-
-            cell.fill = fill
-            cell.alignment = alignment
+        except Exception as error:
+            raise RuntimeError(
+                f"An unexpected error occurred while exporting "
+                f"the results: {error}"
+            ) from error
 
     @staticmethod
-    def _apply_header_style(
-        sheet,
-        row_number,
-        start_column,
-        end_column
-    ):
-        fill = PatternFill(
-            fill_type="solid",
-            fgColor=ResultsExportService.HEADER_FILL
-        )
+    def _write_title_section(writer, result):
+        writer.writerow([
+            "CSV Extractor Results"
+        ])
 
-        font = Font(
-            bold=True
-        )
+        writer.writerow([
+            "Filename",
+            Path(result["filename"]).name
+        ])
 
-        alignment = Alignment(
-            horizontal="center",
-            vertical="center"
-        )
-
-        border = Border(
-            bottom=Side(
-                style="thin",
-                color=ResultsExportService.BORDER_COLOR
-            )
-        )
-
-        for column in range(
-            start_column,
-            end_column + 1
-        ):
-            cell = sheet.cell(
-                row=row_number,
-                column=column
-            )
-
-            cell.fill = fill
-            cell.font = font
-            cell.alignment = alignment
-            cell.border = border
+        writer.writerow([])
 
     @staticmethod
-    def _build_summary_sheet(sheet, result):
-        left_alignment = Alignment(
-            horizontal="left",
-            vertical="center"
-        )
+    def _write_overall_section(writer, result):
+        writer.writerow([
+            "Overall"
+        ])
 
-        section_fill = PatternFill(
-            fill_type="solid",
-            fgColor=ResultsExportService.HEADER_FILL
-        )
+        writer.writerow([
+            "Metric",
+            "Count"
+        ])
 
-        section_font = Font(
-            bold=True
-        )
+        writer.writerow([
+            "Total Tickets",
+            result["total_tickets_count"]
+        ])
 
-        border = Border(
-            bottom=Side(
-                style="thin",
-                color=ResultsExportService.BORDER_COLOR
-            )
-        )
+        writer.writerow([
+            "Valid Tickets",
+            result["valid_tickets_count"]
+        ])
 
-        # Overall
-        sheet["A1"] = "Overall"
+        writer.writerow([
+            "Invalid Tickets",
+            result["invalid_tickets_count"]
+        ])
 
-        for column in range(1, 3):
-            cell = sheet.cell(
-                row=1,
-                column=column
-            )
+        writer.writerow([
+            "Total Hours",
+            result["summary"]["total_hours"]
+        ])
 
-            cell.fill = section_fill
-            cell.border = border
+        writer.writerow([])
 
-        sheet["A1"].font = section_font
-        sheet["A1"].alignment = left_alignment
+    @staticmethod
+    def _write_status_section(writer, result):
+        writer.writerow([
+            "Tickets by Status"
+        ])
 
-        sheet["A2"] = "Metric"
-        sheet["B2"] = "Count"
+        writer.writerow([
+            "Status",
+            "Count"
+        ])
 
-        ResultsExportService._apply_header_style(
-            sheet,
-            2,
-            1,
-            2
-        )
-
-        overall_rows = [
-            (
-                "Total Tickets",
-                result["total_tickets_count"]
-            ),
-            (
-                "Valid Tickets",
-                result["valid_tickets_count"]
-            ),
-            (
-                "Invalid Tickets",
-                result["invalid_tickets_count"]
-            ),
-            (
-                "Total Hours",
-                result["summary"]["total_hours"]
-            ),
-        ]
-
-        row = 3
-
-        for data_row_index, (metric, value) in enumerate(
-            overall_rows
-        ):
-            sheet.cell(
-                row=row,
-                column=1,
-                value=metric
-            )
-
-            sheet.cell(
-                row=row,
-                column=2,
-                value=value
-            )
-
-            ResultsExportService._apply_row_style(
-                sheet,
-                row,
-                1,
-                2,
-                data_row_index
-            )
-
-            sheet.cell(
-                row=row,
-                column=1
-            ).alignment = left_alignment
-
-            if metric == "Total Hours":
-                sheet.cell(
-                    row=row,
-                    column=2
-                ).number_format = '#,##0.0'
-            else:
-                sheet.cell(
-                    row=row,
-                    column=2
-                ).number_format = '#,##0'
-
-            row += 1
-
-        row += 1
-
-        # Tickets by Status
-        sheet.cell(
-            row=row,
-            column=1,
-            value="Tickets by Status"
-        )
-
-        for column in range(1, 3):
-            cell = sheet.cell(
-                row=row,
-                column=column
-            )
-
-            cell.fill = section_fill
-            cell.border = border
-
-        sheet.cell(
-            row=row,
-            column=1
-        ).font = section_font
-
-        sheet.cell(
-            row=row,
-            column=1
-        ).alignment = left_alignment
-
-        row += 1
-
-        sheet.cell(
-            row=row,
-            column=1,
-            value="Status"
-        )
-
-        sheet.cell(
-            row=row,
-            column=2,
-            value="Count"
-        )
-
-        ResultsExportService._apply_header_style(
-            sheet,
-            row,
-            1,
-            2
-        )
-
-        row += 1
-
-        for data_row_index, (status, count) in enumerate(
+        for status, count in (
             result["summary"]["tickets_by_status"].items()
         ):
-            sheet.cell(
-                row=row,
-                column=1,
-                value=status.replace(
+            writer.writerow([
+                status.replace(
                     "_",
                     " "
-                ).title()
-            )
+                ).title(),
+                count
+            ])
 
-            sheet.cell(
-                row=row,
-                column=2,
-                value=count
-            )
-
-            ResultsExportService._apply_row_style(
-                sheet,
-                row,
-                1,
-                2,
-                data_row_index
-            )
-
-            sheet.cell(
-                row=row,
-                column=2
-            ).number_format = '#,##0'
-
-            row += 1
-
-        row += 1
-
-        # Tickets by Priority
-        sheet.cell(
-            row=row,
-            column=1,
-            value="Tickets by Priority"
-        )
-
-        for column in range(1, 3):
-            cell = sheet.cell(
-                row=row,
-                column=column
-            )
-
-            cell.fill = section_fill
-            cell.border = border
-
-        sheet.cell(
-            row=row,
-            column=1
-        ).font = section_font
-
-        sheet.cell(
-            row=row,
-            column=1
-        ).alignment = left_alignment
-
-        row += 1
-
-        sheet.cell(
-            row=row,
-            column=1,
-            value="Priority"
-        )
-
-        sheet.cell(
-            row=row,
-            column=2,
-            value="Count"
-        )
-
-        ResultsExportService._apply_header_style(
-            sheet,
-            row,
-            1,
-            2
-        )
-
-        row += 1
-
-        for data_row_index, (priority, count) in enumerate(
-            result["summary"]["tickets_by_priority"].items()
-        ):
-            sheet.cell(
-                row=row,
-                column=1,
-                value=priority.replace(
-                    "_",
-                    " "
-                ).title()
-            )
-
-            sheet.cell(
-                row=row,
-                column=2,
-                value=count
-            )
-
-            ResultsExportService._apply_row_style(
-                sheet,
-                row,
-                1,
-                2,
-                data_row_index
-            )
-
-            sheet.cell(
-                row=row,
-                column=2
-            ).number_format = '#,##0'
-
-            row += 1
-
-        sheet.column_dimensions["A"].width = 28
-        sheet.column_dimensions["B"].width = 18
-
-        sheet.freeze_panes = None
+        writer.writerow([])
 
     @staticmethod
-    def _build_customer_sheet(sheet, result):
-        sheet.append([
+    def _write_priority_section(writer, result):
+        writer.writerow([
+            "Tickets by Priority"
+        ])
+
+        writer.writerow([
+            "Priority",
+            "Count"
+        ])
+
+        for priority, count in (
+            result["summary"]["tickets_by_priority"].items()
+        ):
+            writer.writerow([
+                priority.replace(
+                    "_",
+                    " "
+                ).title(),
+                count
+            ])
+
+        writer.writerow([])
+
+    @staticmethod
+    def _write_customer_section(writer, result):
+        customers = result["summary"]["hours_by_customer"]
+
+        total_customer_count = len(customers)
+
+        writer.writerow([
+            f"Hours by Customer (Count: {total_customer_count})"
+        ])
+
+        writer.writerow([
+            "Customer #",
             "Customer",
             "Hours"
         ])
 
-        ResultsExportService._apply_header_style(
-            sheet,
-            1,
-            1,
-            2
-        )
-
         customers = sorted(
-            result["summary"]["hours_by_customer"].items(),
-            key=lambda item: item[0].lower()
+            customers.items(),
+            key=lambda item: str(item[0]).lower()
         )
 
-        for data_row_index, (customer, hours) in enumerate(
-            customers
-        ):
-            sheet.append([
+        customer_number = 1
+
+        for customer, hours in customers:
+            writer.writerow([
+                customer_number,
                 customer,
                 hours
             ])
 
-            row = sheet.max_row
+            customer_number += 1
 
-            ResultsExportService._apply_row_style(
-                sheet,
-                row,
-                1,
-                2,
-                data_row_index
-            )
-
-            sheet.cell(
-                row=row,
-                column=2
-            ).number_format = '#,##0.0'
-
-        sheet.column_dimensions["A"].width = 30
-        sheet.column_dimensions["B"].width = 15
-
-        if sheet.max_row >= 1:
-            sheet.auto_filter.ref = (
-                f"A1:B{sheet.max_row}"
-            )
+        writer.writerow([])
 
     @staticmethod
-    def _build_validation_sheet(sheet, result):
-        headers = [
+    def _write_validation_section(writer, result):
+        invalid_records = result["invalid_records"]
+
+        total_invalid_error_count = sum(
+            len(record.get("errors", []))
+            for record in invalid_records
+        )
+
+        writer.writerow([
+            f"Validation Issues (Count: "
+            f"{total_invalid_error_count})"
+        ])
+
+        writer.writerow([
             "Issue #",
             "Ticket",
             "Field",
             "Invalid Value",
             "Validation Error"
-        ]
-
-        sheet.append(headers)
-
-        ResultsExportService._apply_header_style(
-            sheet,
-            1,
-            1,
-            5
-        )
+        ])
 
         issue_number = 1
-        data_row_index = 0
 
-        for record in result["invalid_records"]:
-            for error in record["errors"]:
-                sheet.append([
+        for record in invalid_records:
+            for error in record.get("errors", []):
+                writer.writerow([
                     issue_number,
                     record["ticket_id"],
                     error["field"],
@@ -506,33 +248,18 @@ class ResultsExportService:
                     error["reason"]
                 ])
 
-                row = sheet.max_row
-
-                ResultsExportService._apply_row_style(
-                    sheet,
-                    row,
-                    1,
-                    5,
-                    data_row_index
-                )
-
                 issue_number += 1
-                data_row_index += 1
-
-        sheet.column_dimensions["A"].width = 12
-        sheet.column_dimensions["B"].width = 18
-        sheet.column_dimensions["C"].width = 20
-        sheet.column_dimensions["D"].width = 25
-        sheet.column_dimensions["E"].width = 50
-
-        if sheet.max_row >= 1:
-            sheet.auto_filter.ref = (
-                f"A1:E{sheet.max_row}"
-            )
 
     @staticmethod
     def copy_export_file(source_path, destination_path):
-        shutil.copyfile(
-            source_path,
-            destination_path
-        )
+        try:
+            shutil.copyfile(
+                source_path,
+                destination_path
+            )
+
+        except OSError as error:
+            raise OSError(
+                f"Unable to save the exported file "
+                f"to '{destination_path}': {error}"
+            ) from error

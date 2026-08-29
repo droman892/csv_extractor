@@ -139,10 +139,9 @@ def validate_ticket_id(ticket_id):
 
     ticket_id = ticket_id.strip()
 
-    if len(ticket_id) != 4:
+    if len(ticket_id) != 9:
         result["error"] = (
-            f"{ticket_id} must be exactly 4 "
-            "characters long"
+            f"{ticket_id} must be exactly 9 characters long"
         )
         return result
 
@@ -302,7 +301,7 @@ def validate_hours(hours):
 
     if clean_hours < 0:
         result["error"] = (
-            f"{hours} cannot be negative"
+            f"{hours} cannot be less than 0"
         )
         return result
 
