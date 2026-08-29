@@ -6,18 +6,18 @@ from ..services.results_export_service import ResultsExportService
 from PySide6.QtCore import Signal, Qt, QTimer
 from PySide6.QtGui import QFontMetrics, QCursor
 from PySide6.QtWidgets import (
-QFileDialog,
-QLabel,
-QPushButton,
-QScrollArea,
-QTableWidget,
-QTableWidgetItem,
-QVBoxLayout,
-QWidget,
-QFrame,
-QHBoxLayout,
-QHeaderView,
-QSizePolicy,
+    QFileDialog,
+    QLabel,
+    QPushButton,
+    QScrollArea,
+    QTableWidget,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+    QFrame,
+    QHBoxLayout,
+    QHeaderView,
+    QSizePolicy,
 )
 
 class ResultsView(QWidget):
@@ -25,12 +25,13 @@ class ResultsView(QWidget):
 
     MAX_DISPLAYED_ROWS = 100
 
-    def __init__(self, result):
+    def __init__(self, result, full_result):
         super().__init__()
 
         self.setStyleSheet("""
         QFrame#metricCard,
-        QFrame#summaryContainer {
+        QFrame#summaryContainer,
+        QFrame#resultsTitleContainer {
             border: 1px solid #d0d0d0;
             border-radius: 8px;
             background-color: #f7f7f7;
@@ -120,8 +121,7 @@ class ResultsView(QWidget):
         """)
 
         self.view_model = ResultsViewModel(result)
-
-        self.export_file = self.view_model.get_export_file()
+        self.full_result = full_result
 
         filename = self.view_model.get_filename()
         summary_data = self.view_model.get_summary()
@@ -132,14 +132,16 @@ class ResultsView(QWidget):
             self.view_model.get_total_customer_count()
         )
 
-        total_invalid_records = (
-            self.view_model.get_total_invalid_record_count()
+        total_invalid_errors = (
+            self.view_model.get_total_invalid_error_count()
         )
 
         self.filename = filename
 
         self.results_title = QLabel()
-        self.results_title.setObjectName("resultsTitle")
+        self.results_title.setObjectName(
+            "resultsTitle"
+        )
         self.results_title.setAlignment(
             Qt.AlignmentFlag.AlignLeft
         )
@@ -150,91 +152,133 @@ class ResultsView(QWidget):
         )
         self.results_title.setToolTip(filename)
 
+        title_container = QFrame()
+        title_container.setObjectName(
+            "resultsTitleContainer"
+        )
+
+        title_layout = QVBoxLayout()
+        title_layout.setContentsMargins(
+            16, 12, 16, 12
+        )
+
+        title_layout.addWidget(
+            self.results_title
+        )
+
+        title_container.setLayout(
+            title_layout
+        )
+
         summary_layout = QHBoxLayout()
         summary_layout.setSpacing(12)
+        summary_layout.setContentsMargins(
+            0, 0, 0, 0
+        )
 
-        summary_layout.addWidget(
+        metric_cards = [
             self.create_metric_card(
                 "TOTAL TICKETS",
                 summary_data["total_tickets_count"]
-            )
-        )
-
-        summary_layout.addWidget(
+            ),
             self.create_metric_card(
                 "VALID TICKETS",
                 summary_data["valid_tickets_count"]
-            )
-        )
-
-        summary_layout.addWidget(
+            ),
             self.create_metric_card(
                 "INVALID TICKETS",
                 summary_data["invalid_tickets_count"]
-            )
-        )
-
-        summary_layout.addWidget(
+            ),
             self.create_metric_card(
                 "TOTAL HOURS",
                 summary_data["total_hours"]
             )
-        )
+        ]
+
+        for card in metric_cards:
+            summary_layout.addWidget(card)
 
         summary_widget = QWidget()
-        summary_widget.setLayout(summary_layout)
-
-        tickets_by_status_widget = self.create_summary_table(
-            "Tickets by Status",
-            summary_data["tickets_by_status"],
-            "Status",
-            "Count",
-            "No status data available."
+        summary_widget.setLayout(
+            summary_layout
         )
 
-        tickets_by_priority_widget = self.create_summary_table(
-            "Tickets by Priority",
-            summary_data["tickets_by_priority"],
-            "Priority",
-            "Count",
-            "No priority data available."
+        tickets_by_status_widget = (
+            self.create_summary_table(
+                "Tickets by Status",
+                summary_data["tickets_by_status"],
+                "Status",
+                "Count",
+                "No status data available."
+            )
+        )
+
+        tickets_by_priority_widget = (
+            self.create_summary_table(
+                "Tickets by Priority",
+                summary_data["tickets_by_priority"],
+                "Priority",
+                "Count",
+                "No priority data available."
+            )
         )
 
         summary_tables_layout = QHBoxLayout()
         summary_tables_layout.setSpacing(12)
+        summary_tables_layout.setContentsMargins(
+            0, 0, 0, 0
+        )
+
         summary_tables_layout.addWidget(
             tickets_by_status_widget
         )
+
         summary_tables_layout.addWidget(
             tickets_by_priority_widget
         )
 
-        hours_by_customer_widget = self.create_customer_table(
-            customer_rows,
-            total_customers
+        hours_by_customer_widget = (
+            self.create_customer_table(
+                customer_rows,
+                total_customers
+            )
         )
 
-        validation_widget = self.create_validation_widget(
-            invalid_rows,
-            total_invalid_records
+        validation_widget = (
+            self.create_validation_widget(
+                invalid_rows,
+                total_invalid_errors
+            )
         )
 
-        export_button = QPushButton("Export Results")
+        export_button = QPushButton(
+            "Export Results"
+        )
+
         export_button.setFixedWidth(190)
         export_button.setMinimumHeight(40)
         export_button.setCursor(
-            QCursor(Qt.CursorShape.PointingHandCursor)
+            QCursor(
+                Qt.CursorShape.PointingHandCursor
+            )
         )
+
         export_button.clicked.connect(
             self.export_results
         )
 
-        upload_button = QPushButton("Upload Another File")
+        upload_button = QPushButton(
+            "Upload Another File"
+        )
+
         upload_button.setFixedWidth(190)
         upload_button.setMinimumHeight(40)
         upload_button.setCursor(
-            QCursor(Qt.CursorShape.PointingHandCursor)
+            QCursor(
+                Qt.CursorShape.PointingHandCursor
+            )
         )
+
         upload_button.clicked.connect(
             self.upload_another_file_requested.emit
         )
@@ -247,33 +291,62 @@ class ResultsView(QWidget):
         button_layout.addStretch()
 
         content_layout = QVBoxLayout()
-        content_layout.setContentsMargins(24, 24, 24, 24)
+        content_layout.setContentsMargins(
+            24, 24, 24, 24
+        )
         content_layout.setSpacing(20)
 
-        content_layout.addWidget(self.results_title)
-        content_layout.addWidget(summary_widget)
-        content_layout.addLayout(summary_tables_layout)
-        content_layout.addWidget(hours_by_customer_widget)
-        content_layout.addWidget(validation_widget)
-        content_layout.addLayout(button_layout)
+        content_layout.addWidget(
+            title_container
+        )
+
+        content_layout.addWidget(
+            summary_widget
+        )
+
+        content_layout.addLayout(
+            summary_tables_layout
+        )
+
+        content_layout.addWidget(
+            hours_by_customer_widget
+        )
+
+        content_layout.addWidget(
+            validation_widget
+        )
+
+        content_layout.addLayout(
+            button_layout
+        )
 
         self.content_widget = QWidget()
         self.content_widget.setSizePolicy(
             QSizePolicy.Policy.Ignored,
             QSizePolicy.Policy.Preferred
         )
-        self.content_widget.setLayout(content_layout)
+        self.content_widget.setLayout(
+            content_layout
+        )
 
         self.scroll_area = QScrollArea()
-        self.scroll_area.setWidget(self.content_widget)
-        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setWidget(
+            self.content_widget
+        )
+        self.scroll_area.setWidgetResizable(
+            True
+        )
         self.scroll_area.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
 
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(8, 8, 8, 8)
-        main_layout.addWidget(self.scroll_area)
+        main_layout.setContentsMargins(
+            8, 8, 8, 8
+        )
+        main_layout.addWidget(
+            self.scroll_area
+        )
 
         self.setLayout(main_layout)
 
@@ -287,15 +360,32 @@ class ResultsView(QWidget):
         card.setObjectName("metricCard")
         card.setMinimumHeight(120)
 
+        card.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Fixed
+        )
+
         layout = QVBoxLayout()
 
         title = QLabel(label)
         title.setObjectName("metricTitle")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
 
-        value_label = QLabel(f"{value:,}")
-        value_label.setObjectName("metricValue")
-        value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        value_label = QLabel(
+            f"{value:,.1f}"
+            if isinstance(value, float)
+            else f"{value:,}"
+        )
+
+        value_label.setObjectName(
+            "metricValue"
+        )
+
+        value_label.setAlignment(
+            Qt.AlignmentFlag.AlignCenter
+        )
 
         layout.addWidget(title)
         layout.addWidget(value_label)
@@ -313,21 +403,31 @@ class ResultsView(QWidget):
         empty_message
     ):
         frame = QFrame()
-        frame.setObjectName("summaryContainer")
+        frame.setObjectName(
+            "summaryContainer"
+        )
 
         layout = QVBoxLayout()
 
         title_label = QLabel(title)
-        title_label.setObjectName("summaryTitle")
+        title_label.setObjectName(
+            "summaryTitle"
+        )
 
         layout.addWidget(title_label)
 
         if not data:
-            empty_label = QLabel(empty_message)
+            empty_label = QLabel(
+                empty_message
+            )
+
             empty_label.setAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
-            layout.addWidget(empty_label)
+
+            layout.addWidget(
+                empty_label
+            )
 
             frame.setLayout(layout)
 
@@ -335,10 +435,15 @@ class ResultsView(QWidget):
 
         table = QTableWidget()
         table.setColumnCount(2)
-        table.setHorizontalHeaderLabels(
-            [category_header, value_header]
+        table.setHorizontalHeaderLabels([
+            category_header,
+            value_header
+        ])
+
+        table.setRowCount(
+            len(data)
         )
-        table.setRowCount(len(data))
+
         table.setMinimumHeight(120)
 
         table.setSelectionMode(
@@ -349,17 +454,22 @@ class ResultsView(QWidget):
             Qt.FocusPolicy.NoFocus
         )
 
-        for row_number, (category, count) in enumerate(
-            data.items()
-        ):
-            display_category = category.replace(
-                "_",
-                " "
-            ).title()
+        for row_number, (
+            category,
+            count
+        ) in enumerate(data.items()):
+
+            display_category = (
+                category.replace(
+                    "_",
+                    " "
+                ).title()
+            )
 
             category_item = QTableWidgetItem(
                 display_category
             )
+
             category_item.setTextAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
@@ -367,6 +477,7 @@ class ResultsView(QWidget):
             count_item = QTableWidgetItem(
                 f"{count:,}"
             )
+
             count_item.setTextAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
@@ -376,6 +487,7 @@ class ResultsView(QWidget):
                 0,
                 category_item
             )
+
             table.setItem(
                 row_number,
                 1,
@@ -402,13 +514,17 @@ class ResultsView(QWidget):
             QHeaderView.Fixed
         )
 
-        table.verticalHeader().setDefaultSectionSize(30)
+        table.verticalHeader().setDefaultSectionSize(
+            30
+        )
 
         table.verticalHeader().setDefaultAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
 
-        table.verticalHeader().setMinimumWidth(40)
+        table.verticalHeader().setMinimumWidth(
+            40
+        )
 
         layout.addWidget(table)
 
@@ -422,14 +538,21 @@ class ResultsView(QWidget):
         total_customers
     ):
         frame = QFrame()
-        frame.setObjectName("summaryContainer")
+        frame.setObjectName(
+            "summaryContainer"
+        )
 
         layout = QVBoxLayout()
 
         title_layout = QHBoxLayout()
 
-        title = QLabel("Hours by Customer")
-        title.setObjectName("summaryTitle")
+        title = QLabel(
+            "Hours by Customer"
+        )
+
+        title.setObjectName(
+            "summaryTitle"
+        )
 
         displayed_customers = min(
             len(customer_rows),
@@ -451,10 +574,14 @@ class ResultsView(QWidget):
             empty_label = QLabel(
                 "No customer workload data available."
             )
+
             empty_label.setAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
-            layout.addWidget(empty_label)
+
+            layout.addWidget(
+                empty_label
+            )
 
             frame.setLayout(layout)
 
@@ -466,10 +593,15 @@ class ResultsView(QWidget):
 
         table = QTableWidget()
         table.setColumnCount(2)
-        table.setHorizontalHeaderLabels(
-            ["Customer", "Hours"]
+        table.setHorizontalHeaderLabels([
+            "Customer",
+            "Hours"
+        ])
+
+        table.setRowCount(
+            len(displayed_rows)
         )
-        table.setRowCount(len(displayed_rows))
+
         table.setMinimumHeight(120)
 
         table.setSelectionMode(
@@ -480,10 +612,15 @@ class ResultsView(QWidget):
             Qt.FocusPolicy.NoFocus
         )
 
-        for row_number, (customer, hours) in enumerate(
-            displayed_rows
-        ):
-            customer_item = QTableWidgetItem(customer)
+        for row_number, (
+            customer,
+            hours
+        ) in enumerate(displayed_rows):
+
+            customer_item = QTableWidgetItem(
+                customer
+            )
+
             customer_item.setTextAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
@@ -491,6 +628,7 @@ class ResultsView(QWidget):
             hours_item = QTableWidgetItem(
                 f"{hours:,.1f}"
             )
+
             hours_item.setTextAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
@@ -500,6 +638,7 @@ class ResultsView(QWidget):
                 0,
                 customer_item
             )
+
             table.setItem(
                 row_number,
                 1,
@@ -526,13 +665,17 @@ class ResultsView(QWidget):
             QHeaderView.Fixed
         )
 
-        table.verticalHeader().setDefaultSectionSize(30)
+        table.verticalHeader().setDefaultSectionSize(
+            30
+        )
 
         table.verticalHeader().setDefaultAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
 
-        table.verticalHeader().setMinimumWidth(40)
+        table.verticalHeader().setMinimumWidth(
+            40
+        )
 
         layout.addWidget(table)
 
@@ -543,17 +686,24 @@ class ResultsView(QWidget):
     def create_validation_widget(
         self,
         invalid_rows,
-        total_invalid_records
+        total_invalid_errors
     ):
         frame = QFrame()
-        frame.setObjectName("summaryContainer")
+        frame.setObjectName(
+            "summaryContainer"
+        )
 
         layout = QVBoxLayout()
 
         title_layout = QHBoxLayout()
 
-        title = QLabel("Validation Issues")
-        title.setObjectName("summaryTitle")
+        title = QLabel(
+            "Validation Issues"
+        )
+
+        title.setObjectName(
+            "summaryTitle"
+        )
 
         displayed_errors = min(
             len(invalid_rows),
@@ -562,7 +712,7 @@ class ResultsView(QWidget):
 
         count_label = QLabel(
             f"— Showing {displayed_errors:,} "
-            f"errors out of {total_invalid_records:,}"
+            f"errors out of {total_invalid_errors:,}"
         )
 
         title_layout.addWidget(title)
@@ -575,6 +725,7 @@ class ResultsView(QWidget):
             message = QLabel(
                 "All records passed validation."
             )
+
             message.setAlignment(
                 Qt.AlignmentFlag.AlignCenter
             )
@@ -591,15 +742,18 @@ class ResultsView(QWidget):
 
         table = QTableWidget()
         table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(
-            [
-                "Ticket",
-                "Field",
-                "Invalid Value",
-                "Validation Error"
-            ]
+
+        table.setHorizontalHeaderLabels([
+            "Ticket",
+            "Field",
+            "Invalid Value",
+            "Validation Error"
+        ])
+
+        table.setRowCount(
+            len(displayed_rows)
         )
-        table.setRowCount(len(displayed_rows))
+
         table.setMinimumHeight(120)
 
         table.setSelectionMode(
@@ -645,8 +799,12 @@ class ResultsView(QWidget):
                 )
             )
 
-        for row in range(table.rowCount()):
-            for column in range(table.columnCount()):
+        for row in range(
+            table.rowCount()
+        ):
+            for column in range(
+                table.columnCount()
+            ):
                 table.item(
                     row,
                     column
@@ -682,13 +840,17 @@ class ResultsView(QWidget):
             QHeaderView.Stretch
         )
 
-        table.verticalHeader().setDefaultSectionSize(30)
+        table.verticalHeader().setDefaultSectionSize(
+            30
+        )
 
         table.verticalHeader().setDefaultAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
 
-        table.verticalHeader().setMinimumWidth(40)
+        table.verticalHeader().setMinimumWidth(
+            40
+        )
 
         layout.addWidget(table)
 
@@ -702,23 +864,34 @@ class ResultsView(QWidget):
         destination_path, _ = QFileDialog.getSaveFileName(
             self,
             "Export Results",
-            f"{filename.rsplit('.', 1)[0]}_results.csv",
-            "CSV Files (*.csv)",
+            f"{Path(filename).stem}_results.xlsx",
+            "Excel Files (*.xlsx)",
         )
 
         if not destination_path:
             return
 
-        ResultsExportService.copy_export_file(
-            self.export_file,
-            destination_path
-        )
+        try:
+            ResultsExportService.export_results(
+                self.full_result,
+                destination_path
+            )
+
+        except Exception as error:
+            self.show_export_error(
+                str(error)
+            )
 
     def update_filename_display(self):
-        if not hasattr(self, "results_title"):
+        if not hasattr(
+            self,
+            "results_title"
+        ):
             return
 
-        available_width = self.results_title.width()
+        available_width = (
+            self.results_title.width()
+        )
 
         if available_width <= 0:
             return
@@ -727,19 +900,28 @@ class ResultsView(QWidget):
             self.results_title.font()
         )
 
-        display_filename = font_metrics.elidedText(
-            f"Results for {self.filename}",
-            Qt.TextElideMode.ElideMiddle,
-            available_width
+        display_filename = (
+            font_metrics.elidedText(
+                f"Results for {self.filename}",
+                Qt.TextElideMode.ElideMiddle,
+                available_width
+            )
         )
 
-        self.results_title.setText(display_filename)
+        self.results_title.setText(
+            display_filename
+        )
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
 
-        if hasattr(self, "scroll_area"):
-            viewport_width = self.scroll_area.viewport().width()
+        if hasattr(
+            self,
+            "scroll_area"
+        ):
+            viewport_width = (
+                self.scroll_area.viewport().width()
+            )
 
             self.content_widget.setMinimumWidth(
                 viewport_width

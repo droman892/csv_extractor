@@ -1,5 +1,5 @@
 ticket_id,status,priority,customer,hours
-0001,open,low,Acme Corp,0
+0001,open,low,Acme Corp,3
 0002,closed,medium,Globex,0.5
 0003,in_progress,high,Initech,10
 0004,open,low,Acme Corp,39.5

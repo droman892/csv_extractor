@@ -1,3 +1,5 @@
+import winsound
+
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QCursor, QFontMetrics
 from PySide6.QtWidgets import (
@@ -8,6 +10,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QGridLayout,
     QFrame,
+    QApplication
 )
 
 from ..services.test_file_service import TestFileService
@@ -253,6 +256,12 @@ class UploadView(QWidget):
 
         self.show_error(
             f"{prefix}{elided_filename}{suffix}{message}"
+        )
+
+        QApplication.processEvents()
+
+        winsound.MessageBeep(
+            winsound.MB_ICONEXCLAMATION
         )
 
     def show_error(self, message):
