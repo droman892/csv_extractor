@@ -1,0 +1,2001 @@
+ticket_id,customer,priority,status,hours
+000000000,Cyberdyne Systems,high,closed,15.5
+000000001,Sterling Cooper,high,in_progress,34.5
+000000002,,low,open,5.5
+000000003,Cyberdyne Systems,high,open,34.5
+000000004,Hooli Media,high,closed,0.0
+000000005,Monarch Industries,high,closed,21.5
+000000006,Sterling Cooper Media,medium,open,5.5
+000000007,Pied Piper Software,medium,in_progress,16.5
+000000008,Tyrell Biotech,high,open,24.0
+000000009,Oceanic Travel,high,in_progress,41
+000000010,Tyrell Corporation,high,open,18.5
+000000011,Wayne Medical,low,closed,17.5
+000000012,Roxxon Pharmaceuticals,low,closed,22.5
+000000013,Umbrella Pharmaceuticals,high,in_progress,4.5
+000000014,Oceanic Logistics,high,in_progress,15.5
+000000015,,medium,in_progress,35.5
+000000016,Gringotts,low,open,20.0
+000000017,Duff Brewing,low,in_progress,20.0
+000000018,Weyland Aerospace,medium,in_progress,29.0
+000000019,Queen Consolidated,low,in_progress,abc
+000000020,Umbrella Medical,high,closed,23.0
+000000021,Queen Consolidated,high,closed,5.5
+000000022,Gekko & Co,low,in_progress,10.0
+000000023,Initech Digital,high,open,24.5
+000000024,Soylent Nutrition,high,closed,35.0
+000000025,Initech,high,in_progress,7.0
+000000026,Stark Industries International,medium,in_progress,21.5
+ABC1,Wayne Aerospace,urgent,pending,-2
+000000028,Initech Consulting,high,open,32.0
+000000029,Tyrell Research,high,in_progress,38.5
+123,Stark Defense,low,in_progress,33.5
+000000031,Gekko & Co,medium,closed,15.0
+ABC1,Acme Global,low,open,31.0
+000000033,Prestige Worldwide Entertainment,high,open,1.25
+000000034,LexCorp Technologies,high,in_progress,12.5
+000000035,Monarch Research,high,in_progress,23.5
+000000036,Pied Piper Networks,medium,open,15.5
+000000037,Weyland-Yutani Logistics,low,in_progress,35.0
+000000038,Pied Piper Technologies,low,open,40.0
+000000039,Monarch Solutions,low,closed,41
+000000040,Oscorp Medical,low,in_progress,8.0
+000000041,Globex Corporation International,high,closed,15.5
+000000042,Tyrell Robotics,low,open,6.0
+000000043,Sterling Cooper Advertising,medium,closed,29.5
+000000044,Soylent Corp,high,in_progress,6.0
+000000045,,low,open,12.0
+000000046,Queen Consolidated,medium,open,17.5
+000000047,LexCorp,medium,in_progress,6.0
+000000048,,low,open,15.0
+000000049,Monarch Technology,low,closed,3.5
+000000050,Acme,urgent,closed,29.0
+000000051,Monarch Global,high,in_progress,31.0
+ABC1,Oceanic Travel,urgent,pending,-2
+000000053,Prestige Worldwide Media,low,open,37.0
+000000054,Queen Consolidated Technologies,low,open,32.5
+ABC1,Vandelay Imports,urgent,pending,-2
+000000056,Massive Dynamic Security,low,in_progress,15.5
+000000057,Oceanic Airlines,high,open,26.5
+000000058,Tyrell Corporation International,high,closed,16.5
+000000059,Prestige Worldwide Media,low,closed,25.0
+12345,Tyrell Research,medium,closed,4.5
+000000061,Tyrell Corporation International,low,open,34.0
+000000062,Initech Consulting,low,closed,4.0
+000000063,Umbrella Research,medium,open,28.0
+000000064,Massive Dynamic Labs,high,in_progress,33.5
+000000065,,medium,in_progress,6.5
+000000066,Pied Piper,high,in_progress,9.5
+000000067,Nakatomi Holdings,high,closed,13.0
+000000068,Initech Consulting,high,closed,16.0
+000000069,Soylent Corp,low,in_progress,27.0
+000000070,Tyrell Corporation,low,closed,8.0
+000000071,Initech Consulting,low,in_progress,28.0
+000000072,Umbrella Medical,high,open,7.0
+000000073,Lexington Labs,high,open,41
+000000074,Oceanic Airlines,medium,closed,2.5
+000000075,Nakatomi Holdings,high,open,6.5
+000000076,Massive Dynamic International,medium,in_progress,9.5
+000000077,Stark Logistics,low,open,26.0
+000000078,Black Mesa Technologies,urgent,in_progress,15.5
+000000079,,medium,open,30.0
+000000080,,medium,closed,14.5
+123,Oscorp Industries,medium,closed,17.5
+000000082,Dunder Mifflin Consulting,medium,in_progress,34.0
+000000083,Wonka Industries,low,closed,11.0
+000000084,Initech Consulting,low,open,38.0
+000000085,Prestige Worldwide Media,medium,in_progress,32.5
+ABC1,Initech Global,urgent,pending,-2
+000000087,Gekko Capital,high,in_progress,12.5
+000000088,Monarch Solutions,high,closed,39.5
+000000089,Roxxon,high,closed,32.0
+000000090,Tyrell Robotics,medium,closed,18.5
+000000091,Oscorp Industries,medium,in_progress,24.0
+000000092,Acme Logistics,high,in_progress,19.0
+000000093,Acme,medium,closed,13.0
+000000094,Umbrella Global,high,in_progress,20.5
+000000095,Wonka Foods International,high,open,32.5
+000000096,Oceanic Logistics,high,open,18.0
+000000097,Black Mesa Technologies,low,open,19.5
+000000098,Aperture Systems,low,open,2.5
+000000099,Prestige Worldwide Entertainment,high,open,29.0
+000000100,Initech Global,low,in_progress,24.5
+000000101,Kord Enterprises,low,in_progress,0.0
+000000102,Pied Piper,medium,open,11.0
+000000103,Pied Piper Networks,medium,open,35.5
+000000104,Roxxon,medium,open,29.5
+000000105,Massive Dynamic International,high,closed,28.0
+000000106,Vehement Technologies,medium,in_progress,28.5
+000000107,Prestige Worldwide Entertainment,medium,closed,15.5
+000000108,Wayne Construction,high,closed,40.0
+000000109,Cyberdyne Research,low,in_progress,18.0
+000000110,Black Mesa Technologies,medium,in_progress,5.0
+ABC1,Wayne Medical,urgent,pending,-2
+000000112,Acme Technologies,medium,closed,34.5
+000000113,Prestige Worldwide,low,closed,24.5
+000000114,Cyberdyne Global,high,open,36.5
+000000115,Globex,medium,closed,24.5
+000000116,Globex International,high,in_progress,34.5
+000000117,Pied Piper Technologies,medium,open,17.0
+000000118,Wonka Industries,medium,closed,25.5
+000000119,Soylent Nutrition,low,in_progress,34.0
+12345,Lexington Technologies,high,in_progress,1.5
+000000121,Massive Dynamic Analytics,low,pending,16.5
+000000122,Oceanic Shipping,medium,closed,24.0
+000000123,Globex International,medium,open,30.0
+ABC1,LexCorp Technologies,urgent,pending,-2
+ABC1,Oceanic Airlines,low,open,12.5
+000000126,Prestige Worldwide Entertainment,high,open,36.0
+000000127,Soylent Nutrition,high,closed,23.5
+000000128,Wonka Chocolate,low,closed,-2
+000000129,Initech Global,high,closed,25.0
+000000130,Aperture Systems,low,in_progress,40.0
+000000131,Massive Dynamic Labs,high,in_progress,7.5
+000000132,Tyrell Corporation International,low,closed,34.0
+000000133,Umbrella Research,low,in_progress,21.5
+000000134,Globex International,urgent,open,27.5
+000000135,Tyrell Biotech,high,open,27.5
+000000136,Gekko Capital,high,closed,1.25
+000000137,Umbrella Pharmaceuticals,medium,open,5.5
+000000138,Vandelay Textiles,low,closed,36.0
+000000139,Queen Consolidated Energy,medium,open,31.5
+000000140,Initech Systems,medium,open,22.5
+000000141,Nakatomi Security,medium,in_progress,17.5
+000000142,Pied Piper Networks,low,open,15.0
+000000143,Aperture Science,high,open,30.0
+000000144,Aperture Science,medium,open,5.5
+000000145,Massive Dynamic Security,high,open,19.5
+000000146,Umbrella Research,medium,in_progress,33.5
+000000147,Grayson Financial,medium,closed,29.0
+000000148,Queen Consolidated Labs,low,open,12.0
+000000149,Stark Industries International,high,open,12.0
+000000150,Monarch Technology,medium,in_progress,37.5
+000000151,Roxxon Industries,high,closed,6.0
+000000152,Oceanic Travel,low,closed,11.0
+000000153,Wayne Enterprises International,low,closed,2.5
+000000154,Hooli Cloud,medium,in_progress,8.0
+000000155,Aperture Science,low,open,36.5
+000000156,Duff Beverages,medium,closed,11.5
+000000157,Queen Consolidated Labs,medium,open,4.0
+000000158,Oscorp,high,in_progress,3.0
+12345,Tyrell Corporation International,medium,open,15.5
+000000160,Roxxon Energy,high,closed,28.5
+000000161,Tyrell Research,high,closed,19.5
+000000162,Prestige Worldwide,high,in_progress,6.0
+000000163,Nakatomi Holdings,high,open,16.5
+000000164,Monarch Industries,low,open,35.0
+000000165,Acme,medium,pending,38.0
+000000166,Wayne Medical,medium,in_progress,18.0
+000000167,Oceanic Shipping,low,in_progress,14.5
+000000168,Aperture Systems,medium,open,34.5
+000000169,Lexington Labs,medium,open,4.5
+000000170,Soylent Foods,urgent,in_progress,36.0
+000000171,Soylent Nutrition,high,closed,25.5
+000000172,Nakatomi Development,high,closed,28.0
+000000173,Oceanic Airlines,medium,in_progress,abc
+123,Queen Industries,high,in_progress,37.5
+000000175,Acme Logistics,medium,in_progress,28.0
+000000176,Initech Systems,high,closed,31.0
+000000177,Gringotts Banking,medium,closed,21.0
+000000178,Sterling Cooper,low,closed,26.0
+000000179,Hooli Communications,high,closed,35.0
+12345,Weyland-Yutani,medium,closed,20.5
+000000181,Acme,high,in_progress,29.5
+000000182,Wonka Foods,high,closed,39.5
+000000183,Wonka Foods International,low,open,17.0
+000000184,Hooli Communications,medium,in_progress,31.0
+000000185,LexCorp Financial,high,open,-2
+000000186,Nakatomi Corporation,low,open,29.5
+000000187,Hooli Ventures,medium,in_progress,18.5
+000000188,Stark Manufacturing,medium,closed,30.0
+000000189,Hooli Cloud,low,closed,12.0
+000000190,Dunder Mifflin Consulting,high,open,4.0
+000000191,Acme Technologies,medium,in_progress,17.0
+000000192,Wonka Confectionery,high,closed,37.5
+000000193,Aperture Science,low,closed,34.0
+000000194,Black Mesa Technologies,high,in_progress,24.0
+000000195,Monarch Financial,low,in_progress,15.0
+000000196,Wayne Medical,medium,open,20.0
+000000197,Queen Consolidated Energy,medium,in_progress,9.5
+000000198,Vandelay Industries,low,in_progress,37.5
+000000199,Dunder Mifflin,medium,open,33.5
+000000200,Umbrella,high,open,26.0
+000000201,Hooli Ventures,low,closed,16.5
+000000202,Hooli Software,high,open,21.0
+000000203,Wayne Enterprises International,medium,closed,40.0
+000000204,Oscorp Medical,high,open,39.5
+000000205,Hooli Communications,low,pending,5.5
+000000206,Dunder Mifflin,medium,open,19.0
+000000207,Tyrell Corporation,medium,open,18.5
+000000208,Stark Energy,low,open,33.5
+000000209,Initech Systems,low,open,5.0
+000000210,Queen Consolidated Energy,high,in_progress,15.0
+000000211,Cyberdyne Global,low,open,29.5
+000000212,Tyrell Biotech,medium,in_progress,0.5
+000000213,Soylent Nutrition,medium,in_progress,34.5
+ABC1,Wonka Foods International,urgent,pending,-2
+000000215,Queen Consolidated Labs,medium,closed,12.5
+000000216,Monarch Technology,low,open,24.0
+000000217,Initech Global,medium,in_progress,18.5
+ABC1,Hooli Software,urgent,pending,-2
+000000219,Massive Dynamic,high,in_progress,31.5
+000000220,Hooli Communications,low,in_progress,22.5
+000000221,Wonka Foods,high,closed,8.5
+000000222,Oceanic Airlines,medium,closed,2.0
+000000223,Stark Technologies,low,closed,20.5
+000000224,Acme Logistics,low,open,34.5
+000000225,Roxxon Pharmaceuticals,high,in_progress,17.0
+000000226,Acme Manufacturing,medium,closed,21.5
+000000227,Soylent Nutrition,low,open,14.0
+000000228,Hooli Software,high,closed,5.5
+000000229,Umbrella,medium,in_progress,7.5
+000000230,Initech Consulting,high,closed,23.5
+000000231,Wayne Medical,medium,open,abc
+000000232,Pied Piper Technologies,high,open,29.5
+000000233,Massive Dynamic Labs,high,closed,7.0
+ABC1,Vandelay Industries,medium,closed,7.0
+000000235,Wayne Financial,medium,closed,23.5
+000000236,LexCorp Technologies,medium,in_progress,9.5
+000000237,Dunder Mifflin,medium,in_progress,26.0
+000000238,Cyberdyne Robotics,low,in_progress,23.5
+000000239,Wonka Foods International,low,closed,6.0
+000000240,Umbrella Research,high,in_progress,22.5
+ABC1,Wayne Construction,low,open,29.0
+000000242,Wayne Enterprises,low,closed,15.5
+000000243,Tyrell Corporation International,low,open,35.0
+000000244,Sterling Cooper Media,low,closed,9.0
+000000245,Acme,medium,open,8.0
+000000246,Acme Logistics,low,in_progress,1.5
+ABC1,Pied Piper Software,low,in_progress,20.5
+000000248,Umbrella Health,high,closed,33.5
+000000249,Duff Brewing,medium,closed,-2
+000000250,Pied Piper Technologies,high,open,33.0
+000000251,Wonka Industries,low,closed,25.5
+000000252,Pied Piper,medium,in_progress,28.0
+ABC1,Aperture Labs,medium,in_progress,9.0
+000000254,Cyberdyne Global,high,in_progress,20.5
+000000255,Queen Consolidated Technologies,medium,closed,32.0
+000000256,Dunder Mifflin,high,open,35.0
+000000257,Sterling Cooper Media,medium,closed,14.5
+000000258,Oceanic Shipping,medium,closed,6.0
+000000259,Prestige Worldwide Media,high,closed,23.5
+000000260,Prestige Worldwide Entertainment,low,open,5.0
+000000261,,high,in_progress,23.5
+000000262,Massive Dynamic International,high,closed,7.5
+000000263,Initech Digital,high,open,18.0
+000000264,Sterling Cooper Advertising,low,in_progress,32.0
+000000265,Monarch Technology,low,open,22.0
+000000266,Umbrella Research,low,closed,36.5
+000000267,Umbrella Medical,high,in_progress,39.0
+000000268,Monarch Global,low,in_progress,17.0
+000000269,Stark Manufacturing,urgent,closed,21.5
+ABC1,Grayson Industries,high,in_progress,25.5
+000000271,Wonka Industries,low,in_progress,33.5
+000000272,Globex International,medium,closed,10.0
+000000273,Oscorp Research,high,in_progress,5.0
+000000274,Hooli Ventures,low,in_progress,3.0
+000000275,Stark Manufacturing,medium,in_progress,27.0
+000000276,Wonka Foods International,medium,closed,13.5
+000000277,Wonka Chocolate,medium,closed,7.0
+000000278,Oscorp Medical,high,in_progress,19.5
+000000279,,high,open,0.0
+000000280,Dunder Mifflin Paper,low,closed,18.5
+000000281,Globex,medium,in_progress,27.5
+000000282,Queen Consolidated Energy,high,in_progress,abc
+123,Oceanic Airlines,medium,open,29.0
+000000284,Globex Corporation International,medium,in_progress,26.5
+000000285,Massive Dynamic Security,low,closed,10.5
+000000286,Tyrell Biotech,high,closed,5.5
+000000287,Pied Piper,low,closed,37.5
+000000288,Aperture Labs,medium,closed,21.5
+000000289,Oceanic Logistics,low,in_progress,7.0
+000000290,Oscorp Industries,medium,closed,9.0
+000000291,Kord Industries,medium,open,11.0
+000000292,LexCorp,low,in_progress,31.5
+000000293,Tyrell Corporation International,high,closed,36.0
+000000294,Monarch Financial,high,closed,9.5
+000000295,Gringotts Banking,medium,in_progress,19.0
+000000296,Gringotts,medium,in_progress,4.5
+000000297,Vandelay Textiles,low,open,23.5
+000000298,LexCorp,high,open,39.0
+000000299,Kord Financial,medium,in_progress,35.0
+000000300,Oceanic Airlines,medium,in_progress,12.0
+000000301,Prestige Worldwide Entertainment,high,open,3.5
+000000302,Nakatomi Security,high,open,32.0
+000000303,Oceanic Airlines,low,in_progress,28.0
+000000304,Roxxon Industries,high,in_progress,10.0
+000000305,Wonka Confectionery,medium,closed,21.5
+000000306,Soylent Corp,high,in_progress,21.0
+000000307,Vehement Capital,urgent,in_progress,24.5
+000000308,Lexington Labs,medium,open,37.0
+000000309,Dunder Mifflin Logistics,medium,in_progress,25.0
+ABC1,Black Mesa,urgent,pending,-2
+000000311,Umbrella Health,high,in_progress,33.5
+000000312,Initech Digital,urgent,closed,1.0
+000000313,Dunder Mifflin Paper,medium,closed,12.0
+000000314,Queen Consolidated,low,open,18.5
+000000315,Dunder Mifflin,high,in_progress,33.5
+000000316,Weyland-Yutani Logistics,high,pending,38.0
+ABC1,Initech Systems,urgent,pending,-2
+000000318,Oceanic Shipping,medium,in_progress,15.0
+000000319,Wonka Confectionery,high,closed,14.5
+000000320,Gringotts Financial,medium,open,23.5
+000000321,Globex Corporation International,medium,closed,18.0
+000000322,Nakatomi Development,high,closed,10.0
+000000323,Queen Consolidated,medium,open,30.5
+000000324,Hooli Cloud,low,in_progress,33.0
+000000325,Wonka Confectionery,low,open,17.0
+000000326,Sterling Cooper Partners,low,closed,5.5
+000000327,Pied Piper Technologies,medium,closed,1.5
+000000328,Hooli Software,high,closed,15.0
+000000329,Aperture Labs,medium,open,1.5
+000000330,Dunder Mifflin,high,in_progress,21.0
+000000331,Queen Consolidated,low,closed,30.0
+000000332,Queen Consolidated,high,closed,28.5
+000000333,Aperture Labs,low,closed,13.5
+000000334,Grayson Financial,high,in_progress,33.5
+000000335,Hooli Communications,low,closed,7.5
+,Globex International,high,in_progress,29.0
+000000337,Weyland Aerospace,high,in_progress,1.0
+000000338,Initech Global,low,in_progress,9.0
+000000339,Acme,high,closed,15.0
+000000340,Vandelay Imports,high,in_progress,5.0
+000000341,Gekko Investments,low,in_progress,34.5
+000000342,Vehement Technologies,high,open,24.5
+000000343,Tyrell Corporation,high,closed,23.5
+000000344,Stark Industries,medium,open,22.0
+000000345,Sterling Cooper,high,in_progress,21.0
+ABC1,Sterling Cooper Advertising,urgent,pending,-2
+000000347,Duff Beverages,high,open,8.5
+ABC1,Tyrell Biotech,low,closed,12.5
+000000349,Prestige Worldwide Media,medium,in_progress,25.0
+000000350,Kord Industries International,medium,closed,2.0
+000000351,Wonka Foods,medium,closed,3.0
+000000352,Aperture Robotics,medium,open,23.5
+000000353,Monarch Research,high,closed,24.5
+000000354,Vandelay Imports,medium,in_progress,31.5
+000000355,Pied Piper Networks,medium,open,27.0
+,Initech Systems,high,closed,20.5
+000000357,Oceanic Travel,medium,closed,38.5
+000000358,Tyrell Industries,high,closed,22.0
+000000359,Sterling Cooper Advertising,high,closed,17.5
+000000360,Gringotts,low,in_progress,25.5
+000000361,Monarch Industries,low,open,38.5
+000000362,Cyberdyne Research,low,open,4.0
+000000363,Roxxon Pharmaceuticals,medium,closed,36.0
+000000364,Hooli Ventures,urgent,closed,23.5
+000000365,LexCorp,high,open,33.5
+000000366,Prestige Worldwide Media,high,closed,15.5
+000000367,Cyberdyne Systems,high,open,31.5
+000000368,Massive Dynamic International,low,closed,16.5
+000000369,Dunder Mifflin Paper,high,closed,31.0
+000000370,Wayne Financial,low,closed,11.0
+000000371,Wonka Foods International,low,in_progress,20.0
+000000372,Duff Brewing,high,in_progress,18.5
+000000373,Monarch Industries,high,in_progress,11.0
+000000374,Dunder Mifflin Consulting,low,open,12.5
+000000375,Stark Logistics,medium,open,23.0
+000000376,Umbrella Research,medium,in_progress,8.0
+000000377,Weyland-Yutani,low,closed,25.0
+000000378,Duff Beverages,high,closed,26.0
+000000379,Oscorp,low,closed,4.5
+000000380,Pied Piper Networks,medium,open,35.0
+000000381,Initech Systems,low,closed,32.0
+000000382,Gringotts,low,in_progress,9.5
+000000383,Massive Dynamics,medium,in_progress,14.0
+000000384,Pied Piper Networks,medium,open,16.0
+000000385,Hooli Cloud,urgent,open,40.0
+000000386,Nakatomi Corporation,high,in_progress,10.5
+000000387,Umbrella Global,low,open,39.5
+000000388,Weyland-Yutani Logistics,high,open,1.5
+000000389,Initech Global,medium,in_progress,1.25
+000000390,Wonka Industries,medium,in_progress,34.5
+000000391,Massive Dynamic Labs,medium,open,25.5
+000000392,Oscorp,high,open,10.0
+000000393,Monarch Technology,medium,open,21.5
+000000394,Prestige Worldwide Media,high,closed,22.0
+000000395,Stark Technologies,medium,in_progress,35.5
+000000396,LexCorp Financial,medium,pending,17.0
+000000397,Vehement Capital,low,closed,24.5
+000000398,Globex International,low,open,20.5
+000000399,Prestige Worldwide Media,low,open,31.5
+000000400,Soylent Nutrition,medium,closed,31.5
+000000401,,high,closed,15.0
+000000402,Massive Dynamic,low,closed,31.5
+000000403,Gringotts Banking,medium,in_progress,0.5
+000000404,Stark Energy,low,closed,23.0
+000000405,Roxxon Pharmaceuticals,low,closed,3.0
+000000406,Oscorp Industries,medium,in_progress,18.0
+000000407,Vehement Technologies,medium,in_progress,-2
+000000408,Vehement Capital,medium,closed,abc
+000000409,Aperture Systems,high,in_progress,25.5
+000000410,Tyrell Corporation,low,open,21.0
+000000411,Pied Piper Networks,medium,open,38.5
+000000412,Queen Consolidated,medium,in_progress,20.0
+000000413,Tyrell Research,high,closed,1.25
+000000414,Tyrell Research,medium,open,23.5
+000000415,Gekko & Co,medium,in_progress,19.5
+000000416,Cyberdyne Systems,high,closed,16.5
+000000417,Umbrella Global,high,open,3.0
+000000418,Oceanic Logistics,high,in_progress,39.5
+000000419,Queen Consolidated Energy,low,in_progress,15.5
+000000420,Gekko & Co,urgent,open,28.0
+000000421,Oceanic Shipping,high,open,26.0
+000000422,Gringotts Banking,high,in_progress,3.5
+000000423,Pied Piper Networks,low,in_progress,20.5
+000000424,Duff Beverages,high,closed,20.0
+000000425,Tyrell Biotech,high,closed,34.5
+000000426,Initech Consulting,high,closed,12.0
+000000427,Cyberdyne Robotics,high,closed,14.0
+000000428,Tyrell Research,medium,in_progress,13.0
+000000429,Aperture Science,medium,closed,22.0
+000000430,Wayne Construction,medium,open,36.5
+000000431,Queen Consolidated Energy,medium,closed,9.0
+000000432,Hooli Communications,high,open,22.0
+000000433,Acme Manufacturing,high,closed,13.5
+000000434,Stark Industries International,medium,in_progress,17.0
+000000435,,low,open,33.5
+000000436,Soylent Corp,low,closed,21.0
+000000437,Dunder Mifflin,high,open,0.0
+000000438,Monarch Industries,medium,in_progress,30.0
+000000439,Black Mesa Research,medium,closed,18.0
+000000440,Weyland-Yutani,high,in_progress,14.5
+000000441,Vandelay Industries,low,closed,11.0
+000000442,Vandelay Industries,medium,closed,11.5
+000000443,Vandelay Trading,low,open,19.0
+000000444,Pied Piper,medium,closed,29.0
+000000445,Kord Industries International,high,closed,8.5
+000000446,Soylent Nutrition,medium,open,7.0
+000000447,Tyrell Biotech,high,closed,11.5
+000000448,,medium,in_progress,12.0
+000000449,Massive Dynamic Security,medium,in_progress,20.5
+000000450,Vehement Capital,urgent,open,30.5
+000000451,Globex,medium,closed,15.0
+000000452,Umbrella Pharmaceuticals,medium,closed,37.0
+000000453,Initech,medium,in_progress,23.0
+000000454,Prestige Worldwide,high,open,29.5
+000000455,Massive Dynamic Security,high,in_progress,19.5
+000000456,Oceanic Travel,medium,in_progress,14.0
+000000457,Wayne Financial,medium,open,29.0
+000000458,Stark Defense,medium,in_progress,35.0
+000000459,Stark Industries International,high,open,15.5
+000000460,Aperture Labs,high,closed,33.5
+000000461,LexCorp,high,open,3.5
+000000462,Vehement Technologies,low,in_progress,34.0
+ABC1,Oscorp Research,urgent,pending,-2
+000000464,Cyberdyne Global,medium,open,32.5
+000000465,Gringotts,medium,open,32.5
+000000466,Tyrell Corporation International,low,in_progress,29.5
+000000467,Soylent Foods,high,open,25.0
+000000468,Acme,high,open,37.0
+000000469,Initech Digital,medium,in_progress,-2
+000000470,Monarch Solutions,medium,open,18.0
+000000471,Wayne Financial,high,in_progress,26.5
+000000472,Queen Consolidated Energy,medium,closed,24.0
+ABC1,LexCorp Technologies,low,in_progress,22.0
+000000474,Lexington Technologies,high,open,14.0
+000000475,Wayne Enterprises,medium,closed,34.5
+000000476,Queen Consolidated Energy,low,open,29.0
+000000477,Wayne Construction,low,in_progress,7.0
+000000478,,high,open,15.0
+000000479,,medium,in_progress,3.0
+000000480,Monarch Research,medium,open,34.5
+000000481,Gringotts,low,in_progress,18.5
+000000482,Initech Global,medium,in_progress,38.0
+000000483,Monarch Financial,low,closed,9.0
+000000484,Gekko Capital,low,closed,19.0
+000000485,Monarch Global,high,in_progress,11.0
+000000486,Umbrella Medical,high,closed,3.0
+000000487,Queen Consolidated Energy,high,closed,26.5
+000000488,Tyrell Research,medium,open,34.0
+000000489,Roxxon Energy,medium,in_progress,9.0
+000000490,Gringotts,high,closed,26.5
+000000491,Wayne Financial,medium,open,16.0
+000000492,Aperture Labs,medium,closed,5.5
+000000493,Wonka Foods,low,closed,24.0
+000000494,Oceanic Airlines,low,open,37.5
+000000495,Massive Dynamic International,low,closed,13.0
+000000496,Black Mesa Technologies,medium,open,13.5
+000000497,Cyberdyne Industries,high,closed,15.5
+000000498,Weyland Industries,medium,open,35.0
+000000499,Wonka Confectionery,medium,closed,34.0
+000000500,Soylent Foods,medium,closed,32.5
+000000501,Soylent Nutrition,low,in_progress,30.0
+000000502,Duff Distribution,low,closed,20.0
+000000503,Tyrell Corporation International,low,in_progress,9.0
+000000504,Hooli Cloud,urgent,in_progress,26.5
+000000505,,low,closed,36.0
+000000506,Weyland-Yutani Logistics,medium,closed,31.0
+000000507,Sterling Cooper Advertising,low,open,34.5
+000000508,LexCorp Technologies,high,open,33.5
+000000509,LexCorp,high,pending,0.0
+ABC1,Wayne Medical,low,in_progress,9.5
+000000511,Stark Defense,low,in_progress,39.0
+000000512,Oscorp Medical,low,open,34.0
+000000513,Umbrella,low,in_progress,17.5
+000000514,Hooli Communications,low,in_progress,27.5
+000000515,Globex Solutions,low,open,33.5
+000000516,Oscorp Industries,urgent,in_progress,16.0
+000000517,Hooli Software,low,closed,25.5
+000000518,Kord Enterprises,high,open,19.0
+000000519,Aperture Labs,high,in_progress,2.0
+,Queen Consolidated Energy,medium,in_progress,30.0
+000000521,Black Mesa,medium,closed,21.0
+000000522,Vehement Capital,high,open,14.5
+000000523,Acme Global,medium,closed,2.5
+000000524,Cyberdyne Robotics,high,in_progress,2.0
+000000525,,low,open,37.5
+000000526,Hooli Software,low,closed,10.0
+000000527,Acme Global,medium,in_progress,34.5
+000000528,Queen Consolidated,high,in_progress,5.0
+000000529,Vehement Holdings,low,open,27.5
+000000530,LexCorp,medium,in_progress,39.0
+000000531,Hooli Software,medium,open,17.0
+000000532,Vandelay Textiles,medium,open,22.5
+000000533,Wayne Technologies,medium,open,37.0
+000000534,Black Mesa,high,closed,15.5
+000000535,Black Mesa,medium,open,24.0
+000000536,Hooli Ventures,high,closed,20.0
+000000537,Nakatomi Corporation,low,closed,28.0
+000000538,Stark Manufacturing,low,open,5.5
+000000539,Hooli Media,high,pending,32.5
+000000540,Weyland-Yutani,medium,in_progress,abc
+000000541,Umbrella,medium,closed,24.5
+000000542,Massive Dynamic International,low,in_progress,33.0
+000000543,Queen Consolidated Energy,urgent,open,17.0
+000000544,Kord Industries,low,open,27.5
+000000545,Tyrell Research,medium,open,23.0
+000000546,Grayson Technologies,high,in_progress,31.5
+000000547,Aperture Systems,medium,open,8.5
+000000548,Hooli Software,medium,in_progress,24.0
+000000549,Aperture Robotics,medium,closed,27.5
+000000550,Wayne Financial,medium,closed,38.5
+000000551,Black Mesa Research,medium,closed,11.0
+000000552,Duff Distribution,medium,in_progress,31.0
+000000553,Kord Enterprises,medium,closed,17.5
+000000554,Lexington Technologies,medium,open,36.0
+12345,Kord Industries International,low,in_progress,35.0
+000000556,Nakatomi Holdings,medium,closed,4.0
+000000557,Tyrell Robotics,high,closed,8.5
+000000558,LexCorp Financial,medium,in_progress,9.5
+000000559,Wayne Technologies,low,closed,38.0
+000000560,Monarch Research,high,in_progress,26.5
+000000561,Gekko Investments,high,in_progress,38.0
+000000562,Black Mesa,low,open,22.5
+000000563,Tyrell Corporation,urgent,in_progress,25.5
+000000564,Stark Energy,low,open,6.0
+000000565,Dunder Mifflin Consulting,high,in_progress,35.5
+000000566,Initech Global,low,closed,23.5
+000000567,Nakatomi Development,low,closed,1.5
+000000568,Oceanic Travel,medium,open,7.0
+000000569,Grayson Industries,medium,closed,21.5
+000000570,Weyland Industries,high,closed,22.0
+000000571,Cyberdyne Research,high,in_progress,28.5
+000000572,Tyrell Research,low,in_progress,7.0
+ABC1,Nakatomi Security,urgent,pending,-2
+000000574,Acme Logistics,high,open,21.0
+000000575,Massive Dynamic Analytics,low,closed,40.0
+000000576,,medium,open,39.0
+000000577,Umbrella Medical,medium,open,13.5
+000000578,Duff Brewing,high,open,34.0
+000000579,Oscorp Research,urgent,closed,7.0
+000000580,Aperture Science,high,in_progress,20.0
+000000581,Lexington Technologies,high,open,22.0
+000000582,Tyrell Biotech,high,open,19.0
+000000583,Black Mesa,high,open,20.0
+ABC1,Soylent Foods,urgent,pending,-2
+000000585,Grayson Holdings,medium,in_progress,1.25
+000000586,Oscorp Medical,high,in_progress,11.0
+000000587,Aperture Science,medium,open,11.5
+000000588,Vandelay Textiles,high,open,22.5
+000000589,Oscorp Medical,low,open,24.5
+000000590,Vehement Technologies,high,closed,26.0
+000000591,Acme Technologies,high,closed,31.0
+123,Tyrell Corporation International,low,open,18.5
+000000593,Hooli Communications,low,closed,36.0
+000000594,Black Mesa Security,high,in_progress,7.0
+000000595,Umbrella Pharmaceuticals,high,closed,34.5
+000000596,Oceanic Airlines,high,closed,34.5
+000000597,Initech Digital,low,in_progress,15.5
+000000598,Hooli,medium,closed,22.0
+000000599,Weyland-Yutani,medium,open,15.0
+000000600,Dunder Mifflin Logistics,high,in_progress,40.0
+000000601,Queen Consolidated,low,open,3.5
+000000602,Wayne Enterprises International,medium,in_progress,34.0
+000000603,Vandelay Trading,medium,in_progress,-2
+ABC1,Oceanic Shipping,urgent,pending,-2
+000000605,Grayson Technologies,low,in_progress,20.5
+000000606,Lexington Technologies,medium,open,36.5
+000000607,Acme Technologies,medium,closed,4.5
+000000608,Nakatomi Corporation,medium,in_progress,17.5
+000000609,Umbrella Research,medium,closed,20.5
+000000610,Nakatomi Corporation,high,closed,22.5
+000000611,Wayne Enterprises International,medium,open,27.0
+000000612,Black Mesa Security,medium,closed,18.0
+000000613,Initech Global,low,in_progress,31.0
+000000614,Massive Dynamic,low,open,40.0
+000000615,Tyrell Biotech,low,open,10.0
+000000616,Acme,medium,open,8.0
+000000617,Massive Dynamic Labs,low,closed,5.5
+000000618,Queen Consolidated Labs,low,closed,10.5
+000000619,Soylent Foods,high,pending,14.5
+000000620,Vehement Capital,low,open,30.5
+,Roxxon Energy,high,in_progress,28.0
+000000622,Cyberdyne Industries,medium,in_progress,8.0
+000000623,Queen Industries,medium,open,6.5
+000000624,,medium,open,24.0
+000000625,Grayson Industries,low,in_progress,36.0
+ABC1,Tyrell Industries,urgent,pending,-2
+000000627,Oceanic Shipping,high,in_progress,28.0
+000000628,Weyland-Yutani,low,open,7.5
+000000629,Kord Financial,medium,closed,20.0
+000000630,Grayson Technologies,medium,in_progress,5.0
+000000631,Wonka Confectionery,high,open,19.0
+000000632,Dunder Mifflin Consulting,low,in_progress,25.0
+000000633,Soylent Corp,low,closed,24.5
+000000634,Weyland Aerospace,high,in_progress,-2
+000000635,Duff Distribution,low,closed,36.0
+000000636,Kord Industries International,high,open,30.0
+000000637,Oscorp,low,in_progress,4.0
+000000638,Sterling Cooper Media,low,open,abc
+000000639,Nakatomi Development,medium,closed,25.5
+000000640,Stark Industries International,urgent,in_progress,9.5
+000000641,Aperture Labs,high,open,abc
+000000642,Duff Brewing,medium,in_progress,27.5
+000000643,LexCorp Financial,low,open,5.5
+000000644,Wonka Chocolate,medium,in_progress,38.5
+ABC1,Acme Logistics,urgent,pending,-2
+ABC1,Weyland Aerospace,urgent,pending,-2
+000000647,Stark Defense,low,in_progress,17.0
+000000648,Cyberdyne Industries,low,closed,27.0
+000000649,Duff Brewing,medium,in_progress,36.5
+000000650,Weyland Aerospace,medium,in_progress,23.0
+000000651,Acme Global,urgent,closed,10.0
+000000652,Globex Corporation International,high,in_progress,7.0
+000000653,Dunder Mifflin Consulting,low,open,0.5
+000000654,Gringotts Banking,medium,closed,9.5
+000000655,,high,in_progress,26.5
+000000656,Acme Technologies,high,closed,17.0
+000000657,Globex Corporation International,medium,open,32.0
+000000658,Soylent Corp,low,open,33.0
+000000659,Monarch Research,low,closed,18.0
+000000660,Gringotts Financial,medium,open,35.0
+000000661,Umbrella Research,low,closed,36.0
+000000662,Kord Enterprises,medium,closed,37.5
+000000663,Aperture Systems,high,in_progress,15.5
+000000664,Tyrell Robotics,urgent,open,34.5
+000000665,Initech,medium,open,24.0
+000000666,Soylent Foods,low,open,33.5
+000000667,Globex International,medium,open,9.0
+000000668,Nakatomi Corporation,low,open,33.0
+000000669,Stark Defense,medium,in_progress,5.0
+000000670,Vehement Technologies,low,in_progress,25.0
+000000671,,low,closed,8.0
+000000672,Prestige Worldwide Media,medium,in_progress,20.5
+000000673,Stark Manufacturing,low,open,12.5
+000000674,,low,open,6.5
+000000675,Prestige Worldwide Media,medium,open,34.0
+000000676,Nakatomi Holdings,medium,closed,29.5
+000000677,Cyberdyne Industries,low,open,19.0
+000000678,Oceanic Airlines,low,closed,9.0
+123,Grayson Technologies,medium,closed,32.5
+000000680,Acme Logistics,low,closed,28.5
+000000681,Grayson Financial,low,open,29.5
+000000682,,low,open,3.5
+ABC1,Monarch Research,urgent,pending,-2
+000000684,,low,open,4.0
+000000685,Wonka Foods International,low,open,21.0
+000000686,Massive Dynamic Analytics,low,pending,36.5
+000000687,Hooli Software,medium,open,24.0
+000000688,Acme Logistics,medium,open,11.5
+000000689,Hooli Media,low,open,39.0
+000000690,Kord Enterprises,high,closed,31.5
+000000691,Grayson Financial,medium,open,5.5
+000000692,Queen Consolidated,medium,open,33.5
+000000693,Kord Industries International,low,closed,22.5
+000000694,Oscorp Medical,medium,in_progress,32.0
+000000695,Stark Manufacturing,low,open,20.0
+000000696,Wonka Industries,medium,open,30.0
+000000697,Cyberdyne Global,low,open,6.0
+000000698,LexCorp Financial,medium,in_progress,3.5
+000000699,Pied Piper Technologies,high,closed,22.5
+000000700,Acme Logistics,low,open,37.5
+000000701,Pied Piper Software,high,open,22.5
+000000702,Tyrell Corporation International,low,in_progress,12.0
+000000703,Black Mesa Security,high,closed,11.0
+000000704,Nakatomi Corporation,low,open,38.5
+000000705,Roxxon Industries,medium,open,21.0
+000000706,Black Mesa Research,low,closed,11.0
+000000707,Monarch Financial,low,open,9.0
+000000708,Grayson Industries,low,in_progress,23.0
+000000709,Stark Defense,high,in_progress,25.0
+000000710,Weyland-Yutani Logistics,medium,closed,8.5
+000000711,Wayne Aerospace,high,closed,20.0
+000000712,,high,in_progress,22.5
+000000713,Acme Logistics,medium,closed,18.5
+000000714,Acme,high,in_progress,-2
+12345,Duff Distribution,high,open,36.0
+000000716,,low,closed,20.0
+000000717,Weyland-Yutani,high,in_progress,21.0
+000000718,Initech Consulting,low,open,4.0
+000000719,Pied Piper,high,open,3.0
+000000720,Globex International,low,closed,31.5
+000000721,Dunder Mifflin Logistics,high,closed,6.0
+000000722,Initech Global,high,in_progress,14.0
+000000723,Oscorp,urgent,closed,1.0
+000000724,Sterling Cooper,low,closed,10.5
+000000725,Massive Dynamics,high,open,35.0
+000000726,Nakatomi Corporation,medium,in_progress,39.0
+000000727,Wonka Industries,medium,in_progress,10.5
+000000728,Wayne Aerospace,low,open,6.0
+000000729,Wonka Foods,medium,in_progress,35.0
+000000730,LexCorp Technologies,medium,in_progress,18.0
+000000731,Vehement Capital,low,closed,36.5
+000000732,Aperture Science,low,open,23.0
+000000733,Weyland-Yutani,medium,in_progress,1.25
+12345,Cyberdyne Systems,low,open,18.5
+000000735,Soylent Foods,medium,closed,31.0
+000000736,Initech Consulting,low,in_progress,34.5
+000000737,Umbrella Research,medium,closed,11.5
+000000738,Initech Consulting,medium,closed,16.5
+000000739,Umbrella Pharmaceuticals,high,open,9.5
+000000740,Vehement Capital,low,in_progress,22.0
+000000741,Oceanic Shipping,high,open,35.0
+ABC1,Grayson Holdings,urgent,pending,-2
+000000743,Prestige Worldwide Entertainment,high,open,30.0
+000000744,Hooli Software,high,open,32.0
+000000745,Pied Piper Networks,high,in_progress,39.5
+000000746,,low,open,13.5
+000000747,,low,in_progress,27.5
+000000748,Kord Industries,high,closed,20.0
+000000749,Monarch Solutions,low,closed,35.5
+000000750,Oscorp Research,medium,in_progress,29.0
+000000751,Umbrella,high,in_progress,37.5
+000000752,Globex International,low,closed,9.5
+123,Cyberdyne Global,low,open,36.0
+000000754,Vehement Holdings,medium,closed,24.5
+000000755,Globex Corporation International,high,closed,2.0
+ABC1,Massive Dynamic Security,urgent,pending,-2
+000000757,Vandelay Industries,medium,closed,15.0
+000000758,Prestige Worldwide Entertainment,urgent,closed,1.0
+000000759,Massive Dynamic Labs,medium,closed,31.0
+000000760,Dunder Mifflin,low,open,19.0
+000000761,Wonka Foods International,medium,closed,26.5
+000000762,Weyland-Yutani,low,closed,13.5
+000000763,Tyrell Robotics,high,closed,33.0
+000000764,Gringotts,high,open,4.0
+000000765,Vehement Technologies,medium,open,33.5
+000000766,Wonka Industries,low,open,12.5
+000000767,Grayson Technologies,low,closed,3.0
+000000768,Aperture Systems,medium,closed,29.5
+000000769,Roxxon,high,open,15.0
+000000770,Hooli Media,low,closed,37.5
+000000771,Vehement Holdings,low,closed,5.5
+000000772,Kord Financial,low,open,36.5
+000000773,Dunder Mifflin Paper,low,in_progress,14.0
+000000774,Umbrella Pharmaceuticals,high,closed,32.5
+000000775,Initech,medium,open,-2
+000000776,Soylent Foods,high,in_progress,17.5
+000000777,Wayne Technologies,medium,closed,16.0
+000000778,Massive Dynamic Labs,high,in_progress,39.5
+000000779,Sterling Cooper,low,in_progress,23.5
+000000780,Wonka Confectionery,medium,in_progress,6.5
+000000781,Weyland-Yutani Logistics,medium,in_progress,20.5
+000000782,Globex Manufacturing,high,in_progress,19.0
+000000783,Pied Piper Networks,low,pending,38.0
+000000784,Queen Consolidated,high,open,31.5
+000000785,Globex Manufacturing,medium,closed,24.5
+000000786,Cyberdyne Global,high,in_progress,12.0
+000000787,Pied Piper Technologies,high,in_progress,30.0
+000000788,Pied Piper Software,high,closed,10.5
+000000789,Monarch Global,low,closed,6.0
+000000790,Globex Manufacturing,high,in_progress,11.5
+000000791,Black Mesa Technologies,high,open,14.0
+000000792,Soylent Foods,medium,closed,23.5
+000000793,Oceanic Travel,medium,open,30.0
+000000794,Cyberdyne Global,high,pending,4.5
+000000795,Nakatomi Development,low,in_progress,24.0
+000000796,Oceanic Shipping,low,open,8.5
+000000797,Nakatomi Security,medium,in_progress,29.0
+ABC1,Initech Systems,urgent,pending,-2
+000000799,Prestige Worldwide Media,high,open,0.0
+000000800,Nakatomi Holdings,low,in_progress,10.0
+000000801,Weyland-Yutani,low,in_progress,27.5
+000000802,Massive Dynamic Security,medium,closed,24.5
+123,Wayne Enterprises International,low,in_progress,23.5
+000000804,Queen Consolidated Technologies,low,open,0.0
+000000805,Grayson Technologies,low,in_progress,22.0
+000000806,Sterling Cooper,medium,in_progress,37.5
+000000807,Duff Brewing,low,closed,18.5
+000000808,Gekko Capital,high,in_progress,21.5
+000000809,Wayne Financial,medium,closed,22.5
+000000810,Tyrell Industries,medium,open,14.5
+000000811,Stark Technologies,low,in_progress,1.0
+000000812,Oceanic Logistics,low,closed,2.0
+000000813,Acme Manufacturing,high,in_progress,3.0
+000000814,Massive Dynamic,high,open,1.0
+123,Wonka Chocolate,medium,closed,24.0
+000000816,Hooli Ventures,low,in_progress,40.0
+000000817,Globex International,urgent,open,33.0
+000000818,Queen Consolidated,medium,open,32.5
+000000819,Cyberdyne Industries,medium,open,6.5
+000000820,Black Mesa Research,medium,in_progress,12.5
+000000821,Tyrell Robotics,medium,open,2.5
+000000822,Nakatomi Holdings,high,closed,21.0
+000000823,Umbrella,high,open,7.0
+000000824,Black Mesa Security,low,open,32.5
+000000825,Dunder Mifflin,medium,pending,14.5
+000000826,Oceanic Travel,medium,closed,3.0
+ABC1,Acme Logistics,urgent,pending,-2
+000000828,Wonka Chocolate,low,open,0.5
+000000829,Oceanic Logistics,medium,closed,28.0
+000000830,Umbrella Pharmaceuticals,high,open,23.5
+000000831,Initech Systems,low,closed,25.5
+000000832,Stark Manufacturing,medium,in_progress,30.5
+000000833,Tyrell Industries,low,open,3.5
+000000834,Monarch Industries,low,closed,37.5
+000000835,Acme Global,high,closed,11.5
+000000836,Pied Piper Software,high,open,8.0
+000000837,Oscorp Medical,low,closed,28.0
+ABC1,Globex Manufacturing,urgent,pending,-2
+000000839,Roxxon Industries,high,in_progress,36.0
+000000840,Weyland-Yutani Logistics,high,in_progress,39.5
+000000841,,medium,closed,24.5
+000000842,Monarch Global,high,open,0.5
+000000843,Monarch Industries,high,closed,31.5
+000000844,LexCorp,medium,closed,15.0
+000000845,Cyberdyne Robotics,low,in_progress,14.0
+000000846,Wayne Technologies,medium,open,5.0
+000000847,Globex Corporation International,medium,open,31.5
+000000848,Cyberdyne Industries,medium,in_progress,1.0
+,Oceanic Shipping,low,in_progress,35.0
+000000850,Massive Dynamic Labs,high,in_progress,13.0
+000000851,Oceanic Shipping,medium,closed,3.0
+000000852,Oceanic Shipping,medium,in_progress,39.5
+000000853,Roxxon Pharmaceuticals,high,closed,7.0
+ABC1,Pied Piper Technologies,urgent,pending,-2
+000000855,Vandelay Trading,high,in_progress,23.5
+000000856,Tyrell Corporation,low,closed,8.5
+000000857,Tyrell Robotics,low,closed,39.0
+000000858,,medium,open,29.0
+000000859,Pied Piper,medium,open,37.5
+000000860,Vandelay Textiles,medium,in_progress,41
+000000861,Globex,high,in_progress,3.0
+000000862,Stark Energy,high,closed,32.5
+000000863,Globex Solutions,high,in_progress,11.0
+000000864,Umbrella Health,low,closed,38.0
+000000865,Monarch Financial,high,closed,26.5
+000000866,Grayson Technologies,medium,closed,21.5
+000000867,Vandelay Textiles,low,open,26.0
+000000868,Sterling Cooper Partners,medium,in_progress,35.0
+000000869,Hooli Cloud,high,open,12.5
+000000870,Vandelay Trading,high,closed,8.0
+000000871,Globex Solutions,high,in_progress,20.5
+000000872,Sterling Cooper Advertising,high,closed,37.0
+000000873,Acme Technologies,high,in_progress,34.0
+000000874,Initech Digital,low,in_progress,6.5
+000000875,,low,in_progress,3.5
+000000876,Massive Dynamics,medium,in_progress,16.0
+000000877,Prestige Worldwide,high,closed,-2
+000000878,Vandelay Textiles,low,in_progress,35.5
+000000879,Massive Dynamic International,medium,open,32.5
+000000880,Hooli Communications,high,in_progress,3.0
+000000881,Grayson Holdings,medium,in_progress,20.0
+000000882,Soylent Corp,low,in_progress,16.0
+000000883,Wonka Foods International,low,in_progress,23.5
+000000884,Kord Industries International,high,in_progress,12.5
+000000885,Oscorp Industries,medium,closed,11.0
+000000886,LexCorp,low,open,32.5
+000000887,Oceanic Airlines,urgent,closed,35.5
+000000888,Cyberdyne Global,medium,pending,21.0
+000000889,Hooli Ventures,low,open,20.5
+000000890,Massive Dynamic Labs,medium,in_progress,35.0
+000000891,Duff Distribution,high,open,11.5
+000000892,Vehement Technologies,low,closed,34.5
+000000893,Nakatomi Corporation,medium,open,13.5
+000000894,Aperture Robotics,medium,closed,13.5
+000000895,Queen Consolidated Technologies,medium,in_progress,0.5
+000000896,Vehement Holdings,medium,open,41
+000000897,Monarch Financial,medium,open,24.5
+000000898,Wonka Confectionery,low,in_progress,23.5
+000000899,Dunder Mifflin Consulting,medium,closed,2.5
+000000900,Oscorp Industries,medium,in_progress,5.0
+000000901,Tyrell Industries,high,in_progress,0.0
+000000902,Nakatomi Holdings,high,in_progress,13.5
+000000903,Initech Digital,low,open,34.0
+000000904,Wayne Aerospace,high,open,9.5
+ABC1,Aperture Robotics,low,open,4.5
+000000906,Monarch Global,low,in_progress,14.5
+000000907,Tyrell Robotics,medium,closed,40.0
+000000908,Prestige Worldwide Media,low,closed,7.5
+000000909,Duff Brewing,high,in_progress,2.5
+000000910,Oscorp,medium,in_progress,6.5
+000000911,Massive Dynamic Labs,high,open,18.0
+000000912,Cyberdyne Research,medium,closed,1.5
+000000913,Wayne Enterprises International,low,open,25.0
+000000914,Kord Industries International,medium,in_progress,9.0
+000000915,Stark Defense,low,in_progress,35.5
+000000916,Oceanic Airlines,low,pending,38.0
+000000917,Black Mesa,medium,open,22.0
+000000918,Sterling Cooper Partners,low,open,11.5
+000000919,Queen Consolidated Labs,low,open,11.5
+000000920,Acme Global,low,in_progress,29.5
+000000921,Oscorp,medium,in_progress,4.0
+000000922,Aperture Systems,high,in_progress,31.0
+000000923,Pied Piper Software,low,in_progress,15.0
+000000924,Monarch Solutions,low,pending,31.0
+000000925,Soylent Foods,high,in_progress,9.5
+000000926,Roxxon Pharmaceuticals,medium,closed,10.5
+000000927,Grayson Technologies,urgent,in_progress,27.5
+000000928,Wayne Financial,high,in_progress,21.0
+000000929,Massive Dynamic Analytics,medium,closed,19.5
+000000930,Pied Piper,low,in_progress,38.5
+000000931,Cyberdyne Robotics,urgent,in_progress,12.5
+000000932,LexCorp,high,open,1.0
+000000933,Wonka Industries,high,in_progress,25.5
+000000934,Dunder Mifflin Paper,low,in_progress,16.5
+000000935,LexCorp Technologies,medium,in_progress,9.5
+000000936,Roxxon Energy,high,in_progress,18.5
+000000937,Nakatomi Development,urgent,open,25.0
+000000938,LexCorp Financial,high,in_progress,10.5
+000000939,Queen Consolidated,medium,open,11.0
+000000940,Tyrell Corporation International,high,open,30.5
+000000941,Oceanic Airlines,low,closed,14.5
+000000942,Umbrella Research,low,open,abc
+000000943,Oceanic Shipping,low,open,20.5
+000000944,Gekko Capital,high,closed,41
+000000945,Wayne Technologies,medium,in_progress,4.5
+000000946,Wayne Technologies,low,in_progress,25.5
+000000947,Vehement Holdings,medium,closed,38.5
+123,Queen Consolidated,medium,open,14.5
+000000949,Vandelay Imports,low,closed,38.5
+000000950,Cyberdyne Industries,high,open,26.5
+000000951,Wonka Chocolate,medium,in_progress,30.5
+000000952,Massive Dynamics,high,closed,1.0
+000000953,Umbrella Health,high,in_progress,10.0
+ABC1,Sterling Cooper Partners,low,in_progress,9.0
+000000955,Initech Systems,high,closed,38.0
+000000956,Stark Industries,high,in_progress,18.0
+000000957,Sterling Cooper Media,medium,in_progress,30.0
+000000958,Oceanic Logistics,low,closed,38.0
+000000959,Cyberdyne Global,urgent,in_progress,32.5
+ABC1,Nakatomi Security,medium,in_progress,37.5
+000000961,Stark Technologies,low,open,12.5
+000000962,Vehement Technologies,high,closed,9.5
+000000963,Globex Solutions,medium,in_progress,38.0
+000000964,Wayne Enterprises International,high,pending,5.5
+000000965,LexCorp Technologies,low,in_progress,27.5
+000000966,Umbrella Research,low,in_progress,33.5
+000000967,Monarch Technology,medium,closed,37.5
+000000968,Initech Global,low,closed,8.5
+000000969,Wayne Medical,low,closed,38.0
+000000970,Tyrell Robotics,medium,open,0.0
+000000971,Globex,high,in_progress,7.5
+000000972,Wayne Technologies,high,open,20.0
+000000973,Pied Piper,low,closed,37.0
+000000974,Stark Industries International,medium,in_progress,23.0
+000000975,Hooli Software,low,closed,35.0
+000000976,Monarch Technology,low,closed,35.5
+000000977,Queen Consolidated Labs,medium,in_progress,22.0
+000000978,Hooli Software,high,open,7.5
+000000979,Hooli Media,high,open,6.0
+000000980,Monarch Research,medium,in_progress,39.0
+000000981,Soylent Corp,low,closed,0.0
+000000982,Kord Industries,medium,in_progress,27.5
+000000983,Initech Consulting,low,closed,-2
+000000984,Monarch Research,high,in_progress,33.0
+000000985,Gringotts,low,in_progress,31.5
+000000986,Black Mesa Research,high,in_progress,18.0
+000000987,Dunder Mifflin Consulting,high,in_progress,41
+000000988,Gekko Investments,low,in_progress,0.0
+000000989,Weyland-Yutani,medium,closed,22.5
+000000990,Massive Dynamic Security,high,open,33.0
+ABC1,Monarch Solutions,urgent,pending,-2
+000000992,Cyberdyne Global,medium,closed,17.5
+000000993,Oscorp Industries,medium,closed,36.5
+000000994,Acme Logistics,medium,in_progress,-2
+000000995,Nakatomi Security,low,in_progress,16.0
+000000996,Initech Global,medium,in_progress,28.0
+000000997,Tyrell Corporation International,medium,open,21.5
+000000998,Tyrell Biotech,high,closed,37.5
+000000999,Monarch Technology,low,closed,4.0
+000001000,Pied Piper Technologies,high,in_progress,14.5
+000001001,Oceanic Shipping,medium,in_progress,34.0
+000001002,Initech Consulting,low,pending,5.5
+000001003,Nakatomi Security,low,in_progress,11.0
+000001004,Sterling Cooper Advertising,low,in_progress,17.0
+000001005,,medium,in_progress,12.5
+000001006,Initech Consulting,low,open,12.5
+000001007,Pied Piper Software,low,open,7.5
+000001008,Black Mesa Security,high,open,34.5
+000001009,Monarch Technology,medium,in_progress,20.0
+000001010,Initech Global,medium,closed,11.5
+000001011,Dunder Mifflin Consulting,medium,closed,14.0
+000001012,Umbrella Health,low,in_progress,27.0
+000001013,LexCorp Technologies,low,in_progress,22.0
+000001014,Acme Logistics,medium,open,33.0
+000001015,Initech,low,in_progress,13.0
+000001016,Dunder Mifflin,medium,closed,39.0
+000001017,Vandelay Imports,high,closed,15.0
+000001018,Nakatomi Security,medium,open,31.5
+000001019,Globex International,high,closed,23.0
+000001020,Cyberdyne Robotics,medium,open,36.5
+ABC1,Initech Global,urgent,pending,-2
+000001022,Stark Logistics,high,closed,24.0
+000001023,Lexington Labs,medium,pending,11.0
+000001024,Pied Piper Networks,high,in_progress,20.0
+000001025,Tyrell Research,medium,in_progress,36.0
+000001026,,high,open,3.5
+000001027,Prestige Worldwide Entertainment,high,open,28.5
+000001028,Globex Manufacturing,medium,closed,35.5
+000001029,Acme Manufacturing,medium,open,26.0
+000001030,,high,in_progress,34.0
+000001031,Wonka Confectionery,medium,closed,32.5
+000001032,Hooli Media,low,closed,39.0
+000001033,Kord Industries,low,in_progress,21.5
+000001034,Globex Corporation International,medium,open,5.0
+ABC1,Queen Industries,urgent,pending,-2
+000001036,Hooli Software,medium,closed,23.0
+000001037,Gekko Capital,medium,closed,10.5
+ABC1,Wayne Enterprises,urgent,pending,-2
+000001039,Aperture Labs,low,open,25.0
+12345,Duff Brewing,medium,in_progress,3.0
+000001041,Black Mesa,low,closed,39.5
+ABC1,Grayson Holdings,urgent,pending,-2
+000001043,Umbrella Health,low,in_progress,10.5
+000001044,Pied Piper Software,medium,closed,abc
+000001045,Wayne Financial,high,in_progress,11.0
+000001046,Oceanic Shipping,high,in_progress,36.0
+000001047,Wayne Enterprises International,medium,closed,30.5
+000001048,Weyland-Yutani,medium,closed,23.0
+000001049,Hooli Ventures,medium,open,0.0
+000001050,Wayne Financial,medium,closed,30.0
+000001051,Aperture Science,medium,closed,0.5
+000001052,Vandelay Trading,high,open,0.0
+000001053,Wonka Foods,medium,in_progress,27.5
+000001054,Massive Dynamics,high,in_progress,24.5
+000001055,Pied Piper Technologies,medium,open,27.0
+000001056,Pied Piper Networks,high,in_progress,17.0
+000001057,Wayne Enterprises International,medium,closed,12.0
+000001058,Initech Systems,low,closed,7.0
+000001059,Vandelay Textiles,medium,in_progress,39.5
+000001060,Monarch Financial,low,open,3.0
+000001061,Wayne Enterprises,low,open,18.0
+000001062,Cyberdyne Research,high,open,14.5
+000001063,Umbrella,medium,pending,21.5
+000001064,Weyland Aerospace,medium,closed,2.0
+000001065,Kord Industries,low,closed,25.0
+000001066,Gringotts Banking,low,pending,16.0
+000001067,Roxxon,high,open,24.5
+000001068,Wonka Foods International,low,in_progress,2.0
+000001069,Vehement Capital,high,pending,13.0
+000001070,Gringotts Financial,medium,open,40.0
+000001071,Grayson Financial,high,open,16.0
+000001072,Tyrell Research,low,closed,3.0
+000001073,Sterling Cooper Media,low,open,27.5
+000001074,Tyrell Industries,medium,in_progress,7.5
+000001075,Kord Enterprises,low,open,37.0
+000001076,Prestige Worldwide Entertainment,high,in_progress,9.5
+000001077,Weyland-Yutani,low,open,31.5
+000001078,Weyland-Yutani Logistics,urgent,open,3.5
+000001079,Stark Industries International,low,open,31.0
+000001080,Monarch Global,high,closed,28.0
+000001081,Wayne Enterprises,high,closed,22.5
+000001082,Queen Consolidated Labs,low,closed,28.0
+000001083,LexCorp Technologies,high,closed,12.0
+000001084,Kord Industries International,medium,closed,29.5
+000001085,Hooli Cloud,low,open,33.5
+000001086,Oceanic Travel,medium,pending,23.0
+123,Vehement Technologies,medium,in_progress,11.5
+000001088,LexCorp Financial,medium,in_progress,4.0
+000001089,Stark Industries International,medium,open,33.5
+000001090,Hooli Cloud,low,in_progress,18.0
+000001091,Monarch Financial,low,open,33.0
+000001092,Tyrell Corporation,low,open,2.0
+000001093,Oscorp Medical,low,open,2.0
+000001094,Grayson Holdings,high,closed,33.5
+000001095,Acme Manufacturing,low,closed,14.0
+000001096,Oscorp,low,open,31.0
+000001097,Aperture Labs,medium,in_progress,3.5
+000001098,Acme Technologies,medium,in_progress,3.5
+000001099,Umbrella Pharmaceuticals,high,open,4.5
+000001100,LexCorp,low,in_progress,6.0
+000001101,,high,closed,12.0
+000001102,Grayson Technologies,high,in_progress,11.0
+000001103,Monarch Global,medium,in_progress,6.5
+000001104,Initech Global,medium,in_progress,29.0
+000001105,Umbrella Medical,low,open,11.5
+000001106,Vehement Technologies,medium,in_progress,10.0
+000001107,Wonka Foods International,medium,closed,35.0
+000001108,Oscorp Research,medium,closed,27.5
+000001109,Monarch Financial,high,open,36.0
+000001110,Wayne Technologies,high,in_progress,16.0
+000001111,Vandelay Textiles,medium,closed,0.0
+000001112,Wonka Confectionery,high,open,33.0
+000001113,,low,closed,14.0
+000001114,Wayne Enterprises,high,closed,35.0
+000001115,Globex Corporation International,high,open,6.0
+000001116,Pied Piper Software,urgent,open,16.5
+000001117,Grayson Technologies,low,closed,19.0
+ABC1,Monarch Research,urgent,pending,-2
+000001119,Monarch Technology,low,closed,36.5
+000001120,Vehement Capital,high,in_progress,19.0
+000001121,Initech Global,urgent,open,3.5
+000001122,Wayne Aerospace,medium,open,14.5
+000001123,Initech,high,in_progress,24.0
+000001124,Roxxon Industries,low,closed,41
+000001125,Pied Piper Technologies,low,open,25.0
+000001126,Initech Global,high,open,14.0
+000001127,Lexington Technologies,low,open,21.5
+000001128,Globex Corporation International,high,pending,35.0
+000001129,Monarch Research,high,closed,8.0
+000001130,Monarch Technology,high,open,31.0
+000001131,Globex Corporation International,low,in_progress,39.0
+000001132,Roxxon Industries,low,open,4.5
+000001133,Stark Energy,medium,in_progress,36.5
+000001134,,medium,closed,22.0
+000001135,Cyberdyne Systems,medium,open,22.0
+000001136,Wonka Foods International,high,open,28.0
+000001137,,low,in_progress,23.5
+000001138,Black Mesa,low,in_progress,3.0
+000001139,Kord Industries,medium,open,21.5
+000001140,Gekko & Co,medium,closed,30.0
+000001141,,high,in_progress,13.5
+000001142,Globex Manufacturing,high,closed,39.5
+000001143,Grayson Industries,high,in_progress,1.0
+000001144,Roxxon Industries,low,closed,10.5
+12345,Black Mesa Research,high,in_progress,17.0
+000001146,Initech,low,closed,17.0
+000001147,Gekko Investments,low,open,18.5
+000001148,Kord Financial,low,closed,32.5
+000001149,Dunder Mifflin,medium,closed,38.0
+000001150,Vandelay Imports,low,in_progress,29.0
+000001151,Wayne Enterprises,low,open,33.5
+000001152,Aperture Science,medium,in_progress,10.0
+000001153,,medium,in_progress,19.0
+000001154,Nakatomi Development,medium,open,40.0
+000001155,Grayson Holdings,low,in_progress,17.5
+000001156,Nakatomi Security,medium,in_progress,8.5
+ABC1,Queen Consolidated Energy,urgent,pending,-2
+000001158,Acme Technologies,low,in_progress,9.5
+000001159,Gringotts Financial,high,closed,28.5
+000001160,Weyland Industries,high,open,37.0
+000001161,Black Mesa Research,low,closed,33.5
+000001162,Stark Energy,low,in_progress,36.0
+000001163,Duff Distribution,low,in_progress,34.0
+000001164,Cyberdyne Industries,low,closed,9.0
+000001165,Duff Distribution,medium,closed,19.0
+000001166,Wayne Construction,low,open,6.5
+000001167,Cyberdyne Systems,high,in_progress,41
+000001168,Wayne Medical,high,open,22.5
+000001169,Duff Beverages,low,pending,38.5
+000001170,Stark Defense,low,closed,31.0
+000001171,Massive Dynamics,low,open,2.0
+000001172,Umbrella,medium,closed,14.0
+000001173,Black Mesa Research,low,open,11.0
+000001174,Cyberdyne Research,high,closed,20.5
+000001175,Grayson Technologies,medium,closed,2.5
+000001176,Queen Consolidated Energy,high,closed,25.0
+000001177,Globex Corporation International,high,in_progress,33.5
+000001178,Vandelay Industries,high,open,28.5
+000001179,Oceanic Airlines,low,in_progress,34.0
+000001180,Oceanic Airlines,high,closed,33.0
+000001181,Massive Dynamic,low,closed,28.0
+000001182,Massive Dynamic Labs,medium,closed,10.5
+000001183,Soylent Corp,high,in_progress,9.0
+000001184,Vandelay Textiles,low,in_progress,32.0
+000001185,Cyberdyne Global,high,pending,8.5
+000001186,Vandelay Textiles,low,open,29.0
+000001187,Black Mesa Research,medium,open,16.0
+000001188,Massive Dynamics,high,in_progress,7.5
+000001189,Vandelay Textiles,high,closed,1.25
+000001190,Dunder Mifflin Consulting,high,open,24.0
+000001191,Tyrell Corporation,low,closed,36.0
+000001192,Lexington Labs,low,open,11.0
+000001193,Soylent Corp,medium,closed,19.5
+000001194,Hooli Media,medium,in_progress,11.5
+000001195,Stark Technologies,urgent,open,39.5
+000001196,Weyland Aerospace,medium,in_progress,1.25
+000001197,Prestige Worldwide Entertainment,medium,closed,28.0
+000001198,Globex,low,in_progress,41
+ABC1,Kord Industries,low,in_progress,22.0
+000001200,Initech Global,high,closed,21.0
+000001201,Massive Dynamic,low,closed,11.0
+000001202,Wonka Confectionery,high,in_progress,41
+000001203,Umbrella Global,medium,open,5.5
+000001204,Monarch Financial,medium,closed,4.0
+000001205,Grayson Financial,low,closed,30.0
+000001206,Wayne Construction,medium,in_progress,41
+000001207,Gringotts,low,in_progress,40.0
+000001208,Weyland-Yutani,medium,in_progress,38.5
+000001209,Hooli Communications,medium,in_progress,20.0
+000001210,Initech Global,high,closed,8.0
+000001211,Weyland Aerospace,high,in_progress,40.0
+000001212,Initech Systems,high,open,18.5
+000001213,Acme,low,open,29.5
+000001214,Cyberdyne Industries,high,open,39.0
+000001215,Oceanic Shipping,low,closed,22.0
+000001216,Dunder Mifflin Paper,low,in_progress,12.5
+000001217,Acme Manufacturing,low,closed,19.0
+000001218,Monarch Financial,low,open,21.0
+000001219,Acme Global,high,open,11.0
+ABC1,Weyland-Yutani Logistics,high,closed,30.0
+000001221,Tyrell Biotech,high,closed,29.5
+000001222,Oceanic Shipping,high,open,33.0
+000001223,Prestige Worldwide Media,high,in_progress,1.0
+000001224,Aperture Robotics,medium,open,9.5
+000001225,Wonka Industries,medium,closed,40.0
+000001226,Tyrell Industries,high,in_progress,24.5
+ABC1,Wonka Chocolate,urgent,pending,-2
+000001228,Oceanic Shipping,urgent,closed,15.0
+000001229,Massive Dynamic Labs,low,in_progress,19.0
+000001230,Stark Defense,low,pending,5.5
+000001231,Monarch Technology,high,open,12.0
+000001232,Monarch Technology,high,in_progress,19.5
+000001233,Grayson Industries,low,in_progress,8.0
+000001234,Vandelay Industries,medium,closed,33.0
+123,Gringotts Financial,low,in_progress,38.0
+000001236,Tyrell Corporation,low,in_progress,19.5
+000001237,,high,open,20.5
+ABC1,Wayne Construction,urgent,pending,-2
+,Lexington Labs,low,closed,7.0
+000001240,Dunder Mifflin Logistics,high,closed,17.0
+123,Wonka Confectionery,high,open,10.5
+000001242,Weyland-Yutani Logistics,high,closed,3.0
+000001243,Gringotts Banking,high,pending,6.5
+000001244,Umbrella Medical,medium,open,1.25
+000001245,Gringotts Financial,medium,open,34.0
+ABC1,Soylent Nutrition,urgent,pending,-2
+000001247,Oceanic Shipping,medium,in_progress,29.5
+000001248,Roxxon Energy,low,in_progress,16.5
+000001249,Lexington Technologies,low,in_progress,21.0
+000001250,Oscorp Research,medium,closed,1.5
+000001251,,medium,closed,29.5
+000001252,Dunder Mifflin Logistics,high,in_progress,8.0
+000001253,Massive Dynamic Security,high,open,20.5
+000001254,Oscorp,medium,in_progress,29.5
+000001255,Oceanic Shipping,low,in_progress,15.5
+000001256,Monarch Technology,medium,open,21.5
+000001257,Stark Energy,medium,in_progress,21.5
+000001258,Stark Logistics,low,in_progress,4.5
+000001259,Globex Corporation International,medium,open,37.5
+000001260,Oscorp Research,high,open,28.0
+ABC1,Massive Dynamic Security,urgent,pending,-2
+000001262,Queen Consolidated Energy,medium,closed,3.5
+000001263,,high,in_progress,0.0
+000001264,Vandelay Textiles,high,closed,24.5
+000001265,Hooli Media,low,open,20.0
+000001266,Massive Dynamic Labs,medium,in_progress,22.0
+000001267,Cyberdyne Global,low,in_progress,32.5
+000001268,Umbrella Health,medium,open,23.5
+000001269,Soylent Corp,low,in_progress,35.5
+000001270,Pied Piper Software,low,closed,1.5
+000001271,Lexington Technologies,high,closed,24.0
+000001272,Wayne Aerospace,high,open,11.0
+000001273,Wonka Foods,high,closed,23.0
+000001274,Hooli Ventures,medium,in_progress,8.0
+ABC1,Oscorp,urgent,pending,-2
+000001276,Wayne Aerospace,low,open,8.5
+000001277,Acme Technologies,medium,in_progress,38.5
+000001278,Initech Systems,medium,in_progress,27.0
+000001279,Vandelay Textiles,medium,closed,14.0
+ABC1,Globex,urgent,pending,-2
+000001281,Oceanic Shipping,high,in_progress,23.0
+12345,Vandelay Industries,high,closed,23.5
+000001283,Aperture Labs,low,in_progress,33.5
+000001284,Cyberdyne Robotics,medium,in_progress,5.0
+000001285,Weyland-Yutani,low,closed,40.0
+000001286,LexCorp,high,in_progress,34.5
+000001287,Gringotts Financial,high,open,21.5
+000001288,Initech,medium,closed,32.5
+000001289,Globex Corporation International,high,closed,26.5
+000001290,Oceanic Travel,medium,open,2.0
+000001291,Massive Dynamic Labs,high,in_progress,16.5
+123,Prestige Worldwide Entertainment,high,open,36.5
+000001293,Cyberdyne Systems,medium,closed,5.0
+000001294,LexCorp,medium,closed,abc
+000001295,Acme Manufacturing,low,in_progress,7.0
+000001296,Lexington Labs,high,closed,23.5
+000001297,Globex Manufacturing,high,open,31.0
+000001298,,low,closed,5.0
+000001299,Hooli Ventures,medium,closed,24.5
+000001300,Cyberdyne Research,high,in_progress,10.5
+000001301,Vehement Holdings,low,in_progress,16.5
+000001302,Wonka Chocolate,low,open,29.5
+000001303,Massive Dynamic Labs,medium,in_progress,34.0
+000001304,Grayson Holdings,medium,closed,9.0
+000001305,Wayne Aerospace,low,closed,28.5
+000001306,Prestige Worldwide Media,high,in_progress,2.5
+000001307,Wayne Enterprises International,high,closed,abc
+000001308,Umbrella Pharmaceuticals,low,closed,37.0
+000001309,LexCorp Financial,high,in_progress,37.5
+000001310,Gekko Capital,medium,in_progress,11.5
+000001311,Initech,high,open,4.0
+000001312,Dunder Mifflin,urgent,open,28.5
+000001313,Wonka Confectionery,medium,open,2.0
+000001314,Nakatomi Corporation,low,in_progress,-2
+000001315,Cyberdyne Industries,low,in_progress,8.0
+000001316,Tyrell Corporation International,low,open,11.5
+000001317,Soylent Nutrition,high,open,29.0
+000001318,Wayne Construction,medium,in_progress,20.5
+000001319,Oscorp,medium,open,24.0
+000001320,Prestige Worldwide,medium,closed,11.0
+000001321,Aperture Science,low,in_progress,25.0
+000001322,Aperture Science,low,pending,34.5
+000001323,Pied Piper,medium,in_progress,16.5
+000001324,Oscorp,low,pending,16.0
+12345,Weyland Aerospace,low,in_progress,0.0
+000001326,Aperture Robotics,medium,in_progress,0.0
+000001327,Aperture Science,medium,closed,25.5
+000001328,Monarch Solutions,high,open,0.0
+000001329,Monarch Technology,low,in_progress,34.0
+000001330,Pied Piper Software,medium,in_progress,19.0
+000001331,Nakatomi Corporation,medium,in_progress,21.5
+000001332,,medium,in_progress,12.5
+000001333,Kord Financial,high,open,19.0
+000001334,Pied Piper,high,in_progress,22.5
+000001335,Cyberdyne Research,high,open,8.5
+000001336,Cyberdyne Systems,high,pending,15.0
+000001337,LexCorp Technologies,high,closed,31.5
+000001338,Vandelay Textiles,low,open,21.5
+ABC1,Oceanic Airlines,urgent,pending,-2
+000001340,Tyrell Biotech,high,in_progress,9.5
+000001341,Wayne Medical,low,open,9.0
+000001342,Stark Industries,medium,in_progress,2.5
+000001343,Stark Technologies,low,open,40.0
+000001344,,low,closed,39.0
+000001345,Duff Brewing,low,open,31.5
+000001346,Pied Piper Technologies,low,open,27.0
+000001347,Monarch Research,medium,open,36.5
+000001348,Monarch Financial,low,open,37.5
+000001349,Duff Brewing,low,pending,9.0
+000001350,,high,open,28.0
+000001351,Oceanic Airlines,low,open,40.0
+000001352,Monarch Industries,low,closed,5.0
+000001353,Globex Solutions,urgent,in_progress,37.5
+000001354,Prestige Worldwide Entertainment,high,open,13.0
+000001355,,high,closed,26.0
+000001356,Vandelay Industries,high,open,31.5
+000001357,Weyland-Yutani,high,closed,22.0
+000001358,Monarch Global,low,open,7.5
+000001359,Vehement Capital,high,closed,34.5
+000001360,Massive Dynamic Analytics,high,in_progress,13.0
+000001361,Oscorp Industries,low,open,30.0
+000001362,Monarch Industries,high,open,3.0
+000001363,Wonka Confectionery,low,closed,16.0
+000001364,Oceanic Shipping,low,open,3.0
+000001365,Globex Solutions,low,open,31.0
+000001366,Oscorp,low,in_progress,28.0
+000001367,Oscorp Research,medium,open,20.5
+000001368,Gekko & Co,medium,open,6.0
+000001369,Oceanic Shipping,low,closed,14.0
+000001370,,medium,open,27.5
+000001371,Oceanic Shipping,low,closed,23.5
+000001372,,high,closed,17.0
+000001373,Hooli,high,in_progress,3.5
+000001374,Gekko & Co,medium,closed,26.5
+000001375,,low,closed,38.5
+000001376,Oceanic Logistics,high,in_progress,14.5
+000001377,Gekko Capital,medium,pending,37.5
+000001378,Cyberdyne Robotics,low,in_progress,27.0
+000001379,Grayson Technologies,low,closed,27.5
+000001380,Lexington Labs,high,open,26.5
+000001381,Oceanic Airlines,medium,in_progress,32.0
+000001382,Queen Consolidated Technologies,medium,pending,6.0
+000001383,Black Mesa,high,open,26.0
+000001384,Stark Technologies,medium,closed,15.0
+000001385,Nakatomi Corporation,low,closed,19.5
+12345,Tyrell Biotech,high,in_progress,37.0
+000001387,Queen Consolidated,high,closed,11.5
+000001388,Umbrella Research,high,closed,0.0
+000001389,Oscorp,medium,in_progress,21.0
+000001390,Oceanic Travel,medium,closed,39.0
+000001391,Nakatomi Holdings,high,open,39.5
+000001392,Gringotts,high,in_progress,23.0
+000001393,Gekko & Co,medium,closed,29.5
+000001394,Roxxon Pharmaceuticals,medium,open,35.5
+000001395,Massive Dynamic International,high,open,8.5
+000001396,LexCorp Financial,high,open,30.5
+000001397,Umbrella Global,high,open,14.0
+000001398,Umbrella Pharmaceuticals,high,in_progress,27.0
+000001399,Duff Brewing,medium,closed,28.5
+000001400,Roxxon Industries,low,closed,34.0
+000001401,Wayne Enterprises International,medium,closed,39.5
+000001402,Duff Brewing,low,closed,5.5
+000001403,,medium,open,6.5
+000001404,Kord Industries,medium,open,13.0
+000001405,Wayne Enterprises,medium,closed,34.5
+000001406,Prestige Worldwide Entertainment,medium,closed,28.0
+000001407,Wayne Enterprises,medium,open,4.0
+000001408,Wayne Medical,high,pending,21.0
+000001409,Oscorp Research,medium,in_progress,33.5
+000001410,Wonka Foods International,medium,closed,36.0
+000001411,Soylent Foods,low,pending,14.5
+000001412,Hooli Communications,low,open,22.5
+000001413,Tyrell Industries,high,open,34.0
+000001414,Acme Logistics,high,in_progress,9.5
+000001415,,low,closed,36.5
+000001416,Umbrella Research,low,open,35.5
+000001417,Duff Distribution,medium,open,23.5
+000001418,Massive Dynamics,high,closed,7.5
+000001419,Massive Dynamic Security,medium,open,29.0
+000001420,Hooli Ventures,low,in_progress,34.5
+000001421,Aperture Robotics,high,in_progress,18.5
+000001422,Vandelay Trading,high,in_progress,9.0
+000001423,Wonka Foods International,medium,in_progress,7.0
+000001424,Oceanic Airlines,low,in_progress,35.0
+000001425,Cyberdyne Systems,medium,pending,14.0
+000001426,Oscorp Research,low,in_progress,12.0
+000001427,Pied Piper Technologies,medium,open,1.0
+000001428,Hooli Media,high,in_progress,1.25
+123,Duff Distribution,high,in_progress,32.5
+000001430,Umbrella Medical,medium,closed,23.5
+000001431,Vehement Holdings,medium,closed,-2
+000001432,Wonka Foods International,high,closed,28.0
+000001433,Initech Digital,high,closed,8.5
+000001434,Weyland-Yutani,low,open,19.0
+000001435,Roxxon Industries,medium,open,37.5
+000001436,Weyland-Yutani,low,closed,17.0
+000001437,Monarch Global,medium,in_progress,36.0
+000001438,Queen Consolidated,low,open,24.0
+000001439,Aperture Science,low,closed,37.0
+000001440,Massive Dynamic International,high,closed,14.0
+ABC1,Acme,urgent,pending,-2
+000001442,Gringotts Banking,low,in_progress,18.0
+000001443,Aperture Science,high,in_progress,15.5
+ABC1,Wayne Construction,urgent,pending,-2
+000001445,Monarch Technology,high,closed,16.5
+000001446,Prestige Worldwide Entertainment,high,open,23.5
+000001447,Initech Global,low,closed,10.0
+000001448,Kord Industries,medium,closed,8.5
+000001449,Soylent Corp,medium,closed,26.5
+000001450,Pied Piper Software,low,closed,18.5
+000001451,LexCorp,high,open,40.0
+000001452,Vehement Capital,urgent,open,34.5
+000001453,Massive Dynamic Labs,medium,in_progress,23.0
+000001454,,medium,open,0.5
+000001455,Stark Defense,medium,closed,21.5
+000001456,Massive Dynamics,low,open,9.5
+000001457,Wonka Foods,high,in_progress,33.5
+000001458,Hooli Cloud,high,open,26.5
+000001459,LexCorp,low,open,1.0
+000001460,Gringotts Financial,high,closed,8.5
+000001461,Gekko Capital,medium,open,19.0
+ABC1,Cyberdyne Industries,urgent,pending,-2
+000001463,Umbrella Health,low,open,5.0
+000001464,Gekko & Co,low,open,30.5
+000001465,Oceanic Airlines,low,open,2.0
+000001466,Sterling Cooper Partners,high,open,30.0
+ABC1,Queen Consolidated Labs,urgent,pending,-2
+000001468,Vehement Capital,low,in_progress,41
+ABC1,Dunder Mifflin Logistics,urgent,pending,-2
+000001470,Umbrella Global,medium,closed,10.0
+000001471,LexCorp Financial,high,in_progress,4.0
+ABC1,Umbrella Global,urgent,pending,-2
+ABC1,Wonka Confectionery,urgent,pending,-2
+000001474,Dunder Mifflin Paper,urgent,in_progress,30.0
+000001475,Vandelay Imports,medium,in_progress,6.5
+000001476,Sterling Cooper Advertising,medium,closed,41
+000001477,Prestige Worldwide Media,low,closed,7.0
+000001478,Black Mesa Security,medium,in_progress,18.0
+000001479,Oceanic Airlines,low,closed,31.5
+ABC1,Wonka Confectionery,urgent,pending,-2
+000001481,Wonka Foods International,low,in_progress,26.0
+000001482,Umbrella Medical,low,open,30.0
+000001483,Umbrella Research,low,open,31.0
+000001484,Hooli Software,medium,in_progress,5.0
+ABC1,Hooli Software,medium,in_progress,37.5
+000001486,Aperture Systems,medium,pending,38.0
+ABC1,Initech Digital,urgent,pending,-2
+000001488,Stark Manufacturing,high,closed,22.5
+000001489,Massive Dynamic Security,medium,in_progress,17.5
+000001490,Oceanic Shipping,low,pending,16.0
+000001491,Wayne Financial,low,open,3.0
+000001492,Weyland Aerospace,high,open,11.0
+000001493,Oscorp Research,low,closed,39.5
+000001494,LexCorp,high,in_progress,31.5
+000001495,Black Mesa Research,medium,in_progress,31.5
+000001496,Globex Manufacturing,high,closed,34.5
+000001497,Hooli,medium,open,24.5
+000001498,Wayne Technologies,medium,closed,2.0
+000001499,Monarch Global,high,pending,10.5
+000001500,Gringotts Financial,high,closed,31.0
+000001501,Acme Global,high,closed,35.0
+000001502,Globex Corporation International,medium,closed,35.5
+000001503,Vehement Technologies,low,closed,16.5
+000001504,Wayne Technologies,high,in_progress,22.5
+000001505,Wonka Confectionery,medium,open,1.5
+000001506,Umbrella Health,medium,closed,37.0
+000001507,Nakatomi Security,urgent,open,27.0
+000001508,Oceanic Shipping,medium,open,15.5
+000001509,Gringotts Financial,high,open,4.0
+000001510,Wonka Chocolate,medium,open,1.0
+000001511,Vandelay Industries,medium,in_progress,27.0
+000001512,Globex International,medium,open,30.0
+000001513,Duff Distribution,medium,in_progress,24.5
+000001514,Dunder Mifflin,medium,open,13.0
+000001515,Nakatomi Development,high,closed,10.5
+000001516,Roxxon Pharmaceuticals,medium,open,31.5
+000001517,LexCorp,high,open,18.0
+000001518,Tyrell Research,high,closed,14.0
+000001519,Nakatomi Corporation,high,in_progress,6.0
+000001520,Stark Manufacturing,low,in_progress,33.5
+000001521,Nakatomi Holdings,medium,open,19.0
+000001522,Tyrell Research,medium,in_progress,34.5
+000001523,Acme Technologies,medium,closed,39.5
+000001524,Grayson Financial,low,open,40.0
+000001525,Vandelay Imports,high,closed,13.5
+000001526,Soylent Nutrition,medium,in_progress,34.0
+000001527,Wayne Aerospace,high,in_progress,40.0
+000001528,,medium,closed,9.0
+ABC1,Tyrell Research,medium,closed,20.0
+000001530,Umbrella Pharmaceuticals,medium,in_progress,10.0
+000001531,Stark Logistics,medium,open,7.0
+000001532,Wonka Industries,low,pending,29.5
+000001533,Wayne Aerospace,medium,in_progress,2.0
+000001534,Stark Manufacturing,low,open,16.5
+000001535,Cyberdyne Robotics,high,in_progress,11.0
+000001536,Oceanic Airlines,high,closed,1.0
+12345,Black Mesa,medium,in_progress,19.0
+000001538,Nakatomi Corporation,medium,in_progress,8.5
+000001539,Globex Corporation International,high,in_progress,7.5
+000001540,Umbrella Global,high,closed,31.5
+000001541,Stark Logistics,high,open,20.0
+000001542,Cyberdyne Global,high,closed,15.0
+000001543,Sterling Cooper Media,low,open,11.0
+000001544,Wayne Construction,medium,closed,16.0
+000001545,Gringotts,medium,in_progress,23.5
+000001546,Gekko & Co,medium,in_progress,27.0
+000001547,Grayson Technologies,medium,open,23.0
+000001548,Umbrella Research,medium,open,38.5
+000001549,Soylent Corp,urgent,in_progress,15.0
+000001550,Gringotts Financial,high,in_progress,23.0
+000001551,Roxxon,high,open,28.0
+000001552,Lexington Technologies,medium,closed,5.5
+000001553,Stark Logistics,medium,open,10.0
+000001554,Duff Distribution,high,closed,2.0
+000001555,Aperture Labs,medium,closed,26.0
+000001556,Black Mesa Technologies,high,closed,6.0
+000001557,Globex Manufacturing,high,open,22.5
+000001558,Grayson Financial,high,closed,29.0
+000001559,Soylent Corp,high,in_progress,11.5
+000001560,Wayne Financial,low,closed,12.5
+000001561,Prestige Worldwide Media,high,open,7.0
+000001562,Pied Piper Networks,high,in_progress,1.25
+000001563,Duff Distribution,medium,closed,8.5
+000001564,Oscorp Research,medium,open,5.0
+000001565,Initech Systems,medium,closed,36.5
+000001566,Wayne Enterprises,high,in_progress,39.0
+000001567,Weyland-Yutani,medium,open,16.5
+000001568,Oceanic Logistics,low,closed,39.5
+000001569,Globex Manufacturing,low,open,23.5
+000001570,Acme Global,low,pending,33.5
+000001571,Oceanic Shipping,high,closed,7.5
+000001572,Weyland Industries,low,closed,18.0
+000001573,Queen Consolidated Energy,low,closed,13.0
+000001574,Wonka Confectionery,high,in_progress,12.0
+000001575,Tyrell Robotics,low,open,18.5
+000001576,Stark Logistics,high,closed,15.5
+000001577,Tyrell Biotech,low,open,30.0
+ABC1,Monarch Financial,urgent,pending,-2
+000001579,Initech Digital,high,in_progress,16.0
+000001580,,low,open,21.0
+000001581,Sterling Cooper Advertising,high,in_progress,38.0
+000001582,Tyrell Corporation,low,closed,32.0
+000001583,Massive Dynamic Labs,medium,in_progress,23.5
+000001584,Massive Dynamic International,urgent,in_progress,11.0
+123,Black Mesa Security,medium,closed,8.0
+000001586,Stark Energy,low,closed,7.0
+000001587,Umbrella Health,medium,closed,23.0
+000001588,Wonka Confectionery,medium,in_progress,16.5
+000001589,Wayne Aerospace,low,closed,31.0
+000001590,Lexington Labs,high,in_progress,28.0
+12345,Lexington Labs,low,open,11.5
+000001592,Soylent Nutrition,medium,open,31.5
+000001593,Pied Piper Software,high,pending,31.0
+000001594,Kord Industries,low,closed,5.5
+000001595,Wonka Confectionery,low,open,32.5
+000001596,Tyrell Corporation International,high,in_progress,13.5
+000001597,Globex,high,in_progress,11.5
+000001598,LexCorp,low,closed,6.0
+000001599,Cyberdyne Systems,medium,in_progress,7.5
+000001600,Pied Piper,medium,open,1.5
+000001601,Duff Beverages,medium,in_progress,-2
+000001602,Tyrell Corporation,high,in_progress,28.5
+000001603,Acme Global,low,open,3.0
+000001604,Wonka Confectionery,medium,open,4.5
+000001605,Queen Consolidated Energy,low,closed,16.0
+000001606,,low,open,13.0
+000001607,Massive Dynamic Security,medium,in_progress,9.5
+ABC1,Aperture Science,urgent,pending,-2
+000001609,Pied Piper Software,high,open,23.5
+000001610,Aperture Science,medium,closed,30.0
+000001611,Initech Digital,low,closed,23.5
+000001612,Wayne Aerospace,high,closed,5.5
+ABC1,Nakatomi Security,urgent,pending,-2
+000001614,Hooli Ventures,medium,in_progress,40.0
+000001615,Black Mesa,medium,closed,27.5
+ABC1,Duff Beverages,urgent,pending,-2
+000001617,Grayson Technologies,high,closed,18.5
+000001618,Hooli Cloud,low,open,32.5
+ABC1,Initech Digital,urgent,pending,-2
+000001620,Queen Consolidated Labs,medium,closed,37.0
+000001621,,low,open,29.5
+000001622,Lexington Technologies,low,open,26.5
+000001623,Tyrell Research,medium,in_progress,29.0
+000001624,Vandelay Textiles,high,closed,21.5
+000001625,Vandelay Imports,low,open,5.0
+000001626,Globex Manufacturing,high,open,27.5
+000001627,Globex,medium,open,0.5
+ABC1,Duff Beverages,urgent,pending,-2
+000001629,Oscorp Medical,medium,in_progress,39.0
+000001630,Hooli Software,medium,open,8.0
+ABC1,Wonka Foods,low,open,12.0
+000001632,Kord Industries,high,open,27.5
+000001633,Stark Industries International,low,open,19.0
+000001634,Kord Industries,medium,closed,1.0
+000001635,Hooli Ventures,high,pending,28.0
+000001636,Vandelay Textiles,high,open,12.5
+000001637,Lexington Technologies,low,closed,0.5
+000001638,Stark Energy,medium,closed,abc
+ABC1,Monarch Research,urgent,pending,-2
+000001640,Oscorp Medical,low,in_progress,3.5
+000001641,Initech Digital,high,closed,35.0
+000001642,Acme Technologies,medium,open,abc
+000001643,Wayne Aerospace,low,open,18.0
+000001644,Gringotts Banking,medium,closed,14.5
+000001645,Weyland-Yutani Logistics,high,in_progress,29.5
+000001646,Oceanic Travel,high,pending,24.5
+000001647,Gekko Investments,medium,open,39.5
+000001648,Weyland-Yutani,high,closed,8.0
+000001649,Monarch Industries,high,pending,6.0
+000001650,Black Mesa Security,medium,open,13.0
+000001651,Stark Industries,medium,closed,22.5
+000001652,Acme Logistics,high,open,4.0
+000001653,Wonka Chocolate,high,open,7.5
+000001654,Oscorp Medical,medium,closed,22.5
+000001655,Monarch Global,medium,open,32.5
+000001656,Sterling Cooper,high,open,28.0
+000001657,Gekko & Co,low,in_progress,39.0
+000001658,Sterling Cooper,high,open,32.0
+ABC1,Cyberdyne Industries,urgent,pending,-2
+000001660,Wonka Foods International,high,closed,6.0
+000001661,,medium,open,7.5
+000001662,Acme Technologies,low,open,30.0
+000001663,Vehement Technologies,low,open,17.0
+000001664,Acme Technologies,medium,in_progress,15.5
+000001665,Queen Consolidated Technologies,medium,pending,8.5
+000001666,Tyrell Robotics,medium,in_progress,23.0
+000001667,Wonka Foods International,low,open,33.0
+000001668,Black Mesa,medium,closed,25.5
+000001669,Tyrell Industries,medium,open,25.0
+000001670,Lexington Labs,high,open,40.0
+000001671,Gekko Capital,medium,closed,25.5
+000001672,Hooli Cloud,medium,in_progress,20.0
+000001673,Initech,medium,in_progress,39.0
+000001674,Massive Dynamic Security,medium,in_progress,13.0
+000001675,Wonka Foods International,high,closed,25.5
+000001676,Massive Dynamic Labs,low,open,34.0
+000001677,Umbrella Health,high,in_progress,18.0
+000001678,Dunder Mifflin Consulting,high,closed,33.0
+000001679,Monarch Industries,low,open,34.5
+000001680,LexCorp Financial,medium,in_progress,27.0
+000001681,Gekko & Co,high,open,23.5
+000001682,Vehement Technologies,medium,open,3.0
+000001683,Roxxon,medium,closed,36.5
+000001684,Oceanic Shipping,medium,open,37.0
+000001685,Wayne Enterprises International,high,open,22.0
+000001686,Globex Corporation International,high,open,24.0
+000001687,Grayson Technologies,low,closed,33.0
+000001688,Gekko Investments,medium,open,9.0
+000001689,Oceanic Shipping,low,open,3.5
+000001690,Stark Technologies,medium,open,28.5
+000001691,Roxxon Industries,medium,in_progress,1.25
+000001692,Cyberdyne Global,medium,in_progress,27.0
+000001693,Aperture Science,high,closed,10.0
+000001694,,medium,in_progress,29.0
+000001695,Sterling Cooper Partners,high,open,13.5
+000001696,Hooli,high,open,35.5
+000001697,Cyberdyne Industries,high,closed,7.0
+000001698,,medium,open,33.0
+000001699,Soylent Foods,medium,pending,18.5
+123,Grayson Industries,low,in_progress,26.5
+000001701,Sterling Cooper Media,low,in_progress,31.0
+000001702,Grayson Financial,medium,pending,2.5
+000001703,Gringotts Financial,high,closed,21.5
+000001704,Prestige Worldwide Entertainment,high,in_progress,8.0
+000001705,Vehement Technologies,high,closed,28.5
+000001706,Lexington Labs,high,closed,5.5
+000001707,Tyrell Robotics,medium,open,25.0
+000001708,Tyrell Corporation,high,closed,17.5
+000001709,Tyrell Industries,high,open,36.5
+000001710,Gringotts Financial,high,in_progress,7.5
+000001711,Black Mesa,low,in_progress,34.5
+000001712,Soylent Corp,high,in_progress,12.0
+000001713,Nakatomi Development,low,open,34.0
+ABC1,Stark Industries,urgent,pending,-2
+000001715,Umbrella Global,medium,open,34.0
+000001716,Monarch Research,high,open,31.0
+000001717,Wayne Enterprises,medium,closed,11.5
+000001718,Queen Consolidated Technologies,medium,closed,16.0
+000001719,,high,open,18.0
+ABC1,Weyland-Yutani,urgent,pending,-2
+000001721,Oscorp Research,urgent,open,3.5
+000001722,Duff Distribution,low,closed,20.5
+000001723,Cyberdyne Industries,low,open,15.0
+000001724,Stark Logistics,medium,in_progress,32.0
+000001725,Wonka Chocolate,medium,open,20.0
+000001726,Tyrell Robotics,low,closed,1.5
+000001727,Wayne Medical,low,closed,35.0
+000001728,Dunder Mifflin,low,in_progress,8.0
+000001729,Tyrell Robotics,medium,open,32.0
+000001730,Grayson Industries,medium,in_progress,10.5
+000001731,Stark Industries International,medium,in_progress,28.5
+,Massive Dynamic Analytics,high,closed,10.5
+000001733,Monarch Technology,medium,in_progress,16.0
+000001734,Queen Consolidated Energy,medium,in_progress,13.5
+000001735,Dunder Mifflin Consulting,medium,open,10.0
+000001736,Tyrell Corporation International,low,closed,5.5
+000001737,Roxxon,low,in_progress,35.5
+000001738,Stark Energy,low,in_progress,32.0
+000001739,Duff Distribution,high,closed,16.5
+000001740,Vandelay Textiles,medium,open,20.5
+000001741,Tyrell Biotech,high,closed,1.0
+000001742,Wayne Financial,high,open,38.5
+000001743,Initech,high,open,26.0
+000001744,Aperture Science,medium,in_progress,5.0
+000001745,LexCorp,high,open,28.0
+000001746,Sterling Cooper Advertising,medium,in_progress,22.5
+000001747,Initech,low,closed,23.5
+000001748,Wonka Foods International,low,open,1.0
+000001749,Pied Piper Software,low,open,39.0
+000001750,Pied Piper Technologies,low,closed,23.0
+000001751,,high,in_progress,38.5
+000001752,Hooli Software,low,closed,1.25
+ABC1,Oscorp Industries,urgent,pending,-2
+000001754,Tyrell Corporation International,low,open,37.5
+000001755,,low,closed,36.0
+000001756,Wayne Construction,low,in_progress,1.0
+000001757,Wayne Enterprises International,high,closed,35.5
+000001758,Acme,medium,in_progress,3.0
+000001759,Monarch Financial,medium,closed,17.5
+000001760,Pied Piper Networks,medium,closed,-2
+000001761,Roxxon Energy,low,closed,26.5
+000001762,Prestige Worldwide Media,low,closed,12.0
+000001763,Globex Corporation International,low,in_progress,14.0
+000001764,Initech Digital,low,open,12.5
+,Gringotts Financial,low,in_progress,40.0
+000001766,Cyberdyne Systems,high,in_progress,21.0
+000001767,Grayson Technologies,low,closed,15.0
+000001768,Soylent Corp,medium,in_progress,15.0
+000001769,Cyberdyne Research,low,in_progress,28.5
+000001770,Black Mesa,low,open,24.0
+000001771,Duff Brewing,low,open,28.0
+000001772,Stark Energy,low,open,-2
+000001773,Queen Consolidated Energy,medium,open,39.5
+000001774,Wayne Medical,high,in_progress,39.5
+000001775,Kord Financial,medium,closed,-2
+000001776,Cyberdyne Systems,medium,in_progress,21.0
+000001777,Pied Piper,low,open,38.0
+000001778,Oscorp Industries,high,open,32.5
+000001779,Globex International,medium,in_progress,39.5
+000001780,Kord Enterprises,low,open,3.5
+000001781,Cyberdyne Global,urgent,in_progress,22.5
+000001782,LexCorp Technologies,low,open,30.0
+000001783,Nakatomi Security,medium,closed,0.5
+000001784,Kord Industries,low,open,32.0
+000001785,Massive Dynamic International,low,closed,22.0
+000001786,Black Mesa Research,urgent,open,4.0
+000001787,Prestige Worldwide Entertainment,high,in_progress,abc
+000001788,Tyrell Corporation International,medium,in_progress,19.0
+000001789,Massive Dynamics,low,closed,2.5
+000001790,Acme,high,open,14.5
+000001791,Dunder Mifflin Paper,low,closed,21.0
+000001792,Wayne Technologies,low,closed,11.5
+000001793,Globex,medium,open,4.5
+000001794,Monarch Global,low,open,18.5
+000001795,Cyberdyne Global,medium,open,1.5
+ABC1,Wonka Confectionery,urgent,pending,-2
+ABC1,Hooli Cloud,low,open,12.5
+000001798,Dunder Mifflin,low,in_progress,8.5
+000001799,Gekko & Co,medium,open,19.5
+000001800,Umbrella Research,medium,in_progress,10.5
+000001801,Wayne Aerospace,high,open,7.5
+000001802,Stark Technologies,low,pending,34.0
+000001803,Duff Distribution,high,closed,15.5
+000001804,Wonka Foods,high,closed,9.5
+000001805,Soylent Corp,high,closed,8.0
+000001806,Cyberdyne Global,medium,open,5.0
+000001807,Duff Brewing,low,in_progress,24.5
+000001808,Dunder Mifflin Consulting,medium,closed,33.0
+000001809,Monarch Financial,high,closed,33.5
+000001810,Black Mesa Security,medium,closed,37.0
+000001811,Cyberdyne Global,high,open,13.0
+000001812,Black Mesa Research,medium,open,25.0
+000001813,Initech Digital,medium,in_progress,10.0
+000001814,Stark Defense,medium,in_progress,5.0
+000001815,Black Mesa,urgent,closed,33.0
+000001816,Oceanic Airlines,medium,in_progress,39.5
+000001817,Vandelay Textiles,medium,closed,26.0
+000001818,Weyland Aerospace,medium,closed,24.0
+000001819,Wonka Foods International,urgent,closed,4.5
+000001820,Oceanic Travel,high,in_progress,34.5
+000001821,Wayne Construction,low,open,7.5
+000001822,,high,open,21.0
+000001823,Queen Consolidated Labs,medium,in_progress,17.5
+000001824,Queen Consolidated,urgent,in_progress,34.5
+000001825,Tyrell Research,medium,pending,25.5
+000001826,Umbrella,medium,in_progress,32.5
+000001827,Lexington Labs,medium,open,14.5
+000001828,Nakatomi Holdings,medium,open,33.0
+000001829,Hooli Cloud,medium,in_progress,29.5
+000001830,Black Mesa,medium,open,27.0
+000001831,Acme Technologies,low,closed,28.5
+000001832,Wonka Industries,medium,open,36.5
+000001833,Soylent Foods,high,open,31.5
+000001834,Sterling Cooper Advertising,medium,open,26.5
+000001835,Massive Dynamic Security,high,in_progress,19.0
+000001836,Wayne Enterprises,high,open,8.5
+000001837,Aperture Robotics,high,in_progress,1.25
+000001838,Weyland Industries,medium,open,34.0
+000001839,Prestige Worldwide Entertainment,low,closed,36.0
+000001840,Massive Dynamic Labs,low,open,6.5
+000001841,Globex Solutions,low,in_progress,38.5
+000001842,Vandelay Imports,low,open,24.5
+000001843,Wayne Medical,medium,in_progress,33.5
+000001844,,medium,in_progress,0.5
+000001845,Oceanic Shipping,medium,open,7.0
+000001846,Globex International,medium,pending,4.0
+000001847,Weyland Industries,low,open,19.5
+000001848,Prestige Worldwide Entertainment,low,in_progress,36.5
+000001849,Black Mesa Research,high,in_progress,29.0
+000001850,Globex,low,closed,4.0
+000001851,Grayson Technologies,high,closed,36.0
+000001852,Tyrell Biotech,medium,in_progress,2.5
+000001853,Hooli Communications,high,closed,22.0
+000001854,Tyrell Research,medium,in_progress,11.0
+000001855,Globex Solutions,high,in_progress,27.5
+000001856,Initech Systems,high,in_progress,6.0
+000001857,Tyrell Corporation,low,open,17.5
+000001858,Stark Industries International,medium,in_progress,4.0
+000001859,Sterling Cooper Media,medium,closed,35.0
+000001860,Umbrella Research,urgent,open,32.0
+000001861,Tyrell Industries,medium,open,32.0
+000001862,Cyberdyne Systems,low,pending,29.5
+000001863,Monarch Research,low,closed,2.0
+ABC1,Wonka Chocolate,urgent,pending,-2
+000001865,Oscorp Medical,medium,open,5.0
+000001866,Kord Enterprises,high,closed,8.5
+000001867,Cyberdyne Robotics,low,open,1.0
+000001868,Globex Solutions,medium,open,34.0
+000001869,Oceanic Logistics,low,in_progress,0.5
+000001870,Hooli Ventures,medium,closed,11.0
+000001871,Hooli,high,in_progress,13.5
+000001872,Massive Dynamic,high,in_progress,6.5
+000001873,Soylent Foods,medium,open,38.0
+000001874,,low,open,23.5
+000001875,Stark Industries,urgent,open,0.5
+000001876,Duff Brewing,low,open,10.5
+000001877,Tyrell Corporation,medium,in_progress,6.5
+000001878,Monarch Financial,high,in_progress,12.0
+000001879,LexCorp Technologies,medium,closed,7.5
+000001880,Pied Piper,medium,closed,11.0
+000001881,Prestige Worldwide Media,low,pending,13.5
+000001882,Cyberdyne Robotics,high,in_progress,23.5
+000001883,Sterling Cooper Media,medium,pending,38.0
+000001884,Sterling Cooper,high,in_progress,36.0
+ABC1,Vehement Capital,urgent,pending,-2
+000001886,Wayne Financial,medium,open,20.0
+000001887,Monarch Technology,low,closed,1.0
+000001888,Cyberdyne Global,medium,closed,32.5
+000001889,Wayne Medical,high,in_progress,0.5
+000001890,Roxxon,medium,open,27.0
+000001891,Aperture Labs,low,open,23.5
+000001892,Black Mesa Research,low,closed,13.0
+000001893,Stark Logistics,high,in_progress,28.0
+000001894,Aperture Robotics,low,closed,20.0
+000001895,Oceanic Airlines,high,closed,18.0
+000001896,Queen Industries,high,closed,21.5
+000001897,LexCorp Technologies,low,in_progress,15.5
+000001898,Pied Piper Technologies,high,closed,33.0
+000001899,Wonka Foods International,high,open,4.0
+000001900,Monarch Solutions,low,open,9.0
+000001901,Umbrella Health,low,open,37.5
+000001902,Weyland Industries,low,in_progress,5.0
+000001903,Soylent Nutrition,medium,open,12.5
+000001904,Globex Solutions,high,open,19.0
+000001905,Hooli Media,high,open,17.0
+000001906,Monarch Technology,low,closed,25.0
+000001907,Gringotts Banking,medium,closed,32.0
+000001908,Stark Energy,low,closed,1.0
+000001909,Umbrella Medical,low,closed,38.0
+000001910,Hooli Cloud,high,open,16.0
+000001911,Soylent Foods,medium,closed,24.0
+000001912,Monarch Technology,low,closed,8.5
+000001913,Aperture Systems,low,open,0.0
+000001914,Nakatomi Development,high,pending,23.5
+000001915,Acme Technologies,medium,in_progress,23.5
+000001916,Soylent Foods,high,in_progress,4.5
+000001917,Vandelay Industries,low,closed,36.0
+000001918,Wayne Aerospace,medium,in_progress,1.25
+000001919,Umbrella Research,high,open,24.5
+000001920,Grayson Technologies,low,closed,2.0
+000001921,Gekko Investments,high,in_progress,1.5
+000001922,Kord Industries,medium,in_progress,29.0
+000001923,Kord Industries,medium,open,38.5
+000001924,Massive Dynamics,low,open,5.5
+000001925,Kord Financial,medium,in_progress,37.5
+000001926,Aperture Labs,high,open,27.0
+000001927,Umbrella Medical,medium,in_progress,1.25
+000001928,Oceanic Shipping,high,open,6.5
+000001929,Vehement Holdings,low,closed,13.0
+000001930,Hooli Software,high,closed,0.0
+000001931,Aperture Science,low,open,4.0
+000001932,Acme Technologies,high,closed,18.0
+000001933,Oceanic Logistics,low,closed,11.5
+000001934,Aperture Systems,medium,open,32.0
+000001935,Vandelay Textiles,high,open,11.5
+000001936,Initech Systems,low,closed,26.0
+000001937,Pied Piper,high,open,5.0
+000001938,Wayne Technologies,low,closed,4.0
+000001939,Cyberdyne Global,low,closed,31.0
+000001940,Dunder Mifflin,low,open,17.0
+000001941,Globex,high,in_progress,2.5
+000001942,Gekko Capital,low,closed,abc
+000001943,Prestige Worldwide Entertainment,medium,in_progress,27.0
+000001944,Nakatomi Security,medium,open,23.0
+000001945,Wayne Technologies,high,open,22.5
+000001946,Dunder Mifflin,low,closed,25.5
+000001947,Queen Consolidated,low,in_progress,7.5
+000001948,Cyberdyne Robotics,high,open,23.5
+000001949,Prestige Worldwide Entertainment,high,closed,12.0
+123,Monarch Financial,low,in_progress,23.0
+000001951,Wayne Medical,high,closed,25.5
+000001952,Aperture Labs,medium,closed,30.0
+000001953,Dunder Mifflin,high,closed,18.5
+000001954,Grayson Industries,high,in_progress,32.0
+000001955,Weyland Aerospace,low,pending,35.0
+000001956,,low,closed,34.5
+000001957,Oceanic Logistics,high,in_progress,5.5
+000001958,Wonka Industries,urgent,closed,24.5
+000001959,Acme Manufacturing,high,closed,7.5
+000001960,Wayne Enterprises International,high,in_progress,31.0
+123,Black Mesa Technologies,low,in_progress,38.0
+000001962,Queen Consolidated Energy,high,in_progress,35.5
+000001963,Wayne Aerospace,low,open,16.5
+ABC1,Weyland-Yutani,urgent,pending,-2
+000001965,Wonka Foods,high,open,36.5
+000001966,Prestige Worldwide Media,medium,in_progress,0.0
+000001967,Stark Industries International,low,closed,27.0
+000001968,Roxxon Pharmaceuticals,high,open,33.0
+000001969,Pied Piper Technologies,low,closed,0.5
+000001970,Tyrell Biotech,medium,open,18.5
+000001971,Weyland Aerospace,high,closed,9.0
+000001972,Kord Industries,high,in_progress,2.0
+000001973,Gringotts Financial,high,in_progress,7.5
+000001974,Globex Corporation International,medium,in_progress,13.5
+000001975,Wayne Technologies,low,closed,9.5
+000001976,Nakatomi Holdings,high,open,3.0
+000001977,Globex Solutions,medium,in_progress,25.0
+000001978,Monarch Industries,low,in_progress,25.0
+000001979,Prestige Worldwide Entertainment,medium,closed,25.0
+ABC1,Wonka Confectionery,urgent,pending,-2
+000001981,Lexington Technologies,low,open,20.5
+000001982,Umbrella Global,low,in_progress,19.0
+000001983,Massive Dynamics,high,open,28.0
+000001984,Vandelay Trading,low,open,13.5
+000001985,Aperture Systems,high,in_progress,0.5
+000001986,Initech Global,low,in_progress,9.0
+000001987,Umbrella Medical,high,open,3.5
+000001988,Prestige Worldwide Entertainment,low,open,abc
+000001989,Lexington Labs,high,in_progress,25.5
+000001990,Cyberdyne Industries,low,closed,31.0
+000001991,Acme Logistics,high,in_progress,24.0
+000001992,Weyland-Yutani,medium,in_progress,24.0
+000001993,Wonka Foods International,medium,open,7.5
+000001994,,medium,in_progress,32.5
+ABC1,Globex Corporation International,urgent,pending,-2
+000001996,Initech Systems,medium,closed,27.5
+000001997,Umbrella Health,low,closed,4.0
+000001998,Stark Industries International,low,closed,1.0
+000001999,Stark Industries International,high,closed,4.0

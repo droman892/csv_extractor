@@ -3,7 +3,7 @@ from queue import Empty
 
 from PySide6.QtCore import QObject, Signal, Slot, QTimer
 
-from ...services.results_export_service import ResultsExportService
+from ..services.results_export_service import ResultsExportService
 
 def run_export(result, destination_path, result_queue):
   

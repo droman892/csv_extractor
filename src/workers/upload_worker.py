@@ -3,7 +3,7 @@ from queue import Empty
 
 from PySide6.QtCore import QObject, Signal, Slot, QTimer
 
-from ...processing.processor import process_csv
+from ..processing.processor import process_csv
 
 
 MAX_DISPLAYED_ROWS = 100

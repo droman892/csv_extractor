@@ -1,6 +1,6 @@
 from PySide6.QtCore import QObject, Signal, QThread
 
-from ..workers.export_worker import ExportWorker
+from ...workers.export_worker import ExportWorker
 
 
 class ResultsViewModel(QObject):

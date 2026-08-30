@@ -182,6 +182,16 @@ class ResultsView(QWidget):
             self.results_title
         )
 
+        results_note = QLabel(
+            "Note: Only data from valid records is included in Tickets by Status, Tickets by Priority, and Hours by Customer."
+        )
+
+        results_note.setWordWrap(True)
+
+        title_layout.addWidget(
+            results_note
+        )
+
         title_container.setLayout(
             title_layout
         )

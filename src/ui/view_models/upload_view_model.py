@@ -1,6 +1,6 @@
 from PySide6.QtCore import QObject, Signal, QThread
 
-from ..workers.upload_worker import UploadWorker
+from ...workers.upload_worker import UploadWorker
 
 
 class UploadViewModel(QObject):

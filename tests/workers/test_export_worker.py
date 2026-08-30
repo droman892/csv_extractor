@@ -1,7 +1,7 @@
 from queue import Empty
 from unittest.mock import MagicMock, patch
 
-from src.ui.workers.export_worker import (
+from src.workers.export_worker import (
     ExportWorker,
     run_export,
 )
@@ -18,7 +18,7 @@ def test_run_export_puts_completed_result_in_queue():
     result_queue = MagicMock()
 
     with patch(
-        "src.ui.workers.export_worker.ResultsExportService.export_results"
+        "src.workers.export_worker.ResultsExportService.export_results"
     ) as export_results:
         run_export(
             RESULT,
@@ -43,7 +43,7 @@ def test_run_export_puts_failed_result_in_queue():
     result_queue = MagicMock()
 
     with patch(
-        "src.ui.workers.export_worker.ResultsExportService.export_results",
+        "src.workers.export_worker.ResultsExportService.export_results",
         side_effect=Exception("Export failed")
     ) as export_results:
         run_export(
@@ -126,10 +126,10 @@ def test_export_file_creates_result_queue():
     fake_process = MagicMock()
 
     with patch(
-        "src.ui.workers.export_worker.Queue",
+        "src.workers.export_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.ui.workers.export_worker.Process",
+        "src.workers.export_worker.Process",
         return_value=fake_process
     ):
         worker.export_file()
@@ -150,10 +150,10 @@ def test_export_file_creates_process_with_expected_arguments():
     fake_process = MagicMock()
 
     with patch(
-        "src.ui.workers.export_worker.Queue",
+        "src.workers.export_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.ui.workers.export_worker.Process",
+        "src.workers.export_worker.Process",
         return_value=fake_process
     ) as process_factory:
         worker.export_file()
@@ -181,10 +181,10 @@ def test_export_file_starts_process():
     fake_process = MagicMock()
 
     with patch(
-        "src.ui.workers.export_worker.Queue",
+        "src.workers.export_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.ui.workers.export_worker.Process",
+        "src.workers.export_worker.Process",
         return_value=fake_process
     ):
         worker.export_file()
@@ -205,10 +205,10 @@ def test_export_file_creates_poll_timer(qtbot):
     fake_process = MagicMock()
 
     with patch(
-        "src.ui.workers.export_worker.Queue",
+        "src.workers.export_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.ui.workers.export_worker.Process",
+        "src.workers.export_worker.Process",
         return_value=fake_process
     ):
         worker.export_file()

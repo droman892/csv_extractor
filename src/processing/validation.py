@@ -299,9 +299,9 @@ def validate_hours(hours):
         )
         return result
 
-    if clean_hours < 0:
+    if clean_hours < 0.5:
         result["error"] = (
-            f"{hours} cannot be less than 0"
+            f"{hours} cannot be less than 0.5"
         )
         return result
 

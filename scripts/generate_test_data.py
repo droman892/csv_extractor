@@ -353,12 +353,5 @@ def main():
         args.customers,
     )
 
-    print(
-        f"Generated {args.rows:,} rows "
-        f"with {args.customers:,} customers "
-        f"in {args.output}"
-    )
-
-
 if __name__ == "__main__":
     main()

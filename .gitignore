@@ -5,3 +5,4 @@ __pycache__/
 .idea/
 .vscode/
 .env
+data/demo_data_5_000_000.csv

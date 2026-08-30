@@ -52,7 +52,7 @@ class UploadView(QWidget):
             font-size: 14px;
         }
 
-        QLabel#testFile {
+        QLabel#demoDataFile {
             font-size: 14px;
         }
 
@@ -134,7 +134,7 @@ class UploadView(QWidget):
         format_grid.setColumnMinimumWidth(1, 0)
 
         demo_file = QLabel()
-        demo_file.setObjectName("testFile")
+        demo_file.setObjectName("demoDataFile")
         demo_file.setText(
             'Demo File: <a href="#">demo_data.csv</a>'
         )
@@ -198,8 +198,8 @@ class UploadView(QWidget):
     def download_demo_file(self):
         destination_path, _ = QFileDialog.getSaveFileName(
             self,
-            "Save Test CSV File",
-            "test_data.csv",
+            "Save Demo CSV File",
+            "demo_data.csv",
             "CSV Files (*.csv)",
         )
 

@@ -97,6 +97,10 @@ class ResultsExportService:
             Path(result["filename"]).name
         ])
 
+        writer.writerow([
+            "Note: Only data from valid records is included in Tickets by Status, Tickets by Priority, and Hours by Customer."
+        ])
+
         writer.writerow([])
 
     @staticmethod
