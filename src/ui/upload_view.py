@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QApplication
 )
 
-from ..services.test_file_service import TestFileService
+from ..services.test_file_service import DemoFileService
 from .view_models.upload_view_model import UploadViewModel
 
 
@@ -207,7 +207,7 @@ class UploadView(QWidget):
             return
 
         try:
-            TestFileService.download_test_file(destination_path)
+            DemoFileService.download_test_file(destination_path)
         except (FileNotFoundError, OSError) as error:
             self.show_error(str(error))
 
