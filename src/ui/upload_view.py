@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QApplication
 )
 
-from ..services.test_file_service import DemoFileService
+from ..services.demo_file_service import DemoFileService
 from .view_models.upload_view_model import UploadViewModel
 
 
@@ -133,13 +133,13 @@ class UploadView(QWidget):
         format_grid.setColumnMinimumWidth(0, 90)
         format_grid.setColumnMinimumWidth(1, 0)
 
-        test_file = QLabel()
-        test_file.setObjectName("testFile")
-        test_file.setText(
-            'Test File: <a href="#">test_data.csv</a>'
+        demo_file = QLabel()
+        demo_file.setObjectName("testFile")
+        demo_file.setText(
+            'Demo File: <a href="#">demo_data.csv</a>'
         )
-        test_file.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        test_file.linkActivated.connect(self.download_test_file)
+        demo_file.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        demo_file.linkActivated.connect(self.download_demo_file)
 
         self.upload_button = QPushButton("Upload CSV File")
         self.upload_button.setCursor(
@@ -164,7 +164,7 @@ class UploadView(QWidget):
         card_layout.addSpacing(12)
         card_layout.addWidget(format_title)
         card_layout.addLayout(format_grid)
-        card_layout.addWidget(test_file)
+        card_layout.addWidget(demo_file)
         card_layout.addSpacing(12)
 
         card_layout.addWidget(
@@ -195,7 +195,7 @@ class UploadView(QWidget):
 
         self.setLayout(layout)
 
-    def download_test_file(self):
+    def download_demo_file(self):
         destination_path, _ = QFileDialog.getSaveFileName(
             self,
             "Save Test CSV File",
@@ -207,7 +207,7 @@ class UploadView(QWidget):
             return
 
         try:
-            DemoFileService.download_test_file(destination_path)
+            DemoFileService.download_demo_file(destination_path)
         except (FileNotFoundError, OSError) as error:
             self.show_error(str(error))
 
