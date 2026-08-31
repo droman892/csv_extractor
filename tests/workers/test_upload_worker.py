@@ -1,7 +1,5 @@
 from unittest.mock import MagicMock, patch
 
-from PySide6.QtCore import QTimer
-
 from src.workers.upload_worker import (
     MAX_DISPLAYED_ROWS,
     UploadWorker,
@@ -16,6 +14,7 @@ RESULT = {
     "total_tickets_count": 10,
     "valid_tickets_count": 8,
     "invalid_tickets_count": 2,
+    "total_validation_error_count": 3,
     "summary": {
         "total_hours": 20.0,
         "tickets_by_status": {
@@ -35,6 +34,10 @@ RESULT = {
     "invalid_records": [
         {
             "ticket_id": "1001",
+            "customer": "Acme Corp",
+            "priority": "urgent",
+            "status": "open",
+            "hours": 2.0,
             "errors": [
                 {
                     "field": "priority",
@@ -45,6 +48,10 @@ RESULT = {
         },
         {
             "ticket_id": "1002",
+            "customer": "Globex",
+            "priority": "high",
+            "status": "pending",
+            "hours": None,
             "errors": [
                 {
                     "field": "hours",
@@ -243,7 +250,11 @@ def test_run_processing_puts_completed_result_in_queue():
     with patch(
         "src.workers.upload_worker.process_csv",
         return_value=RESULT
+    ), patch(
+        "src.workers.upload_worker.save_full_result",
+        return_value="C:/temp/result.pkl"
     ):
+
         run_processing(
             "test.csv",
             result_queue
@@ -254,8 +265,12 @@ def test_run_processing_puts_completed_result_in_queue():
     status, value = result_queue.put.call_args.args[0]
 
     assert status == "completed"
+
     assert value["display_result"]["filename"] == "test.csv"
-    assert value["result"] == RESULT
+
+    assert value["full_result_path"] == (
+        "C:/temp/result.pkl"
+    )
 
 
 def test_run_processing_puts_value_error_in_queue():
@@ -273,7 +288,7 @@ def test_run_processing_puts_value_error_in_queue():
     result_queue.put.assert_called_once_with(
         (
             "failed",
-            "Invalid CSV file."
+            "ValueError: Invalid CSV file."
         )
     )
 
@@ -293,7 +308,7 @@ def test_run_processing_puts_unexpected_error_in_queue():
     result_queue.put.assert_called_once_with(
         (
             "failed",
-            "Unexpected failure."
+            "RuntimeError: Unexpected failure."
         )
     )
 
@@ -359,7 +374,6 @@ def test_process_file_creates_process_with_expected_arguments():
         "src.workers.upload_worker.QTimer",
         return_value=MagicMock()
     ):
-
         worker.process_file()
 
     process_class.assert_called_once_with(
@@ -406,7 +420,6 @@ def test_process_file_creates_poll_timer():
         "src.workers.upload_worker.Process",
         return_value=fake_process
     ):
-
         worker.process_file()
 
     assert worker.poll_timer is not None

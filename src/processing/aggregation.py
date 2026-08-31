@@ -1,33 +1,53 @@
-def aggregate_csv(valid_records):
-    tickets_by_status = {
-        "open": 0,
-        "closed": 0,
-        "in_progress": 0
-    }
-
-    tickets_by_priority = {
-        "low": 0,
-        "medium": 0,
-        "high": 0
-    }
-
-    hours_by_customer = {}
-    total_hours = 0
-
-    for row in valid_records:
-        tickets_by_status[row["status"]] += 1
-        tickets_by_priority[row["priority"]] += 1
-
-        if row["customer"] not in hours_by_customer:
-            hours_by_customer[row["customer"]] = row["hours"]
-        else:
-            hours_by_customer[row["customer"]] += row["hours"]
-
-        total_hours += row["hours"]
+def create_aggregation():
 
     return {
-        "tickets_by_status": tickets_by_status,
-        "tickets_by_priority": tickets_by_priority,
-        "hours_by_customer": hours_by_customer,
-        "total_hours": total_hours
+        "tickets_by_status": {
+            "open": 0,
+            "closed": 0,
+            "in_progress": 0
+        },
+
+        "tickets_by_priority": {
+            "low": 0,
+            "medium": 0,
+            "high": 0
+        },
+
+        "hours_by_customer": {},
+
+        "total_hours": 0
     }
+
+
+def add_valid_record(summary, row):
+
+    summary["tickets_by_status"][
+        row["status"]
+    ] += 1
+
+    summary["tickets_by_priority"][
+        row["priority"]
+    ] += 1
+
+    customer = row["customer"]
+    hours = row["hours"]
+
+    if customer not in summary["hours_by_customer"]:
+        summary["hours_by_customer"][customer] = hours
+    else:
+        summary["hours_by_customer"][customer] += hours
+
+    summary["total_hours"] += hours
+
+
+def aggregate_csv(valid_records):
+
+    summary = create_aggregation()
+
+    for row in valid_records:
+        add_valid_record(
+            summary,
+            row
+        )
+
+    return summary

@@ -19,7 +19,7 @@ def test_process_csv_returns_summary(tmp_path):
     result = process_csv(csv_file)
 
     assert result == {
-        "filename": tmp_path / "test.csv",
+        "filename": csv_file,
         "summary": {
             "tickets_by_status": {
                 "open": 2,
@@ -53,7 +53,7 @@ def test_process_csv_returns_summary(tmp_path):
                     {
                         "field": "hours",
                         "invalid_value": "-3.0",
-                        "reason": "-3.0 cannot be less than 0"
+                        "reason": "-3.0 cannot be less than 0.5"
                     }
                 ]
             }
@@ -72,21 +72,16 @@ def test_process_csv_passes_valid_records_to_aggregation():
         }
     ]
 
-    processed_rows = {
-        "valid_records": [
-            {
-                "ticket_id": "100000001",
-                "customer": "Acme Corp",
-                "priority": "high",
-                "status": "open",
-                "hours": 2.5
-            }
-        ],
-        "errors": [],
-        "valid_tickets_count": 1,
-        "invalid_tickets_count": 0,
-        "total_tickets_count": 1,
-        "total_validation_error_count": 0
+    validation_result = {
+        "valid": True,
+        "record": {
+            "ticket_id": "100000001",
+            "customer": "Acme Corp",
+            "priority": "high",
+            "status": "open",
+            "hours": 2.5
+        },
+        "error_count": 0
     }
 
     expected_summary = {
@@ -96,9 +91,27 @@ def test_process_csv_passes_valid_records_to_aggregation():
         "total_hours": 2.5
     }
 
-    expected_result = {
+    with patch(
+        "src.processing.processor.read_csv",
+        return_value=iter(raw_rows)
+    ):
+        with patch(
+            "src.processing.processor.validate_row",
+            return_value=validation_result
+        ) as mock_validate_row:
+            with patch(
+                "src.processing.processor.create_aggregation",
+                return_value={}
+            ) as mock_create_aggregation:
+                with patch(
+                    "src.processing.processor.add_valid_record"
+                ) as mock_add_valid_record:
+
+                    result = process_csv("anything.csv")
+
+    assert result == {
         "filename": "anything.csv",
-        "summary": expected_summary,
+        "summary": {},
         "valid_tickets_count": 1,
         "invalid_tickets_count": 0,
         "total_tickets_count": 1,
@@ -106,81 +119,71 @@ def test_process_csv_passes_valid_records_to_aggregation():
         "invalid_records": []
     }
 
-    with patch(
-        "src.processing.processor.read_csv",
-        return_value=raw_rows
-    ):
-        with patch(
-            "src.processing.processor.check_rows",
-            return_value=processed_rows
-        ):
-            with patch(
-                "src.processing.processor.aggregate_csv",
-                return_value=expected_summary
-            ) as mock_aggregate:
+    mock_create_aggregation.assert_called_once_with()
 
-                result = process_csv("anything.csv")
+    mock_validate_row.assert_called_once_with(
+        raw_rows[0]
+    )
 
-    assert result == expected_result
-    mock_aggregate.assert_called_once_with(
-        processed_rows["valid_records"]
+    mock_add_valid_record.assert_called_once_with(
+        {},
+        validation_result["record"]
     )
 
 
-def test_process_csv_passes_raw_rows_to_validation():
+def test_process_csv_passes_invalid_records_to_result():
     raw_rows = [
         {
-            "ticket_id": "100000001",
+            "ticket_id": "100000003",
             "customer": "Acme Corp",
-            "priority": "high",
+            "priority": "medium",
             "status": "open",
-            "hours": "2.5"
+            "hours": "-3.0"
         }
     ]
 
-    processed_rows = {
-        "valid_records": [],
-        "errors": [],
-        "valid_tickets_count": 0,
-        "invalid_tickets_count": 1,
-        "total_tickets_count": 1,
-        "total_validation_error_count": 1
+    invalid_record = {
+        "ticket_id": "100000003",
+        "customer": "Acme Corp",
+        "priority": "medium",
+        "status": "open",
+        "hours": None,
+        "errors": [
+            {
+                "field": "hours",
+                "invalid_value": "-3.0",
+                "reason": "-3.0 cannot be less than 0.5"
+            }
+        ]
     }
 
-    expected_summary = {
-        "tickets_by_status": {},
-        "tickets_by_priority": {},
-        "hours_by_customer": {},
-        "total_hours": 0
-    }
-
-    expected_result = {
-        "filename": "anything.csv",
-        "summary": expected_summary,
-        "valid_tickets_count": 0,
-        "invalid_tickets_count": 1,
-        "total_tickets_count": 1,
-        "total_validation_error_count": 1,
-        "invalid_records": []
+    validation_result = {
+        "valid": False,
+        "record": invalid_record,
+        "error_count": 1
     }
 
     with patch(
         "src.processing.processor.read_csv",
-        return_value=raw_rows
+        return_value=iter(raw_rows)
     ):
         with patch(
-            "src.processing.processor.check_rows",
-            return_value=processed_rows
-        ) as mock_check_rows:
-            with patch(
-                "src.processing.processor.aggregate_csv",
-                return_value=expected_summary
-            ):
+            "src.processing.processor.validate_row",
+            return_value=validation_result
+        ) as mock_validate_row:
 
-                result = process_csv("anything.csv")
+            result = process_csv("anything.csv")
 
-    assert result == expected_result
-    mock_check_rows.assert_called_once_with(raw_rows)
+    assert result["filename"] == "anything.csv"
+    assert result["valid_tickets_count"] == 0
+    assert result["invalid_tickets_count"] == 1
+    assert result["total_tickets_count"] == 1
+    assert result["total_validation_error_count"] == 1
+    assert result["invalid_records"] == [invalid_record]
+
+    mock_validate_row.assert_called_once_with(
+        raw_rows[0]
+    )
 
 
 def test_process_csv_propagates_file_not_found_error():

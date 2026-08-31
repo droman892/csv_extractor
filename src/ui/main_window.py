@@ -17,6 +17,9 @@ class MainWindow(QMainWindow):
 
     def show_upload_view(self):
         if hasattr(self, "results_view"):
+            if self.results_view is not None:
+                self.results_view.view_model.cleanup_full_result()
+
             self.results_view = None
 
         self.upload_view = UploadView()
@@ -55,12 +58,17 @@ class MainWindow(QMainWindow):
     def show_results_view(self, result):
         self.processing_overlay.stop()
 
-        display_result = result["display_result"]
-        full_result = result["result"]
+        display_result = result[
+            "display_result"
+        ]
+
+        full_result_path = result[
+            "full_result_path"
+        ]
 
         self.results_view = ResultsView(
             display_result,
-            full_result
+            full_result_path
         )
 
         self.results_view.upload_another_file_requested.connect(

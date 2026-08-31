@@ -1,3 +1,5 @@
+import os
+
 from PySide6.QtCore import QObject, Signal, QThread
 
 from ...workers.export_worker import ExportWorker
@@ -8,18 +10,20 @@ class ResultsViewModel(QObject):
     export_completed = Signal(str)
     export_failed = Signal(str)
 
-    def __init__(self, result, full_result):
+    def __init__(
+        self,
+        display_result,
+        full_result_path
+    ):
         super().__init__()
 
-        self.result = result
-        self.full_result = full_result
+        self.result = display_result
+        self.full_result_path = full_result_path
 
         self.export_thread = None
         self.export_worker = None
 
     def get_filename(self):
-        import os
-
         return os.path.basename(
             self.result["filename"]
         )
@@ -77,8 +81,9 @@ class ResultsViewModel(QObject):
         self.export_started.emit()
 
         self.export_thread = QThread()
+
         self.export_worker = ExportWorker(
-            self.full_result,
+            self.full_result_path,
             destination_path
         )
 
@@ -123,3 +128,16 @@ class ResultsViewModel(QObject):
     def export_finished(self):
         self.export_worker = None
         self.export_thread = None
+
+    def cleanup_full_result(self):
+        if not self.full_result_path:
+            return
+
+        try:
+            os.remove(
+                self.full_result_path
+            )
+        except FileNotFoundError:
+            pass
+
+        self.full_result_path = None

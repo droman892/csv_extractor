@@ -43,24 +43,23 @@ RESULT = {
 }
 
 
-FULL_RESULT = {
-    "rows": [
-        {
-            "ticket_id": "1001",
-            "customer": "Acme"
-        }
-    ]
-}
+FULL_RESULT_PATH = (
+    "C:/temp/csv_extractor_result.pkl"
+)
 
 
 class FakeExportWorker(QObject):
     completed = Signal(str)
     failed = Signal(str)
 
-    def __init__(self, full_result, destination_path):
+    def __init__(
+        self,
+        full_result_path,
+        destination_path
+    ):
         super().__init__()
 
-        self.full_result = full_result
+        self.full_result_path = full_result_path
         self.destination_path = destination_path
 
     def export_file(self):
@@ -71,34 +70,46 @@ class CompletingExportWorker(QObject):
     completed = Signal(str)
     failed = Signal(str)
 
-    def __init__(self, full_result, destination_path):
+    def __init__(
+        self,
+        full_result_path,
+        destination_path
+    ):
         super().__init__()
 
-        self.full_result = full_result
+        self.full_result_path = full_result_path
         self.destination_path = destination_path
 
     def export_file(self):
-        self.completed.emit(self.destination_path)
+        self.completed.emit(
+            self.destination_path
+        )
 
 
 class FailingExportWorker(QObject):
     completed = Signal(str)
     failed = Signal(str)
 
-    def __init__(self, full_result, destination_path):
+    def __init__(
+        self,
+        full_result_path,
+        destination_path
+    ):
         super().__init__()
 
-        self.full_result = full_result
+        self.full_result_path = full_result_path
         self.destination_path = destination_path
 
     def export_file(self):
-        self.failed.emit("Export failed")
+        self.failed.emit(
+            "Export failed"
+        )
 
 
 def create_view_model():
     return ResultsViewModel(
         RESULT,
-        FULL_RESULT
+        FULL_RESULT_PATH
     )
 
 
@@ -115,10 +126,13 @@ def test_init_stores_result():
     assert view_model.result is RESULT
 
 
-def test_init_stores_full_result():
+def test_init_stores_full_result_path():
     view_model = create_view_model()
 
-    assert view_model.full_result is FULL_RESULT
+    assert (
+        view_model.full_result_path
+        == FULL_RESULT_PATH
+    )
 
 
 def test_init_sets_export_thread_to_none():
@@ -163,13 +177,19 @@ def test_get_summary_returns_expected_summary():
         }
     }
 
-    assert view_model.get_summary() == expected
+    assert (
+        view_model.get_summary()
+        == expected
+    )
 
 
 def test_get_invalid_rows_returns_invalid_records():
     view_model = create_view_model()
 
-    assert view_model.get_invalid_rows() == RESULT["invalid_records"]
+    assert (
+        view_model.get_invalid_rows()
+        == RESULT["invalid_records"]
+    )
 
 
 def test_get_customer_rows_returns_customer_items():
@@ -181,25 +201,37 @@ def test_get_customer_rows_returns_customer_items():
         ("Initech", 30.0)
     ]
 
-    assert view_model.get_customer_rows() == expected
+    assert (
+        view_model.get_customer_rows()
+        == expected
+    )
 
 
 def test_get_total_customer_count_returns_count():
     view_model = create_view_model()
 
-    assert view_model.get_total_customer_count() == 3
+    assert (
+        view_model.get_total_customer_count()
+        == 3
+    )
 
 
 def test_get_total_invalid_record_count_returns_count():
     view_model = create_view_model()
 
-    assert view_model.get_total_invalid_record_count() == 2
+    assert (
+        view_model.get_total_invalid_record_count()
+        == 2
+    )
 
 
 def test_get_total_invalid_error_count_returns_count():
     view_model = create_view_model()
 
-    assert view_model.get_total_invalid_error_count() == 4
+    assert (
+        view_model.get_total_invalid_error_count()
+        == 4
+    )
 
 
 def test_export_results_emits_export_started():
@@ -219,13 +251,16 @@ def test_export_results_emits_export_started():
         "src.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
-        view_model.export_results("output.xlsx")
+        view_model.export_results(
+            "output.csv"
+        )
 
     assert received == [True]
 
     thread.finished.emit()
 
-def test_export_results_creates_worker_with_full_result_and_destination():
+
+def test_export_results_creates_worker_with_full_result_path_and_destination():
     view_model = create_view_model()
     thread = create_test_thread()
 
@@ -236,11 +271,24 @@ def test_export_results_creates_worker_with_full_result_and_destination():
         "src.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
-        view_model.export_results("output.xlsx")
+        view_model.export_results(
+            "output.csv"
+        )
 
-    assert isinstance(view_model.export_worker, FakeExportWorker)
-    assert view_model.export_worker.full_result is FULL_RESULT
-    assert view_model.export_worker.destination_path == "output.xlsx"
+    assert isinstance(
+        view_model.export_worker,
+        FakeExportWorker
+    )
+
+    assert (
+        view_model.export_worker.full_result_path
+        == FULL_RESULT_PATH
+    )
+
+    assert (
+        view_model.export_worker.destination_path
+        == "output.csv"
+    )
 
     thread.finished.emit()
 
@@ -256,7 +304,9 @@ def test_export_results_creates_thread():
         "src.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
-        view_model.export_results("output.xlsx")
+        view_model.export_results(
+            "output.csv"
+        )
 
     assert view_model.export_thread is thread
 
@@ -274,9 +324,14 @@ def test_export_results_moves_worker_to_thread():
         "src.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
-        view_model.export_results("output.xlsx")
+        view_model.export_results(
+            "output.csv"
+        )
 
-    assert view_model.export_worker.thread() is thread
+    assert (
+        view_model.export_worker.thread()
+        is thread
+    )
 
     thread.finished.emit()
 
@@ -292,7 +347,9 @@ def test_export_results_starts_thread():
         "src.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
-        view_model.export_results("output.xlsx")
+        view_model.export_results(
+            "output.csv"
+        )
 
     thread.start.assert_called_once()
 
@@ -316,11 +373,15 @@ def test_export_results_forwards_completed_signal():
         "src.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
-        view_model.export_results("output.xlsx")
+        view_model.export_results(
+            "output.csv"
+        )
 
-        result = "output.xlsx"
+        result = "output.csv"
 
-        view_model.export_worker.completed.emit(result)
+        view_model.export_worker.completed.emit(
+            result
+        )
 
     assert received_results == [result]
 
@@ -344,18 +405,24 @@ def test_export_results_forwards_failed_signal():
         "src.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
-        view_model.export_results("output.xlsx")
+        view_model.export_results(
+            "output.csv"
+        )
 
         error = "Export failed"
 
-        view_model.export_worker.failed.emit(error)
+        view_model.export_worker.failed.emit(
+            error
+        )
 
     assert received_errors == [error]
 
     thread.finished.emit()
 
 
-def test_export_results_completed_worker_stops_thread(qtbot):
+def test_export_results_completed_worker_stops_thread(
+    qtbot
+):
     view_model = create_view_model()
     thread = QThread()
 
@@ -370,12 +437,16 @@ def test_export_results_completed_worker_stops_thread(qtbot):
             thread.finished,
             timeout=1000
         ):
-            view_model.export_results("output.xlsx")
+            view_model.export_results(
+                "output.csv"
+            )
 
     assert thread.isFinished()
 
 
-def test_export_results_failed_worker_stops_thread(qtbot):
+def test_export_results_failed_worker_stops_thread(
+    qtbot
+):
     view_model = create_view_model()
     thread = QThread()
 
@@ -390,7 +461,9 @@ def test_export_results_failed_worker_stops_thread(qtbot):
             thread.finished,
             timeout=1000
         ):
-            view_model.export_results("output.xlsx")
+            view_model.export_results(
+                "output.csv"
+            )
 
     assert thread.isFinished()
 

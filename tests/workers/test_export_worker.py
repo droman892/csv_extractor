@@ -18,23 +18,30 @@ def test_run_export_puts_completed_result_in_queue():
     result_queue = MagicMock()
 
     with patch(
+        "src.workers.export_worker.open",
+        MagicMock()
+    ), patch(
+        "src.workers.export_worker.pickle.load",
+        return_value=RESULT
+    ), patch(
         "src.workers.export_worker.ResultsExportService.export_results"
     ) as export_results:
+
         run_export(
-            RESULT,
-            "output.xlsx",
+            "result.pkl",
+            "output.csv",
             result_queue
         )
 
     export_results.assert_called_once_with(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     result_queue.put.assert_called_once_with(
         (
             "completed",
-            "output.xlsx"
+            "output.csv"
         )
     )
 
@@ -43,18 +50,25 @@ def test_run_export_puts_failed_result_in_queue():
     result_queue = MagicMock()
 
     with patch(
+        "src.workers.export_worker.open",
+        MagicMock()
+    ), patch(
+        "src.workers.export_worker.pickle.load",
+        return_value=RESULT
+    ), patch(
         "src.workers.export_worker.ResultsExportService.export_results",
         side_effect=Exception("Export failed")
     ) as export_results:
+
         run_export(
-            RESULT,
-            "output.xlsx",
+            "result.pkl",
+            "output.csv",
             result_queue
         )
 
     export_results.assert_called_once_with(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     result_queue.put.assert_called_once_with(
@@ -65,61 +79,55 @@ def test_run_export_puts_failed_result_in_queue():
     )
 
 
-def test_export_worker_stores_result():
-
+def test_export_worker_stores_full_result_path():
     worker = ExportWorker(
-        RESULT,
-        "output.xlsx"
+        "result.pkl",
+        "output.csv"
     )
 
-    assert worker.result is RESULT
+    assert worker.full_result_path == "result.pkl"
 
 
 def test_export_worker_stores_destination_path():
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
-    assert worker.destination_path == "output.xlsx"
+    assert worker.destination_path == "output.csv"
 
 
 def test_export_worker_initializes_process_to_none():
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     assert worker.process is None
 
 
 def test_export_worker_initializes_result_queue_to_none():
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     assert worker.result_queue is None
 
 
 def test_export_worker_initializes_poll_timer_to_none():
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     assert worker.poll_timer is None
 
 
 def test_export_file_creates_result_queue():
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     fake_queue = MagicMock()
@@ -140,10 +148,9 @@ def test_export_file_creates_result_queue():
 
 
 def test_export_file_creates_process_with_expected_arguments():
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     fake_queue = MagicMock()
@@ -162,7 +169,7 @@ def test_export_file_creates_process_with_expected_arguments():
         target=run_export,
         args=(
             RESULT,
-            "output.xlsx",
+            "output.csv",
             fake_queue
         )
     )
@@ -171,10 +178,9 @@ def test_export_file_creates_process_with_expected_arguments():
 
 
 def test_export_file_starts_process():
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     fake_queue = MagicMock()
@@ -195,10 +201,9 @@ def test_export_file_starts_process():
 
 
 def test_export_file_creates_poll_timer(qtbot):
-
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     fake_queue = MagicMock()
@@ -223,7 +228,7 @@ def test_export_file_creates_poll_timer(qtbot):
 def test_check_result_returns_when_queue_is_empty():
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.result_queue = MagicMock()
@@ -239,13 +244,13 @@ def test_check_result_returns_when_queue_is_empty():
 def test_check_result_stops_poll_timer():
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.result_queue = MagicMock()
     worker.result_queue.get_nowait.return_value = (
         "completed",
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.poll_timer = MagicMock()
@@ -259,13 +264,13 @@ def test_check_result_stops_poll_timer():
 def test_check_result_joins_and_clears_process():
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.result_queue = MagicMock()
     worker.result_queue.get_nowait.return_value = (
         "completed",
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.poll_timer = MagicMock()
@@ -282,7 +287,7 @@ def test_check_result_joins_and_clears_process():
 def test_check_result_closes_and_clears_queue():
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     fake_queue = MagicMock()
@@ -293,7 +298,7 @@ def test_check_result_closes_and_clears_queue():
 
     fake_queue.get_nowait.return_value = (
         "completed",
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.check_result()
@@ -305,13 +310,13 @@ def test_check_result_closes_and_clears_queue():
 def test_check_result_emits_completed_signal():
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.result_queue = MagicMock()
     worker.result_queue.get_nowait.return_value = (
         "completed",
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.poll_timer = MagicMock()
@@ -326,14 +331,14 @@ def test_check_result_emits_completed_signal():
     worker.check_result()
 
     assert received_results == [
-        "output.xlsx"
+        "output.csv"
     ]
 
 
 def test_check_result_emits_failed_signal():
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.result_queue = MagicMock()
@@ -361,13 +366,13 @@ def test_check_result_emits_failed_signal():
 def test_check_result_joins_process_before_emitting_completed(qtbot):
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.result_queue = MagicMock()
     worker.result_queue.get_nowait.return_value = (
         "completed",
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.poll_timer = MagicMock()
@@ -396,7 +401,7 @@ def test_check_result_joins_process_before_emitting_completed(qtbot):
 def test_check_result_joins_process_before_emitting_failed(qtbot):
     worker = ExportWorker(
         RESULT,
-        "output.xlsx"
+        "output.csv"
     )
 
     worker.result_queue = MagicMock()

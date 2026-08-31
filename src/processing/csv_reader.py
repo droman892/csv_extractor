@@ -17,47 +17,18 @@ def read_csv(filename):
             newline="",
             encoding="utf-8-sig"
         ) as file:
-            content = file.read()
 
-        validate_csv_quotes(content)
+            reader = csv.DictReader(file)
 
-        raw_rows = csv.DictReader(
-            content.splitlines()
-        )
+            validate_columns(reader.fieldnames)
 
-        validate_columns(raw_rows.fieldnames)
-
-        return list(raw_rows)
+            for row in reader:
+                yield row
 
     except csv.Error as error:
         raise ValueError(
             f"CSV file is malformed: {error}"
         ) from error
-
-
-def validate_csv_quotes(content):
-    in_quotes = False
-    index = 0
-
-    while index < len(content):
-        character = content[index]
-
-        if character == '"':
-            if in_quotes:
-                if index + 1 < len(content) and content[index + 1] == '"':
-                    index += 2
-                    continue
-
-                in_quotes = False
-            else:
-                in_quotes = True
-
-        index += 1
-
-    if in_quotes:
-        raise ValueError(
-            "CSV file is malformed — an opening quote does not have a matching closing quote."
-        )
 
 
 def validate_columns(fieldnames):

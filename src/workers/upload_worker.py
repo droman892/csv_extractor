@@ -1,3 +1,8 @@
+import pickle
+import tempfile
+import time
+import traceback
+
 from multiprocessing import Process, Queue
 from queue import Empty
 
@@ -10,17 +15,72 @@ MAX_DISPLAYED_ROWS = 100
 
 
 def count_validation_errors(result):
-    return sum(
+    start_time = time.perf_counter()
+
+    total = sum(
         len(record.get("errors", []))
         for record in result["invalid_records"]
     )
 
+    print(
+        "[TIMING] count_validation_errors: "
+        f"{time.perf_counter() - start_time:.3f} seconds"
+    )
+
+    return total
+
+
+def save_full_result(result):
+    start_time = time.perf_counter()
+
+    print("[TIMING] save_full_result: starting")
+
+    temp_file = tempfile.NamedTemporaryFile(
+        mode="wb",
+        prefix="csv_extractor_result_",
+        suffix=".pkl",
+        delete=False
+    )
+
+    try:
+        with temp_file:
+            pickle.dump(
+                result,
+                temp_file,
+                protocol=pickle.HIGHEST_PROTOCOL
+            )
+
+        elapsed = time.perf_counter() - start_time
+
+        print(
+            "[TIMING] save_full_result: "
+            f"{elapsed:.3f} seconds"
+        )
+
+        return temp_file.name
+
+    except Exception:
+        print("[ERROR] save_full_result failed:")
+        traceback.print_exc()
+        raise
+
 
 def build_display_result(result):
+    start_time = time.perf_counter()
+
+    customer_start = time.perf_counter()
+
     customer_items = sorted(
         result["summary"]["hours_by_customer"].items(),
         key=lambda item: str(item[0]).lower()
     )
+
+    print(
+        "[TIMING] build_display_result - customer sorting: "
+        f"{time.perf_counter() - customer_start:.3f} seconds"
+    )
+
+    invalid_start = time.perf_counter()
 
     display_invalid_rows = []
 
@@ -39,11 +99,18 @@ def build_display_result(result):
         if len(display_invalid_rows) >= MAX_DISPLAYED_ROWS:
             break
 
+    print(
+        "[TIMING] build_display_result - invalid row preparation: "
+        f"{time.perf_counter() - invalid_start:.3f} seconds"
+    )
+
     total_invalid_error_count = count_validation_errors(
         result
     )
 
-    return {
+    result_start = time.perf_counter()
+
+    display_result = {
         "filename": result["filename"],
 
         "total_tickets_count":
@@ -84,33 +151,112 @@ def build_display_result(result):
             total_invalid_error_count
     }
 
+    print(
+        "[TIMING] build_display_result - result construction: "
+        f"{time.perf_counter() - result_start:.3f} seconds"
+    )
+
+    print(
+        "[TIMING] build_display_result TOTAL: "
+        f"{time.perf_counter() - start_time:.3f} seconds"
+    )
+
+    return display_result
+
 
 def run_processing(filename, result_queue):
+    start_time = time.perf_counter()
+
     try:
+        process_start = time.perf_counter()
+
         result = process_csv(filename)
+
+        print(
+            "[TIMING] process_csv: "
+            f"{time.perf_counter() - process_start:.3f} seconds"
+        )
+
+        full_result_start = time.perf_counter()
+
+        full_result_path = save_full_result(
+            result
+        )
+
+        print(
+            "[TIMING] save_full_result: "
+            f"{time.perf_counter() - full_result_start:.3f} seconds"
+        )
+
+        display_start = time.perf_counter()
 
         display_result = build_display_result(
             result
         )
+
+        print(
+            "[TIMING] build_display_result: "
+            f"{time.perf_counter() - display_start:.3f} seconds"
+        )
+
+        queue_start = time.perf_counter()
 
         result_queue.put(
             (
                 "completed",
                 {
                     "display_result": display_result,
-                    "result": result
+                    "full_result_path": full_result_path
                 }
             )
         )
 
+        print(
+            "[TIMING] result_queue.put: "
+            f"{time.perf_counter() - queue_start:.3f} seconds"
+        )
+
+        print(
+            "[TIMING] run_processing TOTAL: "
+            f"{time.perf_counter() - start_time:.3f} seconds"
+        )
+
     except ValueError as error:
+        print(
+            "[ERROR] run_processing ValueError:"
+        )
+        print(
+            f"[ERROR] Type: {type(error).__name__}"
+        )
+        print(
+            f"[ERROR] Message: {str(error)!r}"
+        )
+        traceback.print_exc()
+
         result_queue.put(
-            ("failed", str(error))
+            (
+                "failed",
+                f"{type(error).__name__}: {str(error)}"
+            )
         )
 
     except Exception as error:
+        print(
+            "[ERROR] run_processing Exception:"
+        )
+        print(
+            f"[ERROR] Type: {type(error).__name__}"
+        )
+        print(
+            f"[ERROR] Message: {str(error)!r}"
+        )
+        traceback.print_exc()
+
         result_queue.put(
-            ("failed", str(error))
+            (
+                "failed",
+                f"{type(error).__name__}: {str(error)}"
+            )
         )
 
 

@@ -27,7 +27,11 @@ class ResultsView(QWidget):
 
     MAX_DISPLAYED_ROWS = 100
 
-    def __init__(self, result, full_result):
+    def __init__(
+        self,
+        display_result,
+        full_result_path
+    ):
         super().__init__()
 
         self.setStyleSheet("""
@@ -123,8 +127,8 @@ class ResultsView(QWidget):
         """)
 
         self.view_model = ResultsViewModel(
-            result,
-            full_result
+            display_result,
+            full_result_path
         )
 
         self.view_model.export_started.connect(

@@ -1,3 +1,4 @@
+import pickle
 from multiprocessing import Process, Queue
 from queue import Empty
 
@@ -5,12 +6,25 @@ from PySide6.QtCore import QObject, Signal, Slot, QTimer
 
 from ..services.results_export_service import ResultsExportService
 
-def run_export(result, destination_path, result_queue):
-  
+
+def run_export(
+    full_result_path,
+    destination_path,
+    result_queue
+):
     try:
+        with open(
+            full_result_path,
+            "rb"
+        ) as result_file:
+
+            result = pickle.load(
+                result_file
+            )
+
         ResultsExportService.export_results(
-        result,
-        destination_path
+            result,
+            destination_path
         )
 
         result_queue.put(
@@ -33,11 +47,16 @@ class ExportWorker(QObject):
     completed = Signal(str)
     failed = Signal(str)
 
-    def __init__(self, result, destination_path):
+    def __init__(
+        self,
+        full_result_path,
+        destination_path
+    ):
         super().__init__()
 
-        self.result = result
+        self.full_result_path = full_result_path
         self.destination_path = destination_path
+
         self.process = None
         self.result_queue = None
         self.poll_timer = None
@@ -49,7 +68,7 @@ class ExportWorker(QObject):
         self.process = Process(
             target=run_export,
             args=(
-                self.result,
+                self.full_result_path,
                 self.destination_path,
                 self.result_queue
             )

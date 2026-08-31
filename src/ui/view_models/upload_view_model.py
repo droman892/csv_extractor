@@ -17,7 +17,9 @@ class UploadViewModel(QObject):
         self.thread = QThread()
         self.worker = UploadWorker(filename)
 
-        self.worker.moveToThread(self.thread)
+        self.worker.moveToThread(
+            self.thread
+        )
 
         self.thread.started.connect(
             self.worker.process_file

@@ -1,106 +1,128 @@
 import math
 
 
+def validate_row(row):
+    validation_obj = {
+        "ticket_id": row["ticket_id"],
+        "customer": row["customer"],
+        "priority": row["priority"],
+        "status": row["status"],
+        "hours": None
+    }
+
+    row_errors = []
+
+    ticket_id_validation = validate_ticket_id(
+        row["ticket_id"]
+    )
+
+    if ticket_id_validation["valid"]:
+        validation_obj["ticket_id"] = (
+            ticket_id_validation["value"]
+        )
+    else:
+        row_errors.append({
+            "field": "ticket_id",
+            "invalid_value": row["ticket_id"],
+            "reason": ticket_id_validation["error"]
+        })
+
+    customer_validation = validate_customer(
+        row["customer"]
+    )
+
+    if customer_validation["valid"]:
+        validation_obj["customer"] = (
+            customer_validation["value"]
+        )
+    else:
+        row_errors.append({
+            "field": "customer",
+            "invalid_value": row["customer"],
+            "reason": customer_validation["error"]
+        })
+
+    priority_validation = validate_priority(
+        row["priority"]
+    )
+
+    if priority_validation["valid"]:
+        validation_obj["priority"] = (
+            priority_validation["value"]
+        )
+    else:
+        row_errors.append({
+            "field": "priority",
+            "invalid_value": row["priority"],
+            "reason": priority_validation["error"]
+        })
+
+    status_validation = validate_status(
+        row["status"]
+    )
+
+    if status_validation["valid"]:
+        validation_obj["status"] = (
+            status_validation["value"]
+        )
+    else:
+        row_errors.append({
+            "field": "status",
+            "invalid_value": row["status"],
+            "reason": status_validation["error"]
+        })
+
+    hours_validation = validate_hours(
+        row["hours"]
+    )
+
+    if hours_validation["valid"]:
+        validation_obj["hours"] = (
+            hours_validation["value"]
+        )
+    else:
+        row_errors.append({
+            "field": "hours",
+            "invalid_value": row["hours"],
+            "reason": hours_validation["error"]
+        })
+
+    if row_errors:
+        validation_obj["errors"] = row_errors
+
+        return {
+            "valid": False,
+            "record": validation_obj,
+            "error_count": len(row_errors)
+        }
+
+    return {
+        "valid": True,
+        "record": validation_obj,
+        "error_count": 0
+    }
+
+
 def check_rows(csv_list):
     valid_records = []
     errors = []
     total_validation_error_count = 0
 
     for row in csv_list:
-        validation_obj = {
-            "ticket_id": row["ticket_id"],
-            "customer": row["customer"],
-            "priority": row["priority"],
-            "status": row["status"],
-            "hours": None
-        }
+        validation_result = validate_row(row)
 
-        row_errors = []
-
-        ticket_id_validation = validate_ticket_id(
-            row["ticket_id"]
-        )
-
-        if ticket_id_validation["valid"]:
-            validation_obj["ticket_id"] = (
-                ticket_id_validation["value"]
+        if validation_result["valid"]:
+            valid_records.append(
+                validation_result["record"]
             )
         else:
-            row_errors.append({
-                "field": "ticket_id",
-                "invalid_value": row["ticket_id"],
-                "reason": ticket_id_validation["error"]
-            })
-
-        customer_validation = validate_customer(
-            row["customer"]
-        )
-
-        if customer_validation["valid"]:
-            validation_obj["customer"] = (
-                customer_validation["value"]
+            errors.append(
+                validation_result["record"]
             )
-        else:
-            row_errors.append({
-                "field": "customer",
-                "invalid_value": row["customer"],
-                "reason": customer_validation["error"]
-            })
 
-        priority_validation = validate_priority(
-            row["priority"]
-        )
-
-        if priority_validation["valid"]:
-            validation_obj["priority"] = (
-                priority_validation["value"]
+            total_validation_error_count += (
+                validation_result["error_count"]
             )
-        else:
-            row_errors.append({
-                "field": "priority",
-                "invalid_value": row["priority"],
-                "reason": priority_validation["error"]
-            })
-
-        status_validation = validate_status(
-            row["status"]
-        )
-
-        if status_validation["valid"]:
-            validation_obj["status"] = (
-                status_validation["value"]
-            )
-        else:
-            row_errors.append({
-                "field": "status",
-                "invalid_value": row["status"],
-                "reason": status_validation["error"]
-            })
-
-        hours_validation = validate_hours(
-            row["hours"]
-        )
-
-        if hours_validation["valid"]:
-            validation_obj["hours"] = (
-                hours_validation["value"]
-            )
-        else:
-            row_errors.append({
-                "field": "hours",
-                "invalid_value": row["hours"],
-                "reason": hours_validation["error"]
-            })
-
-        if row_errors:
-            validation_obj["errors"] = row_errors
-            errors.append(validation_obj)
-
-            total_validation_error_count += len(
-                row_errors
-            )
-        else:
-            valid_records.append(validation_obj)
 
     valid_tickets_count = len(valid_records)
     invalid_tickets_count = len(errors)

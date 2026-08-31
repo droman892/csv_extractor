@@ -72,7 +72,7 @@ def test_check_rows_rejects_invalid_row():
         {
             "field": "hours",
             "invalid_value": "-3.0",
-            "reason": "-3.0 cannot be less than 0"
+            "reason": "-3.0 cannot be less than 0.5"
         }
     ]
 
@@ -352,11 +352,11 @@ def test_validate_hours_accepts_valid_number():
     assert result["error"] is None
 
 
-def test_validate_hours_accepts_zero():
-    result = validate_hours("0")
+def test_validate_hours_accepts_minimum_value():
+    result = validate_hours("0.5")
 
     assert result["valid"] is True
-    assert result["value"] == 0
+    assert result["value"] == 0.5
     assert result["error"] is None
 
 
@@ -379,9 +379,24 @@ def test_validate_hours_accepts_half_hour_increment():
         assert result["error"] is None
 
 
+def test_validate_hours_rejects_less_than_minimum():
+    invalid_values = [
+        "0",
+        "0.1",
+        "0.25"
+    ]
+
+    for hours in invalid_values:
+        result = validate_hours(hours)
+
+        assert result["valid"] is False
+        assert result["error"] == (
+            f"{hours} cannot be less than 0.5"
+        )
+
+
 def test_validate_hours_rejects_non_half_hour_increment():
     invalid_values = [
-        "0.1",
         "1.25",
         "2.25",
         "2.75",
@@ -403,7 +418,7 @@ def test_validate_hours_rejects_negative_number():
 
     assert result["valid"] is False
     assert result["error"] == (
-        "-3.0 cannot be less than 0"
+        "-3.0 cannot be less than 0.5"
     )
 
 
