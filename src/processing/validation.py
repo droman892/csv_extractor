@@ -12,6 +12,13 @@ def validate_row(row):
 
     row_errors = []
 
+    if "_csv_error" in row:
+        row_errors.append({
+            "field": "CSV",
+            "invalid_value": row.get("_csv_error"),
+            "reason": row["_csv_error"]
+        })
+
     ticket_id_validation = validate_ticket_id(
         row["ticket_id"]
     )

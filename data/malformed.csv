@@ -1,3 +1,12 @@
 ticket_id,customer,priority,status,hours
-100000001,Acme,high,open,"4.5
-100000002,Globex,medium,closed,2.0
+100000001,Acme,high,open,4.5
+100000002,"Barney's",medium,closed,2.0
+100000003,"Barney",low,open,3.5
+100000004,"Barney ""The Boss"" Smith",high,open,5.0
+100000005,"Acme Corporation",medium,closed,4.0
+100000006,Acme "Test,"high"",open,2.5
+100000007,"Acme Corporation,medium,open,3.0
+100000008,Acme Corporation",low,closed,"1.5
+100000009,"Barney's,high,open,2.0"
+100000010,Acme,medium,"open,3.0'
+100000011,Acme,high,closed,4.5
