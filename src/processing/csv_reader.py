@@ -27,13 +27,19 @@ def read_csv(filename):
                 )
 
             header_reader = csv.reader(
-                [header_line]
+                [header_line],
+                strict=True
             )
 
-            fieldnames = next(
-                header_reader,
-                None
-            )
+            try:
+                fieldnames = next(
+                    header_reader,
+                    None
+                )
+            except csv.Error as error:
+                raise ValueError(
+                    f"CSV file is malformed: {error}"
+                ) from error
 
             validate_columns(fieldnames)
 
@@ -43,31 +49,44 @@ def read_csv(filename):
                     line
                 )
 
-    except csv.Error as error:
-        raise ValueError(
-            f"CSV file is malformed: {error}"
-        ) from error
+    except OSError:
+        raise
 
 
 def parse_row(fieldnames, line):
-    if has_unmatched_quote(line):
-        row = parse_malformed_row(
+    if has_malformed_quote(line):
+        return create_malformed_row(
             fieldnames,
-            line
+            line,
+            "Malformed quote detected"
         )
 
-        row["_csv_error"] = "Malformed quote detected"
-
-        return row
-
     reader = csv.reader(
-        [line]
+        [line],
+        strict=True
     )
 
-    values = next(
-        reader,
-        []
-    )
+    try:
+        values = next(
+            reader,
+            []
+        )
+    except csv.Error:
+        return create_malformed_row(
+            fieldnames,
+            line,
+            "Malformed CSV row"
+        )
+
+    if len(values) != len(fieldnames):
+        return create_malformed_row(
+            fieldnames,
+            line,
+            (
+                f"Expected {len(fieldnames)} fields, "
+                f"found {len(values)}"
+            )
+        )
 
     return dict(
         zip(
@@ -77,14 +96,18 @@ def parse_row(fieldnames, line):
     )
 
 
-def has_unmatched_quote(line):
+def has_malformed_quote(line):
     in_quotes = False
+    field_start = True
     index = 0
+
+    line = line.rstrip("\r\n")
 
     while index < len(line):
         character = line[index]
 
         if character == '"':
+
             if in_quotes:
                 if (
                     index + 1 < len(line)
@@ -94,17 +117,32 @@ def has_unmatched_quote(line):
                     continue
 
                 in_quotes = False
+                field_start = False
 
             else:
+                if not field_start:
+                    return True
+
                 in_quotes = True
+                field_start = False
+
+        elif character == ",":
+            if not in_quotes:
+                field_start = True
 
         index += 1
 
     return in_quotes
 
 
-def parse_malformed_row(fieldnames, line):
-    values = line.rstrip("\r\n").split(",")
+def create_malformed_row(
+    fieldnames,
+    line,
+    error_message
+):
+    values = line.rstrip(
+        "\r\n"
+    ).split(",")
 
     row = dict(
         zip(
@@ -117,6 +155,8 @@ def parse_malformed_row(fieldnames, line):
         if fieldname not in row:
             row[fieldname] = ""
 
+    row["_csv_error"] = error_message
+
     return row
 
 
@@ -126,7 +166,9 @@ def validate_columns(fieldnames):
             "CSV file does not contain a header row."
         )
 
-    missing_columns = REQUIRED_COLUMNS - set(fieldnames)
+    missing_columns = (
+        REQUIRED_COLUMNS - set(fieldnames)
+    )
 
     if missing_columns:
         raise ValueError(
