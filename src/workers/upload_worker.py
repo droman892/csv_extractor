@@ -1,7 +1,5 @@
 import pickle
 import tempfile
-import time
-import traceback
 
 from multiprocessing import Process, Queue
 from queue import Empty
@@ -15,7 +13,6 @@ MAX_DISPLAYED_ROWS = 100
 
 
 def count_validation_errors(result):
-    start_time = time.perf_counter()
 
     total = sum(
         len(record.get("errors", []))
@@ -26,7 +23,6 @@ def count_validation_errors(result):
 
 
 def save_full_result(result):
-    start_time = time.perf_counter()
 
     temp_file = tempfile.NamedTemporaryFile(
         mode="wb",
@@ -45,14 +41,13 @@ def save_full_result(result):
 
         return temp_file.name
 
-    except Exception:
-        print("[ERROR] save_full_result failed:")
-        traceback.print_exc()
-        raise
+    except (OSError, pickle.PickleError) as error:
+        raise RuntimeError(
+            "Unable to save the full processing result."
+        ) from error
 
 
 def build_display_result(result):
-    start_time = time.perf_counter()
 
     customer_items = sorted(
         result["summary"]["hours_by_customer"].items(),
@@ -127,38 +122,16 @@ def build_display_result(result):
 def run_processing(filename, result_queue):
 
     try:
-        process_start = time.perf_counter()
 
         result = process_csv(filename)
-
-        print(
-            "[TIMING] process_csv: "
-            f"{time.perf_counter() - process_start:.3f} seconds"
-        )
-
-        full_result_start = time.perf_counter()
 
         full_result_path = save_full_result(
             result
         )
 
-        print(
-            "[TIMING] save_full_result: "
-            f"{time.perf_counter() - full_result_start:.3f} seconds"
-        )
-
-        display_start = time.perf_counter()
-
         display_result = build_display_result(
             result
         )
-
-        print(
-            "[TIMING] build_display_result: "
-            f"{time.perf_counter() - display_start:.3f} seconds"
-        )
-
-        queue_start = time.perf_counter()
 
         result_queue.put(
             (
@@ -170,27 +143,16 @@ def run_processing(filename, result_queue):
             )
         )
 
-        print(
-            "[TIMING] result_queue.put: "
-            f"{time.perf_counter() - queue_start:.3f} seconds"
-        )
-
-        print(
-            "[TIMING] run_processing TOTAL: "
-            f"{time.perf_counter() - start_time:.3f} seconds"
-        )
-
     except ValueError as error:
-        print(
-            "[ERROR] run_processing ValueError:"
+
+        result_queue.put(
+            (
+                "failed",
+                f"{type(error).__name__}: {str(error)}"
+            )
         )
-        print(
-            f"[ERROR] Type: {type(error).__name__}"
-        )
-        print(
-            f"[ERROR] Message: {str(error)!r}"
-        )
-        traceback.print_exc()
+
+    except RuntimeError as error:
 
         result_queue.put(
             (
@@ -200,21 +162,11 @@ def run_processing(filename, result_queue):
         )
 
     except Exception as error:
-        print(
-            "[ERROR] run_processing Exception:"
-        )
-        print(
-            f"[ERROR] Type: {type(error).__name__}"
-        )
-        print(
-            f"[ERROR] Message: {str(error)!r}"
-        )
-        traceback.print_exc()
 
         result_queue.put(
             (
                 "failed",
-                f"{type(error).__name__}: {str(error)}"
+                f"Unexpected {type(error).__name__}: {str(error)}"
             )
         )
 

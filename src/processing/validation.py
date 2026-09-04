@@ -211,6 +211,12 @@ def validate_customer(customer):
         )
         return result
 
+    if len(customer) > 30:
+        result["error"] = (
+            "customer cannot have a length greater than 30"
+        )
+        return result
+
     result["valid"] = True
     result["value"] = customer.strip()
 

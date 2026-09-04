@@ -11,6 +11,9 @@ REQUIRED_COLUMNS = {
 
 
 def read_csv(filename):
+
+    MAX_DATA_ROWS = 5_000_000
+
     try:
         with open(
             filename,
@@ -43,11 +46,22 @@ def read_csv(filename):
 
             validate_columns(fieldnames)
 
-            for line in file:
+            # for line in file:
+            #     yield parse_row(
+            #         fieldnames,
+            #         line
+            #     )
+
+
+            for row_number, line in enumerate(file, start=1):
+                if row_number > MAX_DATA_ROWS:
+                    raise ValueError(
+                        f"CSV cannot contain more than {MAX_DATA_ROWS:,} data rows"
+                    )
                 yield parse_row(
-                    fieldnames,
-                    line
-                )
+                        fieldnames,
+                        line
+                    )
 
     except OSError:
         raise
