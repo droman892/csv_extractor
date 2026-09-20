@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (2026-09-19)
 
 First release.
 
@@ -14,3 +14,4 @@ First release.
 - A plain message for files that are not UTF-8, have the wrong columns, or cannot be read.
 - Log file that never contains row contents.
 - Tests (unit, view and end-to-end with real processes), mypy type checking and a Windows GitHub Actions workflow.
+- Packaged as a single Windows `.exe` with PyInstaller (`csv_extractor.spec`).

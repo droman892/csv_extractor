@@ -4,6 +4,8 @@
 
 A Windows desktop app that checks a support-ticket CSV file against a fixed set of rules, tells you exactly which rows are wrong and why, and exports a report. It handles files of up to 5 million rows without freezing the window.
 
+**[Download CSV-Extractor.exe](https://github.com/droman892/csv-extractor/releases/latest/download/CSV-Extractor.exe)** — no Python install needed. It is not code-signed (see [Packaging](#packaging)), so Windows SmartScreen will warn on first run; if you'd rather not run an unsigned binary from the internet, build it yourself with the steps below.
+
 ## The problem
 
 Support teams get ticket exports as CSV files: from a help desk, a vendor or a spreadsheet someone edited by hand. Before the data can be used for billing, reporting or import into another system, someone has to find the rows that are wrong: a misspelled status, hours that make no sense, a ticket ID used twice. In a spreadsheet that means filters, formulas and eyeballing, and past a few hundred thousand rows the spreadsheet stops opening at all.
@@ -78,6 +80,23 @@ The tests cover each layer on its own, the window and views with pytest-qt, and 
 
 Dependencies are checked for known vulnerabilities with [`pip-audit`](https://pypi.org/project/pip-audit/) (a dev dependency): `python -m pip_audit`. This is run manually, not on every push; see [docs/security.md](docs/security.md).
 
+## Packaging
+
+```powershell
+python -m pip install -e ".[dev]"
+python -m PyInstaller csv_extractor.spec
+```
+
+This builds `dist\CSV Extractor.exe`: a single file with Python, PySide6 and the sample CSV bundled in, so it runs on a Windows machine with no Python install. [`csv_extractor.spec`](csv_extractor.spec) drives the build; [`run.py`](run.py) is a thin entry point PyInstaller needs because it cannot use `src/main.py` directly (that module's imports only resolve when run with `python -m`, as above).
+
+Notes:
+
+- It is a one-file build, so each launch unpacks to a temp folder first; start-up is a couple of seconds slower than running from source.
+- The background processes described [below](#how-it-works) are the packaged `.exe` re-launching itself, handled by `multiprocessing.freeze_support()` in `run.py` and `src/main.py`.
+- The `.exe` is not code-signed, so Windows SmartScreen will warn on first run on another machine; see [docs/security.md](docs/security.md).
+
+The [download link above](#csv-extractor) points at `releases/latest/download/CSV-Extractor.exe`, a fixed URL GitHub resolves to the newest release's matching asset. Cutting a release: rename the build output to `CSV-Extractor.exe` (no space, so the URL doesn't need escaping) and attach it to a new GitHub release.
+
 ## Logs
 
 The app writes a log to `%LOCALAPPDATA%\csv_extractor\logs\csv_extractor.log`. It records counts, timings, file names and errors. It never records the contents of a row.
@@ -105,7 +124,7 @@ The window never does the heavy work itself. A worker starts a separate process 
 - Peak memory depends on the data: see the worst case above. A file that has millions of distinct customers needs more than one with a few hundred.
 - A report with more than 1,048,576 rows cannot be opened completely in Excel. The CSV itself is complete.
 - There is no cancel button. Closing the window is the only way to stop a run.
-- Not packaged as an installer or executable.
+- Packaged as a single `.exe` (see [Packaging](#packaging)), not as an installer; nothing is added to the Start menu or uninstall list.
 - The results screen shows the first 100 issues and 100 customers only; the export has all of them.
 
 ## License

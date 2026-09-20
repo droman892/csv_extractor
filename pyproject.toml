@@ -26,6 +26,7 @@ dev = [
     "pytest-qt>=4.5",
     "mypy>=1.10",
     "pip-audit>=2.7",
+    "pyinstaller>=6.10",
 ]
 
 # This is an application that is run from a clone of the repository

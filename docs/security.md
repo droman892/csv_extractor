@@ -13,7 +13,7 @@ CSV Extractor is a local desktop tool. It has no network access, no accounts, no
 | **Leaking customer data through the log.** | The log records counts, timings, file names and errors, never the contents of a row. | Tests read the log file and check that names and IDs are absent. |
 | **Temporary files colliding or lingering.** | Random names, created so that an existing file is never overwritten; deleted on failure, stop, going back to the upload screen and window close. | Unit and end-to-end tests. |
 | **No third-party calls.** | The source has no network, subprocess or `eval` calls. | Searched, not proven: a code search, not a formal analysis. |
-| **Known vulnerabilities in dependencies.** | `pip-audit` (a dev dependency, `pyproject.toml`) checks installed packages against the PyPI/OSV vulnerability database. | Run manually with `python -m pip_audit`; not wired into CI, so it only reflects the last time someone ran it. No known vulnerabilities as of 2026-09-19, against the one runtime dependency (PySide6) and the dev tooling. |
+| **Known vulnerabilities in dependencies.** | `pip-audit` (a dev dependency, `pyproject.toml`) checks installed packages against the PyPI/OSV vulnerability database. | Run manually with `python -m pip_audit`; not wired into CI, so it only reflects the last time someone ran it. No known vulnerabilities as of 2026-09-19, against the one runtime dependency (PySide6) and the dev tooling (now including PyInstaller, added for [packaging](../README.md#packaging)). |
 
 ## What it does not protect against
 
@@ -23,6 +23,7 @@ CSV Extractor is a local desktop tool. It has no network access, no accounts, no
 - **The log records file names.** A file name can itself be sensitive.
 - **Dependency scanning is manual, not continuous.** `pip-audit` only reports what was known at the moment someone ran it; a vulnerability disclosed the next day would not be caught until it is run again. It is not part of CI.
 - **The formula rule is tested with the rule, not with each spreadsheet program.** The leading apostrophe is the documented approach; the behavior in every version of Excel, Google Sheets and LibreOffice has not been tested.
+- **The packaged `.exe` is not code-signed.** Windows SmartScreen will warn about it on another machine, and there is no way for someone who downloads it to verify it was built from this source without rebuilding it themselves (see [Packaging](../README.md#packaging)). Signing costs money (a code-signing certificate) and is not set up.
 
 ## Data in this repository
 
