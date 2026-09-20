@@ -230,3 +230,37 @@ def test_processing_finished_clears_worker_and_thread():
 
     assert view_model.worker is None
     assert view_model.thread is None
+
+
+def test_shutdown_stops_the_worker_and_the_thread():
+    view_model = UploadViewModel()
+
+    view_model.worker = MagicMock()
+    view_model.thread = MagicMock()
+
+    worker = view_model.worker
+    thread = view_model.thread
+
+    view_model.shutdown()
+
+    worker.stop.assert_called_once()
+    thread.quit.assert_called_once()
+    thread.wait.assert_called_once()
+
+
+def test_shutdown_does_nothing_when_idle():
+    UploadViewModel().shutdown()
+
+
+def test_shutdown_survives_a_worker_that_was_already_deleted():
+    view_model = UploadViewModel()
+
+    view_model.worker = MagicMock()
+    view_model.worker.stop.side_effect = RuntimeError(
+        "Internal C++ object already deleted."
+    )
+    view_model.thread = MagicMock()
+
+    view_model.shutdown()
+
+    view_model.thread.quit.assert_called_once()

@@ -478,3 +478,73 @@ def test_export_finished_clears_worker_and_thread():
 
     assert view_model.export_worker is None
     assert view_model.export_thread is None
+
+
+def test_shutdown_stops_the_export_before_deleting_the_full_result(
+    tmp_path
+):
+    full_result = tmp_path / "result.pkl"
+    full_result.write_bytes(b"x")
+
+    view_model = ResultsViewModel(RESULT, str(full_result))
+
+    seen_when_stopped = []
+
+    view_model.export_worker = MagicMock()
+    view_model.export_worker.stop.side_effect = (
+        lambda: seen_when_stopped.append(full_result.exists())
+    )
+    view_model.export_thread = MagicMock()
+
+    thread = view_model.export_thread
+
+    view_model.shutdown()
+
+    # The file was still there when the export was stopped.
+    assert seen_when_stopped == [True]
+    thread.quit.assert_called_once()
+    thread.wait.assert_called_once()
+    assert not full_result.exists()
+    assert view_model.full_result_path is None
+
+
+def test_shutdown_deletes_the_full_result_when_no_export_is_running(
+    tmp_path
+):
+    full_result = tmp_path / "result.pkl"
+    full_result.write_bytes(b"x")
+
+    view_model = ResultsViewModel(RESULT, str(full_result))
+
+    view_model.shutdown()
+
+    assert not full_result.exists()
+
+
+def test_export_results_fails_when_the_full_result_is_gone():
+    view_model = ResultsViewModel(RESULT, None)
+
+    started = MagicMock()
+    failed = MagicMock()
+    view_model.export_started.connect(started)
+    view_model.export_failed.connect(failed)
+
+    view_model.export_results("output.csv")
+
+    started.assert_not_called()
+    failed.assert_called_once()
+    assert view_model.export_thread is None
+
+
+def test_shutdown_deletes_the_invalid_ticket_file_too(tmp_path):
+    full_result = tmp_path / "result.pkl"
+    full_result.write_bytes(b"x")
+    details = tmp_path / "result.invalid.jsonl"
+    details.write_text("x")
+
+    view_model = ResultsViewModel(RESULT, str(full_result))
+
+    view_model.shutdown()
+
+    assert not full_result.exists()
+    assert not details.exists()

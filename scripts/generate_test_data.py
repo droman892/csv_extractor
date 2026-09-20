@@ -271,7 +271,9 @@ def generate_dataset(
         writer.writeheader()
 
         for ticket_number in range(row_count):
-            ticket_id = ticket_number % 10000
+            # Every ticket_id must be unique: the application treats
+            # every row that shares a ticket_id as invalid.
+            ticket_id = ticket_number
 
             if random.random() < 0.20:
                 row = generate_invalid_row(

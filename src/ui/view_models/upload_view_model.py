@@ -7,13 +7,14 @@ class UploadViewModel(QObject):
     processing_failed = Signal(str)
     processing_completed = Signal(dict)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-        self.thread = None
-        self.worker = None
+        # Note: this hides QObject.thread(); nothing calls that method.
+        self.thread: QThread | None = None  # type: ignore[assignment]
+        self.worker: UploadWorker | None = None
 
-    def upload_file(self, filename):
+    def upload_file(self, filename: str) -> None:
         self.thread = QThread()
         self.worker = UploadWorker(filename)
 
@@ -55,6 +56,23 @@ class UploadViewModel(QObject):
 
         self.thread.start()
 
-    def processing_finished(self):
+    def processing_finished(self) -> None:
         self.worker = None
         self.thread = None
+
+    def shutdown(self) -> None:
+        """Stop any processing in progress (the window is closing)."""
+        worker = self.worker
+        thread = self.thread
+
+        try:
+            if worker is not None:
+                worker.stop()
+        except RuntimeError:
+            # The worker was already deleted: it had finished.
+            pass
+
+        if thread is not None:
+            # Do not let the app exit while this thread is still running.
+            thread.quit()
+            thread.wait(3000)

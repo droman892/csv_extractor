@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "csv-extractor"
+version = "0.1.0"
+description = "Desktop app that validates support-ticket CSV files and reports what is wrong with them."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "David Roman" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows",
+    "Environment :: X11 Applications :: Qt",
+]
+dependencies = [
+    "PySide6>=6.11,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9",
+    "pytest-qt>=4.5",
+    "mypy>=1.10",
+    "pip-audit>=2.7",
+]
+
+# This is an application that is run from a clone of the repository
+# (python -m src.main), not a library, so there is nothing to package.
+# The empty list makes `pip install -e ".[dev]"` install only the
+# dependencies above.
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+# Not ".pytest_cache" (the pytest default): that folder is stuck with a
+# broken ACL on at least one dev machine (Windows "Access is denied"
+# even to delete it), so a fresh name is used instead.
+cache_dir = ".cache/pytest"
+
+# mypy is configured in mypy.ini.

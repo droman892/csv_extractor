@@ -2,7 +2,7 @@ from pathlib import Path
 
 class DemoFileService:
     @staticmethod
-    def get_demo_file_path():
+    def get_demo_file_path() -> Path:
         return (
             Path(__file__).resolve().parents[2]
             / "data"
@@ -10,11 +10,11 @@ class DemoFileService:
         )
 
     @staticmethod
-    def demo_file_exists():
+    def demo_file_exists() -> bool:
         return DemoFileService.get_demo_file_path().is_file()
 
     @staticmethod
-    def download_demo_file(destination_path):
+    def download_demo_file(destination_path: str | Path) -> None:
         source_path = DemoFileService.get_demo_file_path()
 
         if not source_path.is_file():

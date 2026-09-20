@@ -1,33 +1,46 @@
-from pathlib import Path
 import csv
-import shutil
-import tempfile
+import re
+from pathlib import Path
+from typing import Any
+
+from ..processing.invalid_tickets import iter_invalid_tickets
+from ..processing.rules import VALID_RECORDS_NOTE
+from ..records import ProcessingResult
+
+
+# A cell that starts with one of these is treated as a formula by Excel,
+# Google Sheets and LibreOffice, so text from the input file could run
+# code or leak data when someone opens the export ("CSV injection").
+FORMULA_TRIGGERS = ("=", "+", "-", "@", "\t", "\r")
+
+PLAIN_NUMBER = re.compile(r"[+-]?\d+(\.\d+)?")
+
+
+def safe_cell(value: Any) -> Any:
+    """Make text from the input file safe to write into an export cell.
+
+    A leading apostrophe makes spreadsheets treat the cell as plain text.
+    Non-strings (counts, hours) and plain numbers such as "-3.0" are left
+    alone: a bare number cannot run a formula, and the Invalid Value
+    column often holds exactly such a number.
+    """
+    if (
+        isinstance(value, str)
+        and value.startswith(FORMULA_TRIGGERS)
+        and not PLAIN_NUMBER.fullmatch(value)
+    ):
+        return "'" + value
+
+    return value
 
 
 class ResultsExportService:
 
     @staticmethod
-    def create_export_file(result):
-        temp_directory = Path(
-            tempfile.mkdtemp(
-                prefix="csv_extractor_"
-            )
-        )
-
-        export_path = (
-            temp_directory
-            / f"{Path(result['filename']).stem}_results.csv"
-        )
-
-        ResultsExportService.export_results(
-            result,
-            export_path
-        )
-
-        return str(export_path)
-
-    @staticmethod
-    def export_results(result, destination_path):
+    def export_results(
+        result: ProcessingResult,
+        destination_path: str | Path
+    ) -> None:
         try:
             with open(
                 destination_path,
@@ -40,6 +53,7 @@ class ResultsExportService:
 
                 ResultsExportService._write_title_section(
                     writer,
+                    csv_file,
                     result
                 )
 
@@ -87,24 +101,34 @@ class ResultsExportService:
             ) from error
 
     @staticmethod
-    def _write_title_section(writer, result):
+    def _write_title_section(
+        writer: Any,
+        csv_file: Any,
+        result: ProcessingResult
+    ) -> None:
         writer.writerow([
             "CSV Extractor Results"
         ])
 
         writer.writerow([
             "Filename",
-            Path(result["filename"]).name
+            safe_cell(Path(result["filename"]).name)
         ])
 
-        writer.writerow([
-            "Note: Only data from valid records is included in Tickets by Status, Tickets by Priority, and Hours by Customer."
-        ])
+        # Written as a plain line so a text editor shows it without
+        # quotes. The csv writer would wrap it in quotes because of its
+        # commas. The cost: a spreadsheet splits the line at the commas
+        # into several cells. The note is fixed text with no quotes or
+        # line breaks (checked by a test), so nothing else can go wrong.
+        csv_file.write(VALID_RECORDS_NOTE + "\r\n")
 
         writer.writerow([])
 
     @staticmethod
-    def _write_overall_section(writer, result):
+    def _write_overall_section(
+        writer: Any,
+        result: ProcessingResult
+    ) -> None:
         writer.writerow([
             "Overall"
         ])
@@ -137,7 +161,10 @@ class ResultsExportService:
         writer.writerow([])
 
     @staticmethod
-    def _write_status_section(writer, result):
+    def _write_status_section(
+        writer: Any,
+        result: ProcessingResult
+    ) -> None:
         writer.writerow([
             "Tickets by Status"
         ])
@@ -161,7 +188,10 @@ class ResultsExportService:
         writer.writerow([])
 
     @staticmethod
-    def _write_priority_section(writer, result):
+    def _write_priority_section(
+        writer: Any,
+        result: ProcessingResult
+    ) -> None:
         writer.writerow([
             "Tickets by Priority"
         ])
@@ -185,7 +215,10 @@ class ResultsExportService:
         writer.writerow([])
 
     @staticmethod
-    def _write_customer_section(writer, result):
+    def _write_customer_section(
+        writer: Any,
+        result: ProcessingResult
+    ) -> None:
         customers = result["summary"]["hours_by_customer"]
 
         total_customer_count = len(customers)
@@ -200,17 +233,17 @@ class ResultsExportService:
             "Hours"
         ])
 
-        customers = sorted(
+        sorted_customers = sorted(
             customers.items(),
             key=lambda item: str(item[0]).lower()
         )
 
         customer_number = 1
 
-        for customer, hours in customers:
+        for customer, hours in sorted_customers:
             writer.writerow([
                 customer_number,
-                customer,
+                safe_cell(customer),
                 hours
             ])
 
@@ -219,13 +252,19 @@ class ResultsExportService:
         writer.writerow([])
 
     @staticmethod
-    def _write_validation_section(writer, result):
-        invalid_records = result["invalid_records"]
-
-        total_invalid_error_count = sum(
-            len(record.get("errors", []))
-            for record in invalid_records
+    def _write_validation_section(
+        writer: Any,
+        result: ProcessingResult
+    ) -> None:
+        total_invalid_error_count = result.get(
+            "total_validation_error_count"
         )
+
+        if total_invalid_error_count is None:
+            total_invalid_error_count = sum(
+                len(record.get("errors", []))
+                for record in iter_invalid_tickets(result)
+            )
 
         writer.writerow([
             f"Validation Issues (Count: "
@@ -242,28 +281,15 @@ class ResultsExportService:
 
         issue_number = 1
 
-        for record in invalid_records:
+        # Read one ticket at a time: there can be millions.
+        for record in iter_invalid_tickets(result):
             for error in record.get("errors", []):
                 writer.writerow([
                     issue_number,
-                    record["ticket_id"],
-                    error["field"],
-                    error["invalid_value"],
-                    error["reason"]
+                    safe_cell(record["ticket_id"]),
+                    safe_cell(error["field"]),
+                    safe_cell(error["invalid_value"]),
+                    safe_cell(error["reason"])
                 ])
 
                 issue_number += 1
-
-    @staticmethod
-    def copy_export_file(source_path, destination_path):
-        try:
-            shutil.copyfile(
-                source_path,
-                destination_path
-            )
-
-        except OSError as error:
-            raise OSError(
-                f"Unable to save the exported file "
-                f"to '{destination_path}': {error}"
-            ) from error

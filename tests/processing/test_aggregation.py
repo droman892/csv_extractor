@@ -1,5 +1,18 @@
 import pytest
-from src.processing.aggregation import aggregate_csv
+from src.processing.aggregation import (
+    create_aggregation,
+    add_valid_record
+)
+from src.processing.rules import PRIORITIES, STATUSES
+
+
+def aggregate(records):
+    summary = create_aggregation()
+
+    for record in records:
+        add_valid_record(summary, record)
+
+    return summary
 
 
 @pytest.fixture
@@ -36,8 +49,8 @@ def valid_records():
     ]
 
 
-def test_aggregate_csv_groups_tickets_by_status(valid_records):
-    result = aggregate_csv(valid_records)
+def test_aggregation_groups_tickets_by_status(valid_records):
+    result = aggregate(valid_records)
 
     assert result["tickets_by_status"] == {
         "open": 2,
@@ -46,8 +59,8 @@ def test_aggregate_csv_groups_tickets_by_status(valid_records):
     }
 
 
-def test_aggregate_csv_groups_tickets_by_priority(valid_records):
-    result = aggregate_csv(valid_records)
+def test_aggregation_groups_tickets_by_priority(valid_records):
+    result = aggregate(valid_records)
 
     assert result["tickets_by_priority"] == {
         "low": 1,
@@ -56,8 +69,8 @@ def test_aggregate_csv_groups_tickets_by_priority(valid_records):
     }
 
 
-def test_aggregate_csv_sums_hours_by_customer(valid_records):
-    result = aggregate_csv(valid_records)
+def test_aggregation_sums_hours_by_customer(valid_records):
+    result = aggregate(valid_records)
 
     assert result["hours_by_customer"] == {
         "Acme Corp": 2.5,
@@ -66,14 +79,14 @@ def test_aggregate_csv_sums_hours_by_customer(valid_records):
     }
 
 
-def test_aggregate_csv_calculates_total_hours(valid_records):
-    result = aggregate_csv(valid_records)
+def test_aggregation_calculates_total_hours(valid_records):
+    result = aggregate(valid_records)
 
     assert result["total_hours"] == 10.0
 
 
-def test_aggregate_csv_handles_empty_records():
-    result = aggregate_csv([])
+def test_aggregation_handles_empty_records():
+    result = aggregate([])
 
     assert result == {
         "tickets_by_status": {
@@ -89,3 +102,10 @@ def test_aggregate_csv_handles_empty_records():
         "hours_by_customer": {},
         "total_hours": 0
     }
+
+
+def test_create_aggregation_has_a_counter_for_every_rule_value():
+    summary = create_aggregation()
+
+    assert list(summary["tickets_by_status"]) == list(STATUSES)
+    assert list(summary["tickets_by_priority"]) == list(PRIORITIES)

@@ -1,5 +1,8 @@
 from unittest.mock import patch
 
+from PySide6.QtWidgets import QLabel
+
+from src.processing.rules import FORMAT_NOTE, format_hints
 from src.ui.upload_view import UploadView
 
 
@@ -161,8 +164,27 @@ def test_upload_view_processing_error_reenables_upload_button(qtbot):
     view.selected_filename = "test.csv"
     view.upload_button.setEnabled(False)
 
+    # Patching the whole module works on every platform: winsound
+    # exists only on Windows.
     with patch(
-        "src.ui.upload_view.winsound.MessageBeep"
+        "src.ui.upload_view.winsound"
+    ) as winsound:
+        view.show_processing_error("Invalid CSV file.")
+
+    winsound.MessageBeep.assert_called_once()
+    assert view.upload_button.isEnabled()
+
+
+def test_upload_view_processing_error_works_without_winsound(qtbot):
+    view = UploadView()
+    qtbot.addWidget(view)
+
+    view.selected_filename = "test.csv"
+    view.upload_button.setEnabled(False)
+
+    with patch(
+        "src.ui.upload_view.winsound",
+        None
     ):
         view.show_processing_error("Invalid CSV file.")
 
@@ -223,3 +245,26 @@ def test_upload_view_shows_error_when_demo_file_download_fails(qtbot):
         "The demo file could not be found."
     )
     assert not view.error_message.isHidden()
+
+
+def test_upload_view_format_hints_come_from_the_validation_rules(qtbot):
+    view = UploadView()
+    qtbot.addWidget(view)
+
+    shown = [
+        label.text()
+        for label in view.findChildren(QLabel, "columnDescription")
+    ]
+
+    assert shown == [hint for _, hint in format_hints()]
+    assert "Exactly 9 digits" in shown
+
+
+def test_upload_view_shows_the_one_record_per_line_note(qtbot):
+    view = UploadView()
+    qtbot.addWidget(view)
+
+    note = view.findChild(QLabel, "formatNote")
+
+    assert note is not None
+    assert note.text() == FORMAT_NOTE

@@ -1,10 +1,14 @@
 from pathlib import Path
 
+from ..config import MAX_DISPLAYED_ROWS
+from ..processing.rules import VALID_RECORDS_NOTE
+from ..records import DisplayIssue, DisplayResult
 from .view_models.results_view_model import ResultsViewModel
 
 from PySide6.QtCore import Signal, Qt, QTimer
-from PySide6.QtGui import QFontMetrics, QCursor
+from PySide6.QtGui import QFontMetrics, QCursor, QResizeEvent
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QFileDialog,
     QLabel,
     QPushButton,
@@ -25,13 +29,13 @@ from PySide6.QtWidgets import (
 class ResultsView(QWidget):
     upload_another_file_requested = Signal()
 
-    MAX_DISPLAYED_ROWS = 100
+    MAX_DISPLAYED_ROWS = MAX_DISPLAYED_ROWS
 
     def __init__(
         self,
-        display_result,
-        full_result_path
-    ):
+        display_result: DisplayResult,
+        full_result_path: str | None
+    ) -> None:
         super().__init__()
 
         self.setStyleSheet("""
@@ -187,7 +191,7 @@ class ResultsView(QWidget):
         )
 
         results_note = QLabel(
-            "Note: Only data from valid records is included in Tickets by Status, Tickets by Priority, and Hours by Customer."
+            VALID_RECORDS_NOTE
         )
 
         results_note.setWordWrap(True)
@@ -390,7 +394,11 @@ class ResultsView(QWidget):
             self.update_filename_display
         )
 
-    def create_metric_card(self, label, value):
+    def create_metric_card(
+        self,
+        label: str,
+        value: str | int | float
+    ) -> QFrame:
         card = QFrame()
         card.setObjectName("metricCard")
         card.setMinimumHeight(120)
@@ -431,12 +439,12 @@ class ResultsView(QWidget):
 
     def create_summary_table(
         self,
-        title,
-        data,
-        category_header,
-        value_header,
-        empty_message
-    ):
+        title: str,
+        data: dict[str, int],
+        category_header: str,
+        value_header: str,
+        empty_message: str
+    ) -> QFrame:
         frame = QFrame()
         frame.setObjectName(
             "summaryContainer"
@@ -489,7 +497,7 @@ class ResultsView(QWidget):
         )
 
         table.setEditTriggers(
-            QTableWidget.NoEditTriggers
+            QAbstractItemView.EditTrigger.NoEditTriggers
         )
 
         table.setVerticalScrollBarPolicy(
@@ -549,16 +557,16 @@ class ResultsView(QWidget):
 
         header.setSectionResizeMode(
             0,
-            QHeaderView.Stretch
+            QHeaderView.ResizeMode.Stretch
         )
 
         header.setSectionResizeMode(
             1,
-            QHeaderView.Stretch
+            QHeaderView.ResizeMode.Stretch
         )
 
         table.verticalHeader().setSectionResizeMode(
-            QHeaderView.Fixed
+            QHeaderView.ResizeMode.Fixed
         )
 
         table.verticalHeader().setDefaultAlignment(
@@ -583,9 +591,9 @@ class ResultsView(QWidget):
 
     def create_customer_table(
         self,
-        customer_rows,
-        total_customers
-    ):
+        customer_rows: list[tuple[str, float]],
+        total_customers: int
+    ) -> QFrame:
         frame = QFrame()
         frame.setObjectName(
             "summaryContainer"
@@ -659,7 +667,7 @@ class ResultsView(QWidget):
         )
 
         table.setEditTriggers(
-            QTableWidget.NoEditTriggers
+            QAbstractItemView.EditTrigger.NoEditTriggers
         )
 
         for row_number, (
@@ -699,16 +707,16 @@ class ResultsView(QWidget):
 
         header.setSectionResizeMode(
             0,
-            QHeaderView.Stretch
+            QHeaderView.ResizeMode.Stretch
         )
 
         header.setSectionResizeMode(
             1,
-            QHeaderView.Stretch
+            QHeaderView.ResizeMode.Stretch
         )
 
         table.verticalHeader().setSectionResizeMode(
-            QHeaderView.Fixed
+            QHeaderView.ResizeMode.Fixed
         )
 
         table.verticalHeader().setDefaultAlignment(
@@ -734,9 +742,9 @@ class ResultsView(QWidget):
 
     def create_validation_widget(
         self,
-        invalid_rows,
-        total_invalid_errors
-    ):
+        invalid_rows: list[DisplayIssue],
+        total_invalid_errors: int
+    ) -> QFrame:
         frame = QFrame()
         frame.setObjectName(
             "summaryContainer"
@@ -812,7 +820,7 @@ class ResultsView(QWidget):
         )
 
         table.setEditTriggers(
-            QTableWidget.NoEditTriggers
+            QAbstractItemView.EditTrigger.NoEditTriggers
         )
 
         table.setWordWrap(True)
@@ -858,37 +866,40 @@ class ResultsView(QWidget):
             for column in range(
                 table.columnCount()
             ):
-                table.item(
+                item = table.item(
                     row,
                     column
-                ).setTextAlignment(
-                    Qt.AlignmentFlag.AlignCenter
                 )
+
+                if item is not None:
+                    item.setTextAlignment(
+                        Qt.AlignmentFlag.AlignCenter
+                    )
 
         header = table.horizontalHeader()
 
         header.setSectionResizeMode(
             0,
-            QHeaderView.ResizeToContents
+            QHeaderView.ResizeMode.ResizeToContents
         )
 
         header.setSectionResizeMode(
             1,
-            QHeaderView.ResizeToContents
+            QHeaderView.ResizeMode.ResizeToContents
         )
 
         header.setSectionResizeMode(
             2,
-            QHeaderView.ResizeToContents
+            QHeaderView.ResizeMode.ResizeToContents
         )
 
         header.setSectionResizeMode(
             3,
-            QHeaderView.Stretch
+            QHeaderView.ResizeMode.Stretch
         )
 
         table.verticalHeader().setSectionResizeMode(
-            QHeaderView.Fixed
+            QHeaderView.ResizeMode.Fixed
         )
 
         table.verticalHeader().setDefaultAlignment(
@@ -912,7 +923,7 @@ class ResultsView(QWidget):
 
         return frame
 
-    def finalize_table_heights(self):
+    def finalize_table_heights(self) -> None:
         tables = []
 
         if hasattr(self, "status_table"):
@@ -989,7 +1000,7 @@ class ResultsView(QWidget):
                 required_height
             )
 
-    def export_results(self):
+    def export_results(self) -> None:
         filename = self.view_model.get_filename()
 
         destination_path, _ = QFileDialog.getSaveFileName(
@@ -1006,10 +1017,10 @@ class ResultsView(QWidget):
             destination_path
         )
 
-    def export_started(self):
+    def export_started(self) -> None:
         self.export_button.setEnabled(False)
 
-    def export_completed(self, destination_path):
+    def export_completed(self, destination_path: str) -> None:
         self.export_button.setEnabled(True)
 
         message_box = QMessageBox(self)
@@ -1043,7 +1054,7 @@ class ResultsView(QWidget):
 
         message_box.exec()
 
-    def export_failed(self, message):
+    def export_failed(self, message: str) -> None:
         self.export_button.setEnabled(True)
 
         message_box = QMessageBox(self)
@@ -1081,7 +1092,7 @@ class ResultsView(QWidget):
 
         message_box.exec()
 
-    def update_filename_display(self):
+    def update_filename_display(self) -> None:
         if not hasattr(
             self,
             "results_title"
@@ -1111,7 +1122,7 @@ class ResultsView(QWidget):
             display_filename
         )
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
 
         if hasattr(

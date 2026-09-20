@@ -15,6 +15,11 @@ class FakeViewModel(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.shutdown_called = False
+
+    def shutdown(self):
+        self.shutdown_called = True
+
 
 class FakeResultsView(QWidget):
     upload_another_file_requested = Signal()
@@ -208,3 +213,34 @@ def test_main_window_resizes_processing_overlay(qtbot):
         window.processing_overlay.geometry()
         == window.rect()
     )
+
+
+def test_close_shuts_down_the_upload_view_model(qtbot):
+    window = MainWindow()
+    qtbot.addWidget(window)
+
+    with patch.object(
+        window.upload_view.view_model,
+        "shutdown"
+    ) as shutdown:
+        window.close()
+
+    shutdown.assert_called_once()
+
+
+def test_close_shuts_down_the_results_view_model(qtbot):
+    window = MainWindow()
+    qtbot.addWidget(window)
+
+    window.results_view = FakeResultsView({}, "result.pkl")
+
+    window.close()
+
+    assert window.results_view.view_model.shutdown_called
+
+
+def test_close_works_when_there_are_no_results(qtbot):
+    window = MainWindow()
+    qtbot.addWidget(window)
+
+    window.close()

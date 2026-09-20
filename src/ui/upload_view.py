@@ -1,4 +1,8 @@
-import winsound
+try:
+    import winsound
+except ImportError:
+    # Not Windows: the error sound is skipped.
+    winsound = None  # type: ignore[assignment]
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QCursor, QFontMetrics
@@ -13,6 +17,7 @@ from PySide6.QtWidgets import (
     QApplication
 )
 
+from ..processing.rules import FORMAT_NOTE, format_hints
 from ..services.demo_file_service import DemoFileService
 from .view_models.upload_view_model import UploadViewModel
 
@@ -20,7 +25,7 @@ from .view_models.upload_view_model import UploadViewModel
 class UploadView(QWidget):
     processing_started = Signal()
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.setStyleSheet("""
@@ -50,6 +55,11 @@ class UploadView(QWidget):
 
         QLabel#columnDescription {
             font-size: 14px;
+        }
+
+        QLabel#formatNote {
+            font-size: 13px;
+            color: #555555;
         }
 
         QLabel#demoDataFile {
@@ -84,7 +94,7 @@ class UploadView(QWidget):
 
         self.view_model = UploadViewModel()
 
-        self.selected_filename = None
+        self.selected_filename: str | None = None
 
         self.view_model.processing_failed.connect(
             self.show_processing_error
@@ -105,13 +115,9 @@ class UploadView(QWidget):
         format_title.setObjectName("formatTitle")
         format_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        columns = [
-            ("ticket_id", "Exactly 4 digits"),
-            ("customer", "Cannot be empty"),
-            ("priority", "low, medium, or high"),
-            ("status", "open, closed, or in_progress"),
-            ("hours", "0–40, in increments of 0.5"),
-        ]
+        # Built from the same rules validation uses, so these hints
+        # cannot drift out of date again.
+        columns = format_hints()
 
         format_grid = QGridLayout()
         format_grid.setHorizontalSpacing(8)
@@ -132,6 +138,11 @@ class UploadView(QWidget):
 
         format_grid.setColumnMinimumWidth(0, 90)
         format_grid.setColumnMinimumWidth(1, 0)
+
+        format_note = QLabel(FORMAT_NOTE)
+        format_note.setObjectName("formatNote")
+        format_note.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        format_note.setWordWrap(True)
 
         demo_file = QLabel()
         demo_file.setObjectName("demoDataFile")
@@ -164,6 +175,7 @@ class UploadView(QWidget):
         card_layout.addSpacing(12)
         card_layout.addWidget(format_title)
         card_layout.addLayout(format_grid)
+        card_layout.addWidget(format_note)
         card_layout.addWidget(demo_file)
         card_layout.addSpacing(12)
 
@@ -195,7 +207,7 @@ class UploadView(QWidget):
 
         self.setLayout(layout)
 
-    def download_demo_file(self):
+    def download_demo_file(self) -> None:
         destination_path, _ = QFileDialog.getSaveFileName(
             self,
             "Save Demo CSV File",
@@ -211,7 +223,7 @@ class UploadView(QWidget):
         except (FileNotFoundError, OSError) as error:
             self.show_error(str(error))
 
-    def handle_upload_clicked(self):
+    def handle_upload_clicked(self) -> None:
         filename, _ = QFileDialog.getOpenFileName(
             self,
             "Select CSV File",
@@ -230,7 +242,7 @@ class UploadView(QWidget):
 
         self.view_model.upload_file(filename)
 
-    def show_processing_error(self, message):
+    def show_processing_error(self, message: str) -> None:
         self.upload_button.setEnabled(True)
 
         available_width = self.error_message.width()
@@ -249,7 +261,7 @@ class UploadView(QWidget):
         )
 
         elided_filename = font_metrics.elidedText(
-            self.selected_filename,
+            self.selected_filename or "",
             Qt.TextElideMode.ElideMiddle,
             max(remaining_width, 100),
         )
@@ -260,10 +272,11 @@ class UploadView(QWidget):
 
         QApplication.processEvents()
 
-        winsound.MessageBeep(
-            winsound.MB_ICONEXCLAMATION
-        )
+        if winsound is not None:
+            winsound.MessageBeep(
+                winsound.MB_ICONEXCLAMATION
+            )
 
-    def show_error(self, message):
+    def show_error(self, message: str) -> None:
         self.error_message.setText(message)
         self.error_message.show()

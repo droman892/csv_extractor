@@ -1,0 +1,23 @@
+#!/bin/sh
+# Refuses the push if the test suite or mypy fail.
+#
+# Not active by default: .git/hooks is not tracked by git, so every
+# clone that wants this must opt in once with:
+#   git config core.hooksPath .githooks
+#
+# Runs with whatever "python" is first on PATH, so activate the
+# project's .venv before pushing.
+
+echo "pre-push: running pytest and mypy..."
+
+python -m pytest || {
+    echo "pre-push: pytest failed, push aborted." >&2
+    exit 1
+}
+
+python -m mypy || {
+    echo "pre-push: mypy failed, push aborted." >&2
+    exit 1
+}
+
+echo "pre-push: checks passed."

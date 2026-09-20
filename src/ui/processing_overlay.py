@@ -1,10 +1,10 @@
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QPainter, QPen
+from PySide6.QtGui import QPainter, QPen, QPaintEvent, QResizeEvent
 from PySide6.QtWidgets import QWidget
 
 
 class Spinner(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
         self.angle = 0
@@ -14,17 +14,17 @@ class Spinner(QWidget):
 
         self.setFixedSize(48, 48)
 
-    def start(self):
+    def start(self) -> None:
         self.timer.start(50)
 
-    def stop(self):
+    def stop(self) -> None:
         self.timer.stop()
 
-    def rotate(self):
+    def rotate(self) -> None:
         self.angle = (self.angle + 30) % 360
         self.update()
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -41,9 +41,9 @@ class Spinner(QWidget):
             pen.setWidth(4)
             pen.setCapStyle(Qt.PenCapStyle.RoundCap)
 
-            color = pen.color()
-            color.setAlphaF(opacity)
-            pen.setColor(color)
+            pen_color = pen.color()
+            pen_color.setAlphaF(opacity)
+            pen.setColor(pen_color)
 
             painter.setPen(pen)
 
@@ -52,7 +52,7 @@ class Spinner(QWidget):
 
 
 class ProcessingOverlay(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
 
         self.setStyleSheet("""
@@ -76,7 +76,7 @@ class ProcessingOverlay(QWidget):
 
         self.hide()
 
-    def start(self):
+    def start(self) -> None:
         self.show()
         self.raise_()
 
@@ -87,11 +87,11 @@ class ProcessingOverlay(QWidget):
 
         self.spinner.start()
 
-    def stop(self):
+    def stop(self) -> None:
         self.spinner.stop()
         self.hide()
 
-    def resizeEvent(self, event):
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
 
         self.spinner.move(

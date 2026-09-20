@@ -431,3 +431,97 @@ def test_check_result_joins_process_before_emitting_failed(qtbot):
         "joined",
         "failed"
     ]
+
+
+def test_check_result_reports_failure_when_the_process_died():
+    worker = ExportWorker(
+        RESULT,
+        "output.csv"
+    )
+
+    dead_process = MagicMock()
+    dead_process.is_alive.return_value = False
+    dead_process.exitcode = 1
+
+    fake_queue = MagicMock()
+    fake_queue.get_nowait.side_effect = Empty
+    fake_queue.get.side_effect = Empty
+
+    worker.result_queue = fake_queue
+    worker.poll_timer = MagicMock()
+    worker.process = dead_process
+
+    emitted = []
+    worker.failed.connect(emitted.append)
+
+    worker.check_result()
+
+    assert len(emitted) == 1
+    assert "stopped unexpectedly" in emitted[0]
+
+
+def test_stop_kills_a_running_export_and_deletes_the_partial_report(
+    tmp_path
+):
+    partial = tmp_path / "report.csv"
+    partial.write_text("half a report")
+
+    worker = ExportWorker(
+        RESULT,
+        str(partial)
+    )
+    worker.process = MagicMock()
+    worker.process.is_alive.return_value = True
+
+    worker.stop()
+
+    worker.process.terminate.assert_called_once()
+    assert not partial.exists()
+
+
+def test_stop_keeps_the_report_of_an_export_that_already_finished(
+    tmp_path
+):
+    report = tmp_path / "report.csv"
+    report.write_text("complete report")
+
+    worker = ExportWorker(
+        RESULT,
+        str(report)
+    )
+    worker.process = MagicMock()
+    worker.process.is_alive.return_value = False
+
+    worker.stop()
+
+    worker.process.terminate.assert_not_called()
+    assert report.exists()
+
+
+def test_stop_does_nothing_without_a_process():
+    ExportWorker(RESULT, "output.csv").stop()
+
+
+def test_nothing_is_emitted_after_stop():
+    worker = ExportWorker(
+        RESULT,
+        "output.csv"
+    )
+
+    worker.process = MagicMock()
+    worker.process.is_alive.return_value = True
+    worker.result_queue = MagicMock()
+    worker.result_queue.get_nowait.return_value = (
+        "failed",
+        "anything"
+    )
+    worker.poll_timer = MagicMock()
+
+    emitted = []
+    worker.failed.connect(emitted.append)
+    worker.completed.connect(emitted.append)
+
+    worker.stop()
+    worker.check_result()
+
+    assert emitted == []

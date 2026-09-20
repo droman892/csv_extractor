@@ -1,9 +1,18 @@
 from pathlib import Path
 import csv
+import os
 
 import pytest
 
-from src.services.results_export_service import ResultsExportService
+from src.processing.invalid_tickets import (
+    open_for_writing,
+    write_invalid_ticket
+)
+from src.processing.rules import VALID_RECORDS_NOTE
+from src.services.results_export_service import (
+    ResultsExportService,
+    safe_cell
+)
 
 
 RESULT = {
@@ -68,48 +77,6 @@ def read_csv_file(path):
         return list(csv.reader(csv_file))
 
 
-def test_create_export_file_creates_csv_file(tmp_path, monkeypatch):
-    def fake_mkdtemp(prefix):
-        return str(tmp_path)
-
-    monkeypatch.setattr(
-        "src.services.results_export_service.tempfile.mkdtemp",
-        fake_mkdtemp
-    )
-
-    export_path = ResultsExportService.create_export_file(
-        RESULT
-    )
-
-    assert export_path == str(
-        tmp_path / "test_data_results.csv"
-    )
-    assert Path(export_path).is_file()
-
-
-def test_create_export_file_uses_source_filename_stem(
-    tmp_path,
-    monkeypatch
-):
-    result = dict(RESULT)
-    result["filename"] = (
-        "C:/files/customer_export_2026.csv"
-    )
-
-    monkeypatch.setattr(
-        "src.services.results_export_service.tempfile.mkdtemp",
-        lambda prefix: str(tmp_path)
-    )
-
-    export_path = ResultsExportService.create_export_file(
-        result
-    )
-
-    assert Path(export_path).name == (
-        "customer_export_2026_results.csv"
-    )
-
-
 def test_export_results_writes_title_section(tmp_path):
     destination = tmp_path / "results.csv"
 
@@ -122,6 +89,38 @@ def test_export_results_writes_title_section(tmp_path):
 
     assert rows[0] == ["CSV Extractor Results"]
     assert rows[1] == ["Filename", "test_data.csv"]
+
+
+def test_export_results_writes_the_note_without_quotes(tmp_path):
+    # Read the raw text: the csv module hides quoting.
+    destination = tmp_path / "results.csv"
+
+    ResultsExportService.export_results(
+        RESULT,
+        destination
+    )
+
+    lines = destination.read_text(encoding="utf-8").splitlines()
+
+    assert lines[2] == VALID_RECORDS_NOTE
+    assert '"' not in lines[2]
+
+
+def test_export_results_writes_the_note_on_its_own_line(tmp_path):
+    destination = tmp_path / "results.csv"
+
+    ResultsExportService.export_results(
+        RESULT,
+        destination
+    )
+
+    rows = read_csv_file(destination)
+
+    # A spreadsheet splits the line at its commas; the pieces put back
+    # together are the note, and the line after it is the blank separator.
+    assert ",".join(rows[2]) == VALID_RECORDS_NOTE
+    assert rows[3] == []
+    assert rows[4] == ["Overall"]
 
 
 def test_export_results_writes_overall_section(tmp_path):
@@ -320,39 +319,181 @@ def test_export_results_raises_os_error_when_destination_is_invalid():
         )
 
 
-def test_copy_export_file_copies_file(tmp_path):
-    source = tmp_path / "source.csv"
-    destination = tmp_path / "destination.csv"
-
-    source.write_text(
-        "test,data\n123,abc",
-        encoding="utf-8"
-    )
-
-    ResultsExportService.copy_export_file(
-        source,
-        destination
-    )
-
-    assert destination.is_file()
-    assert destination.read_text(
-        encoding="utf-8"
-    ) == source.read_text(
-        encoding="utf-8"
-    )
+# -------------------------------------------------------------------
+# CSV / formula injection
+# -------------------------------------------------------------------
 
 
-def test_copy_export_file_raises_os_error_when_source_is_missing(
+@pytest.mark.parametrize(
+    "value",
+    [
+        "=1+1",
+        "+SUM(A1:A9)",
+        "-2+3",
+        "@SUM(A1)",
+        "\tcmd",
+        "\rcmd",
+        '=HYPERLINK("http://evil.example","x")',
+        "-3.0 cannot be less than 0.5"
+    ]
+)
+def test_safe_cell_prefixes_text_a_spreadsheet_could_run(value):
+    assert safe_cell(value) == "'" + value
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["Acme", "", "100000001", "-3.0", "-5", "+5", "1.5", 7, 2.5, None]
+)
+def test_safe_cell_leaves_ordinary_values_alone(value):
+    assert safe_cell(value) == value
+
+
+def test_export_results_neutralizes_formulas_from_the_input_file(
     tmp_path
 ):
-    source = tmp_path / "missing.csv"
-    destination = tmp_path / "destination.csv"
+    result = dict(RESULT)
 
-    with pytest.raises(
-        OSError,
-        match="Unable to save the exported file"
-    ):
-        ResultsExportService.copy_export_file(
-            source,
-            destination
+    result["filename"] = "C:/files/=cmd.csv"
+
+    result["summary"] = dict(RESULT["summary"])
+    result["summary"]["hours_by_customer"] = {
+        "=1+1": 1.0,
+        "Acme": 2.0
+    }
+
+    result["invalid_records"] = [
+        {
+            "ticket_id": "@bad",
+            "errors": [
+                {
+                    "field": "customer",
+                    "invalid_value": "+1+1",
+                    "reason": "+1+1 is not valid"
+                }
+            ]
+        }
+    ]
+
+    destination = tmp_path / "results.csv"
+
+    ResultsExportService.export_results(result, destination)
+
+    cells = [
+        cell
+        for row in read_csv_file(destination)
+        for cell in row
+    ]
+
+    assert "'=cmd.csv" in cells
+    assert "'=1+1" in cells
+    assert "'@bad" in cells
+    assert "'+1+1" in cells
+    assert "'+1+1 is not valid" in cells
+
+    # Nothing is left that starts like a formula.
+    assert not [
+        cell for cell in cells
+        if cell.startswith(("=", "@", "+"))
+    ]
+
+
+# -------------------------------------------------------------------
+# invalid tickets kept in a file by the processor
+# -------------------------------------------------------------------
+
+
+def result_with_details_file(tmp_path, count):
+    details = tmp_path / "invalid.jsonl"
+
+    with open_for_writing(details) as file:
+        for number in range(count):
+            write_invalid_ticket(
+                file,
+                {
+                    "ticket_id": str(1000 + number),
+                    "errors": [
+                        {
+                            "field": "priority",
+                            "invalid_value": "urgent",
+                            "reason": "Invalid priority."
+                        },
+                        {
+                            "field": "status",
+                            "invalid_value": "pending",
+                            "reason": "Invalid status."
+                        }
+                    ]
+                }
+            )
+
+    result = dict(RESULT)
+    result["invalid_tickets_count"] = count
+    result["total_validation_error_count"] = count * 2
+    result["invalid_records"] = []
+    result["invalid_details_path"] = str(details)
+
+    return result
+
+
+def test_export_results_lists_every_ticket_from_the_details_file(tmp_path):
+    result = result_with_details_file(tmp_path, 25_000)
+
+    destination = tmp_path / "results.csv"
+
+    ResultsExportService.export_results(result, destination)
+
+    rows = read_csv_file(destination)
+
+    issues = [
+        row for row in rows
+        if len(row) == 5 and row[0].isdigit()
+    ]
+
+    assert ["Validation Issues (Count: 50000)"] in rows
+    assert len(issues) == 50_000
+    assert issues[0] == [
+        "1", "1000", "priority", "urgent", "Invalid priority."
+    ]
+    assert issues[-1][:2] == ["50000", "25999"]
+
+
+def test_export_results_says_so_when_the_details_file_is_gone(tmp_path):
+    result = result_with_details_file(tmp_path, 3)
+
+    os.remove(result["invalid_details_path"])
+
+    with pytest.raises(RuntimeError, match="no longer available"):
+        ResultsExportService.export_results(
+            result,
+            tmp_path / "results.csv"
         )
+
+
+def test_export_results_counts_errors_itself_when_no_total_is_given(
+    tmp_path
+):
+    result = result_with_details_file(tmp_path, 4)
+    del result["total_validation_error_count"]
+
+    destination = tmp_path / "results.csv"
+
+    ResultsExportService.export_results(result, destination)
+
+    assert ["Validation Issues (Count: 8)"] in read_csv_file(destination)
+
+
+def test_export_results_never_adds_a_cut_short_note(
+    tmp_path
+):
+    destination = tmp_path / "results.csv"
+
+    ResultsExportService.export_results(RESULT, destination)
+
+    cells = [
+        cell
+        for row in read_csv_file(destination)
+        for cell in row
+    ]
+
+    assert not [cell for cell in cells if cell.startswith("Note: details")]

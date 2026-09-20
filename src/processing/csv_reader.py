@@ -1,7 +1,13 @@
 import csv
+from collections.abc import Iterator
+from pathlib import Path
+from typing import TextIO
+
+from ..config import MAX_DATA_ROWS, MAX_LINE_LENGTH
+from ..records import RawRow
 
 
-REQUIRED_COLUMNS = {
+REQUIRED_COLUMNS: set[str] = {
     "ticket_id",
     "status",
     "priority",
@@ -9,70 +15,147 @@ REQUIRED_COLUMNS = {
     "hours",
 }
 
+# When the rest of an over-long line is thrown away, it is read in pieces
+# of this size, so memory use does not depend on how long the line is.
+SKIP_CHUNK_SIZE: int = 64 * 1024
 
-def read_csv(filename):
 
-    MAX_DATA_ROWS = 5_000_000
+def read_csv(filename: str | Path) -> Iterator[RawRow]:
+    """Yield one dict per data line of the CSV file.
 
-    try:
-        with open(
-            filename,
-            mode="r",
-            newline="",
-            encoding="utf-8-sig"
-        ) as file:
+    The application handles one record per line: a line is never joined
+    with the next one. Blank lines are skipped. A bad line is not raised
+    as an error; it is yielded with a "_csv_error" key so the caller can
+    report it. That includes a line longer than MAX_LINE_LENGTH: only
+    its first MAX_LINE_LENGTH characters are kept.
+    """
+    with open(
+        filename,
+        mode="r",
+        newline="",
+        encoding="utf-8-sig"
+    ) as file:
 
-            header_line = file.readline()
+        # Two extra characters leave room for a "\r\n" line break.
+        header_line = file.readline(MAX_LINE_LENGTH + 2)
 
-            if not header_line:
-                raise ValueError(
-                    "CSV file does not contain a header row."
-                )
-
-            header_reader = csv.reader(
-                [header_line],
-                strict=True
+        if not header_line:
+            raise ValueError(
+                "CSV file does not contain a header row."
             )
 
-            try:
-                fieldnames = next(
-                    header_reader,
-                    None
-                )
-            except csv.Error as error:
+        if len(header_line.rstrip("\r\n")) > MAX_LINE_LENGTH:
+            raise ValueError(
+                f"The header row is longer than "
+                f"{MAX_LINE_LENGTH:,} characters."
+            )
+
+        header_reader = csv.reader(
+            [header_line],
+            strict=True
+        )
+
+        try:
+            fieldnames = next(
+                header_reader,
+                None
+            )
+        except csv.Error as error:
+            raise ValueError(
+                f"CSV file is malformed: {error}"
+            ) from error
+
+        fieldnames = validate_columns(fieldnames)
+
+        lines = read_lines(file)
+
+        for row_number, (line, too_long) in enumerate(lines, start=1):
+            if row_number > MAX_DATA_ROWS:
                 raise ValueError(
-                    f"CSV file is malformed: {error}"
-                ) from error
+                    f"CSV cannot contain more than "
+                    f"{MAX_DATA_ROWS:,} data rows"
+                )
 
-            validate_columns(fieldnames)
-
-            # for line in file:
-            #     yield parse_row(
-            #         fieldnames,
-            #         line
-            #     )
-
-
-            for row_number, line in enumerate(file, start=1):
-                if row_number > MAX_DATA_ROWS:
-                    raise ValueError(
-                        f"CSV cannot contain more than {MAX_DATA_ROWS:,} data rows"
+            if too_long:
+                yield create_malformed_row(
+                    fieldnames,
+                    line[:MAX_LINE_LENGTH],
+                    (
+                        f"Line {row_number + 1}: longer than "
+                        f"{MAX_LINE_LENGTH:,} characters "
+                        f"(the rest of the line was not read)"
                     )
-                yield parse_row(
-                        fieldnames,
-                        line
-                    )
+                )
+                continue
 
-    except OSError:
-        raise
+            # Blank lines are not records.
+            if not line.strip():
+                continue
+
+            # The header is line 1, so the first data row is line 2.
+            yield parse_row(
+                fieldnames,
+                line,
+                row_number + 1
+            )
 
 
-def parse_row(fieldnames, line):
+def read_lines(file: TextIO) -> Iterator[tuple[str, bool]]:
+    """Yield (line, too_long) for every line, holding one line at a time.
+
+    A line longer than MAX_LINE_LENGTH is not read into memory. Only its
+    first part is returned, with too_long set, and the rest is discarded.
+    """
+    while True:
+        # Two extra characters leave room for a "\r\n" line break.
+        line = file.readline(MAX_LINE_LENGTH + 2)
+
+        if not line:
+            return
+
+        if len(line.rstrip("\r\n")) <= MAX_LINE_LENGTH:
+            yield line, False
+            continue
+
+        skip_rest_of_line(file, line)
+
+        yield line, True
+
+
+def skip_rest_of_line(file: TextIO, piece: str) -> None:
+    """Discard what is left of the line that `piece` is the start of."""
+    while piece and not piece.endswith("\n"):
+        if piece.endswith("\r"):
+            # Either a line break of its own, or the first half of
+            # "\r\n". Take the "\n" if it is there; otherwise the
+            # character belongs to the next line, so put it back.
+            position = file.tell()
+
+            if file.read(1) != "\n":
+                file.seek(position)
+
+            return
+
+        piece = file.readline(SKIP_CHUNK_SIZE)
+
+
+def parse_row(
+    fieldnames: list[str],
+    line: str,
+    line_number: int | None = None
+) -> RawRow:
+    # One record per line: a quoted field cannot continue onto the next
+    # line, so each line of such a record is reported as malformed.
+    where = f"Line {line_number}: " if line_number else ""
+
     if has_malformed_quote(line):
         return create_malformed_row(
             fieldnames,
             line,
-            "Malformed quote detected"
+            (
+                f"{where}unbalanced or misplaced quote "
+                f"(each record must be on a single line)"
+            )
         )
 
     reader = csv.reader(
@@ -89,7 +172,7 @@ def parse_row(fieldnames, line):
         return create_malformed_row(
             fieldnames,
             line,
-            "Malformed CSV row"
+            f"{where}malformed CSV row"
         )
 
     if len(values) != len(fieldnames):
@@ -97,7 +180,7 @@ def parse_row(fieldnames, line):
             fieldnames,
             line,
             (
-                f"Expected {len(fieldnames)} fields, "
+                f"{where}expected {len(fieldnames)} fields, "
                 f"found {len(values)}"
             )
         )
@@ -110,7 +193,7 @@ def parse_row(fieldnames, line):
     )
 
 
-def has_malformed_quote(line):
+def has_malformed_quote(line: str) -> bool:
     in_quotes = False
     field_start = True
     index = 0
@@ -150,10 +233,10 @@ def has_malformed_quote(line):
 
 
 def create_malformed_row(
-    fieldnames,
-    line,
-    error_message
-):
+    fieldnames: list[str],
+    line: str,
+    error_message: str
+) -> RawRow:
     values = line.rstrip(
         "\r\n"
     ).split(",")
@@ -170,11 +253,19 @@ def create_malformed_row(
             row[fieldname] = ""
 
     row["_csv_error"] = error_message
+    row["_csv_line"] = shorten(line.rstrip("\r\n"))
 
     return row
 
 
-def validate_columns(fieldnames):
+def shorten(text: str, limit: int = 200) -> str:
+    if len(text) <= limit:
+        return text
+
+    return text[:limit] + "..."
+
+
+def validate_columns(fieldnames: list[str] | None) -> list[str]:
     if not fieldnames:
         raise ValueError(
             "CSV file does not contain a header row."
@@ -189,3 +280,5 @@ def validate_columns(fieldnames):
             f"Missing required columns: "
             f"{', '.join(sorted(missing_columns))}"
         )
+
+    return fieldnames

@@ -1,8 +1,27 @@
 import math
+from collections.abc import Callable
+from typing import Any, cast
+
+from ..records import (
+    FieldError,
+    FieldValidation,
+    RawRow,
+    TicketRecord,
+    ValidationResult
+)
+from .rules import (
+    TICKET_ID_LENGTH,
+    MAX_CUSTOMER_LENGTH,
+    PRIORITIES,
+    STATUSES,
+    MIN_HOURS,
+    MAX_HOURS,
+    HOURS_STEP
+)
 
 
-def validate_row(row):
-    validation_obj = {
+def validate_row(row: RawRow) -> ValidationResult:
+    validation_obj: dict[str, Any] = {
         "ticket_id": row["ticket_id"],
         "customer": row["customer"],
         "priority": row["priority"],
@@ -10,14 +29,22 @@ def validate_row(row):
         "hours": None
     }
 
-    row_errors = []
-
     if "_csv_error" in row:
-        row_errors.append({
+        # The line could not be split into fields properly, so checking
+        # the fields would only add misleading errors on top of this one.
+        validation_obj["errors"] = [{
             "field": "CSV",
-            "invalid_value": row.get("_csv_error"),
+            "invalid_value": row.get("_csv_line", row["_csv_error"]),
             "reason": row["_csv_error"]
-        })
+        }]
+
+        return {
+            "valid": False,
+            "record": cast(TicketRecord, validation_obj),
+            "error_count": 1
+        }
+
+    row_errors: list[FieldError] = []
 
     ticket_id_validation = validate_ticket_id(
         row["ticket_id"]
@@ -31,7 +58,9 @@ def validate_row(row):
         row_errors.append({
             "field": "ticket_id",
             "invalid_value": row["ticket_id"],
-            "reason": ticket_id_validation["error"]
+            "reason": (
+                ticket_id_validation["error"] or "invalid value"
+            )
         })
 
     customer_validation = validate_customer(
@@ -46,7 +75,9 @@ def validate_row(row):
         row_errors.append({
             "field": "customer",
             "invalid_value": row["customer"],
-            "reason": customer_validation["error"]
+            "reason": (
+                customer_validation["error"] or "invalid value"
+            )
         })
 
     priority_validation = validate_priority(
@@ -61,7 +92,9 @@ def validate_row(row):
         row_errors.append({
             "field": "priority",
             "invalid_value": row["priority"],
-            "reason": priority_validation["error"]
+            "reason": (
+                priority_validation["error"] or "invalid value"
+            )
         })
 
     status_validation = validate_status(
@@ -76,7 +109,9 @@ def validate_row(row):
         row_errors.append({
             "field": "status",
             "invalid_value": row["status"],
-            "reason": status_validation["error"]
+            "reason": (
+                status_validation["error"] or "invalid value"
+            )
         })
 
     hours_validation = validate_hours(
@@ -91,7 +126,9 @@ def validate_row(row):
         row_errors.append({
             "field": "hours",
             "invalid_value": row["hours"],
-            "reason": hours_validation["error"]
+            "reason": (
+                hours_validation["error"] or "invalid value"
+            )
         })
 
     if row_errors:
@@ -99,58 +136,59 @@ def validate_row(row):
 
         return {
             "valid": False,
-            "record": validation_obj,
+            "record": cast(TicketRecord, validation_obj),
             "error_count": len(row_errors)
         }
 
     return {
         "valid": True,
-        "record": validation_obj,
+        "record": cast(TicketRecord, validation_obj),
         "error_count": 0
     }
 
 
-def check_rows(csv_list):
-    valid_records = []
-    errors = []
-    total_validation_error_count = 0
+def flag_duplicate_ticket(
+    row: RawRow,
+    validation_result: ValidationResult,
+    duplicate_counts: dict[str, int]
+) -> ValidationResult:
+    """Make a row invalid if its ticket_id appears more than once.
 
-    for row in csv_list:
-        validation_result = validate_row(row)
+    duplicate_counts is what find_duplicate_ticket_ids() returned:
+    {ticket_id: times_it_appears}. Every row that shares a ticket_id is
+    flagged, so both rows of a pair are invalid, not just the second one.
+    The row keeps any other errors it already had.
+    """
+    if not duplicate_counts or "_csv_error" in row:
+        return validation_result
 
-        if validation_result["valid"]:
-            valid_records.append(
-                validation_result["record"]
-            )
-        else:
-            errors.append(
-                validation_result["record"]
-            )
+    record = validation_result["record"]
 
-            total_validation_error_count += (
-                validation_result["error_count"]
-            )
+    # A valid ticket_id has already been cleaned (whitespace stripped)
+    # in the record. An invalid one is never in duplicate_counts.
+    times = duplicate_counts.get(record["ticket_id"])
 
-    valid_tickets_count = len(valid_records)
-    invalid_tickets_count = len(errors)
-    total_tickets_count = (
-        valid_tickets_count
-        + invalid_tickets_count
-    )
+    if times is None:
+        return validation_result
+
+    flagged = record.copy()
+    flagged["errors"] = record.get("errors", []) + [{
+        "field": "ticket_id",
+        "invalid_value": record["ticket_id"],
+        "reason": (
+            f"duplicate ticket_id: appears {times} times in the file"
+        )
+    }]
 
     return {
-        "valid_records": valid_records,
-        "errors": errors,
-        "valid_tickets_count": valid_tickets_count,
-        "invalid_tickets_count": invalid_tickets_count,
-        "total_tickets_count": total_tickets_count,
-        "total_validation_error_count":
-            total_validation_error_count
+        "valid": False,
+        "record": flagged,
+        "error_count": validation_result["error_count"] + 1
     }
 
 
-def validate_ticket_id(ticket_id):
-    result = {
+def validate_ticket_id(ticket_id: Any) -> FieldValidation:
+    result: FieldValidation = {
         "value": None,
         "valid": False,
         "error": None
@@ -168,13 +206,15 @@ def validate_ticket_id(ticket_id):
 
     ticket_id = ticket_id.strip()
 
-    if len(ticket_id) != 9:
+    if len(ticket_id) != TICKET_ID_LENGTH:
         result["error"] = (
-            f"{ticket_id} must be exactly 9 characters long"
+            f"{ticket_id} must be exactly "
+            f"{TICKET_ID_LENGTH} characters long"
         )
         return result
 
-    if not ticket_id.isdigit():
+    # isdigit() alone also accepts digits from other scripts ("²", "٣").
+    if not (ticket_id.isascii() and ticket_id.isdigit()):
         result["error"] = (
             f"{ticket_id} must contain only digits"
         )
@@ -186,8 +226,8 @@ def validate_ticket_id(ticket_id):
     return result
 
 
-def validate_customer(customer):
-    result = {
+def validate_customer(customer: Any) -> FieldValidation:
+    result: FieldValidation = {
         "value": None,
         "valid": False,
         "error": None
@@ -211,9 +251,10 @@ def validate_customer(customer):
         )
         return result
 
-    if len(customer) > 30:
+    if len(customer) > MAX_CUSTOMER_LENGTH:
         result["error"] = (
-            "customer cannot have a length greater than 30"
+            f"customer cannot have a length greater than "
+            f"{MAX_CUSTOMER_LENGTH}"
         )
         return result
 
@@ -223,14 +264,8 @@ def validate_customer(customer):
     return result
 
 
-def validate_priority(priority):
-    allowed_priorities = {
-        "low",
-        "medium",
-        "high"
-    }
-
-    result = {
+def validate_priority(priority: Any) -> FieldValidation:
+    result: FieldValidation = {
         "value": None,
         "valid": False,
         "error": None
@@ -250,7 +285,7 @@ def validate_priority(priority):
 
     priority = priority.strip()
 
-    if priority not in allowed_priorities:
+    if priority not in PRIORITIES:
         result["error"] = (
             f"{priority} is not a valid priority"
         )
@@ -262,14 +297,8 @@ def validate_priority(priority):
     return result
 
 
-def validate_status(status):
-    allowed_statuses = {
-        "open",
-        "in_progress",
-        "closed"
-    }
-
-    result = {
+def validate_status(status: Any) -> FieldValidation:
+    result: FieldValidation = {
         "value": None,
         "valid": False,
         "error": None
@@ -289,7 +318,7 @@ def validate_status(status):
 
     status = status.strip()
 
-    if status not in allowed_statuses:
+    if status not in STATUSES:
         result["error"] = (
             f"{status} is not a valid status"
         )
@@ -301,8 +330,8 @@ def validate_status(status):
     return result
 
 
-def validate_hours(hours):
-    result = {
+def validate_hours(hours: Any) -> FieldValidation:
+    result: FieldValidation = {
         "value": None,
         "valid": False,
         "error": None
@@ -334,24 +363,23 @@ def validate_hours(hours):
         )
         return result
 
-    if clean_hours < 0.5:
+    if clean_hours < MIN_HOURS:
         result["error"] = (
-            f"{hours} cannot be less than 0.5"
+            f"{hours} cannot be less than {MIN_HOURS}"
         )
         return result
 
-    if clean_hours > 40:
+    if clean_hours > MAX_HOURS:
         result["error"] = (
-            f"{hours} cannot be greater than 40"
+            f"{hours} cannot be greater than {MAX_HOURS}"
         )
         return result
 
-    if not math.isclose(
-        clean_hours * 2,
-        round(clean_hours * 2)
-    ):
+    steps = clean_hours / HOURS_STEP
+
+    if not math.isclose(steps, round(steps)):
         result["error"] = (
-            f"{hours} must be in increments of 0.5"
+            f"{hours} must be in increments of {HOURS_STEP}"
         )
         return result
 

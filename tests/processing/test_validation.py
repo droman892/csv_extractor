@@ -5,7 +5,8 @@ from src.processing.validation import (
     validate_priority,
     validate_status,
     validate_hours,
-    check_rows
+    validate_row,
+    flag_duplicate_ticket
 )
 
 
@@ -21,54 +22,56 @@ def valid_row():
 
 
 # -------------------------------------------------------------------
-# check_rows tests
+# validate_row tests
 # -------------------------------------------------------------------
 
 
-def test_check_rows_accepts_valid_row(valid_row):
-    result = check_rows([valid_row])
+def test_validate_row_accepts_valid_row(valid_row):
+    result = validate_row(valid_row)
 
-    assert len(result["valid_records"]) == 1
-    assert len(result["errors"]) == 0
-    assert result["valid_tickets_count"] == 1
-    assert result["invalid_tickets_count"] == 0
-    assert result["total_tickets_count"] == 1
-    assert result["total_validation_error_count"] == 0
+    assert result["valid"] is True
+    assert result["error_count"] == 0
 
-    assert result["valid_records"][0]["ticket_id"] == "000001001"
-    assert result["valid_records"][0]["customer"] == "Acme Corp"
-    assert result["valid_records"][0]["priority"] == "high"
-    assert result["valid_records"][0]["status"] == "open"
-    assert result["valid_records"][0]["hours"] == 2.5
+    assert result["record"] == {
+        "ticket_id": "000001001",
+        "customer": "Acme Corp",
+        "priority": "high",
+        "status": "open",
+        "hours": 2.5
+    }
 
 
-def test_check_rows_rejects_invalid_row():
-    rows = [
-        {
-            "ticket_id": "000001003",
-            "customer": "Acme Corp",
-            "priority": "medium",
-            "status": "open",
-            "hours": "-3.0"
-        }
-    ]
+def test_validate_row_cleans_whitespace_in_valid_fields():
+    result = validate_row({
+        "ticket_id": " 000001001 ",
+        "customer": "  Acme Corp ",
+        "priority": " high",
+        "status": "open ",
+        "hours": " 2.5 "
+    })
 
-    result = check_rows(rows)
+    assert result["valid"] is True
+    assert result["record"]["ticket_id"] == "000001001"
+    assert result["record"]["customer"] == "Acme Corp"
 
-    assert len(result["valid_records"]) == 0
-    assert len(result["errors"]) == 1
-    assert result["valid_tickets_count"] == 0
-    assert result["invalid_tickets_count"] == 1
-    assert result["total_tickets_count"] == 1
-    assert result["total_validation_error_count"] == 1
 
-    assert result["errors"][0]["ticket_id"] == "000001003"
-    assert result["errors"][0]["customer"] == "Acme Corp"
-    assert result["errors"][0]["priority"] == "medium"
-    assert result["errors"][0]["status"] == "open"
-    assert result["errors"][0]["hours"] is None
+def test_validate_row_rejects_invalid_row():
+    result = validate_row({
+        "ticket_id": "000001003",
+        "customer": "Acme Corp",
+        "priority": "medium",
+        "status": "open",
+        "hours": "-3.0"
+    })
 
-    assert result["errors"][0]["errors"] == [
+    assert result["valid"] is False
+    assert result["error_count"] == 1
+
+    assert result["record"]["ticket_id"] == "000001003"
+    assert result["record"]["customer"] == "Acme Corp"
+    assert result["record"]["hours"] is None
+
+    assert result["record"]["errors"] == [
         {
             "field": "hours",
             "invalid_value": "-3.0",
@@ -77,51 +80,28 @@ def test_check_rows_rejects_invalid_row():
     ]
 
 
-def test_check_rows_separates_valid_and_invalid_rows():
-    rows = [
-        {
-            "ticket_id": "000001001",
-            "customer": "Acme Corp",
-            "priority": "high",
-            "status": "open",
-            "hours": "2.5"
-        },
-        {
-            "ticket_id": "000001003",
-            "customer": "Acme Corp",
-            "priority": "medium",
-            "status": "open",
-            "hours": "-3.0"
-        },
-        {
-            "ticket_id": "000001004",
-            "customer": "Initech",
-            "priority": "high",
-            "status": "closed",
-            "hours": "4.5"
-        }
+def test_validate_row_collects_every_error_in_field_order():
+    result = validate_row({
+        "ticket_id": "12",
+        "customer": "",
+        "priority": "urgent",
+        "status": "unknown",
+        "hours": "abc"
+    })
+
+    assert result["valid"] is False
+    assert result["error_count"] == 5
+
+    assert [
+        error["field"]
+        for error in result["record"]["errors"]
+    ] == [
+        "ticket_id",
+        "customer",
+        "priority",
+        "status",
+        "hours"
     ]
-
-    result = check_rows(rows)
-
-    assert len(result["valid_records"]) == 2
-    assert len(result["errors"]) == 1
-
-    assert result["valid_tickets_count"] == 2
-    assert result["invalid_tickets_count"] == 1
-    assert result["total_tickets_count"] == 3
-    assert result["total_validation_error_count"] == 1
-
-
-def test_check_rows_handles_empty_list():
-    result = check_rows([])
-
-    assert result["valid_records"] == []
-    assert result["errors"] == []
-    assert result["valid_tickets_count"] == 0
-    assert result["invalid_tickets_count"] == 0
-    assert result["total_tickets_count"] == 0
-    assert result["total_validation_error_count"] == 0
 
 
 # -------------------------------------------------------------------
@@ -185,6 +165,17 @@ def test_validate_ticket_id_rejects_non_digit_characters():
     assert result["error"] == (
         "12345678A must contain only digits"
     )
+
+
+def test_validate_ticket_id_rejects_digits_from_other_scripts():
+    # str.isdigit() is True for these, but they are not the digits 0-9.
+    for ticket_id in ("\u00b2" * 9, "\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"):
+        result = validate_ticket_id(ticket_id)
+
+        assert result["valid"] is False
+        assert result["error"] == (
+            f"{ticket_id} must contain only digits"
+        )
 
 
 def test_validate_ticket_id_rejects_none():
@@ -465,3 +456,150 @@ def test_validate_hours_rejects_nan():
     assert result["error"] == (
         "nan must be a finite number"
     )
+
+
+# -------------------------------------------------------------------
+# validate_row: malformed rows get one error only
+# -------------------------------------------------------------------
+
+
+def test_validate_row_reports_only_the_csv_error_for_malformed_row():
+    result = validate_row({
+        "ticket_id": "000001001",
+        "customer": '"Acme',
+        "priority": "",
+        "status": "",
+        "hours": "",
+        "_csv_error": "Line 2: unbalanced or misplaced quote",
+        "_csv_line": '000001001,"Acme'
+    })
+
+    assert result["valid"] is False
+    assert result["error_count"] == 1
+
+    assert result["record"]["errors"] == [
+        {
+            "field": "CSV",
+            "invalid_value": '000001001,"Acme',
+            "reason": "Line 2: unbalanced or misplaced quote"
+        }
+    ]
+
+
+# -------------------------------------------------------------------
+# flag_duplicate_ticket tests
+# -------------------------------------------------------------------
+
+
+def test_flag_duplicate_ticket_makes_a_valid_row_invalid(valid_row):
+    result = flag_duplicate_ticket(
+        valid_row,
+        validate_row(valid_row),
+        {"000001001": 2}
+    )
+
+    assert result["valid"] is False
+    assert result["error_count"] == 1
+
+    assert result["record"]["errors"] == [
+        {
+            "field": "ticket_id",
+            "invalid_value": "000001001",
+            "reason": (
+                "duplicate ticket_id: appears 2 times in the file"
+            )
+        }
+    ]
+
+
+def test_flag_duplicate_ticket_keeps_the_rows_other_errors(valid_row):
+    valid_row["hours"] = "-3.0"
+
+    result = flag_duplicate_ticket(
+        valid_row,
+        validate_row(valid_row),
+        {"000001001": 3}
+    )
+
+    assert result["error_count"] == 2
+
+    assert [
+        error["field"]
+        for error in result["record"]["errors"]
+    ] == ["hours", "ticket_id"]
+
+
+def test_flag_duplicate_ticket_matches_ids_with_surrounding_spaces(
+    valid_row
+):
+    valid_row["ticket_id"] = " 000001001 "
+
+    result = flag_duplicate_ticket(
+        valid_row,
+        validate_row(valid_row),
+        {"000001001": 2}
+    )
+
+    assert result["valid"] is False
+
+
+def test_flag_duplicate_ticket_leaves_unique_rows_alone(valid_row):
+    validation_result = validate_row(valid_row)
+
+    result = flag_duplicate_ticket(
+        valid_row,
+        validation_result,
+        {"000009999": 2}
+    )
+
+    assert result is validation_result
+    assert result["valid"] is True
+
+
+def test_flag_duplicate_ticket_does_nothing_without_duplicates(
+    valid_row
+):
+    validation_result = validate_row(valid_row)
+
+    assert flag_duplicate_ticket(
+        valid_row,
+        validation_result,
+        {}
+    ) is validation_result
+
+
+def test_flag_duplicate_ticket_ignores_malformed_rows():
+    row = {
+        "ticket_id": "000001001",
+        "customer": '"Acme',
+        "priority": "",
+        "status": "",
+        "hours": "",
+        "_csv_error": "Line 2: unbalanced or misplaced quote"
+    }
+
+    validation_result = validate_row(row)
+
+    result = flag_duplicate_ticket(
+        row,
+        validation_result,
+        {"000001001": 2}
+    )
+
+    assert result is validation_result
+    assert result["error_count"] == 1
+
+
+def test_flag_duplicate_ticket_does_not_change_the_input_result(
+    valid_row
+):
+    validation_result = validate_row(valid_row)
+
+    flag_duplicate_ticket(
+        valid_row,
+        validation_result,
+        {"000001001": 2}
+    )
+
+    assert validation_result["valid"] is True
+    assert "errors" not in validation_result["record"]

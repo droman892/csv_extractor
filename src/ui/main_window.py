@@ -1,24 +1,33 @@
+import logging
+
+from typing import Any
+
+from PySide6.QtGui import QCloseEvent, QResizeEvent
 from PySide6.QtWidgets import QMainWindow
 
+from ..records import CompletedPayload
 from .upload_view import UploadView
 from .results_view import ResultsView
 from .processing_overlay import ProcessingOverlay
 
+logger = logging.getLogger(__name__)
+
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.setWindowTitle("CSV Extractor")
         self.resize(800, 600)
         self.setMinimumSize(800, 600)
 
+        self.results_view: ResultsView | None = None
+
         self.show_upload_view()
 
-    def show_upload_view(self):
-        if hasattr(self, "results_view"):
-            if self.results_view is not None:
-                self.results_view.view_model.cleanup_full_result()
+    def show_upload_view(self) -> None:
+        if self.results_view is not None:
+            self.results_view.view_model.cleanup_full_result()
 
             self.results_view = None
 
@@ -48,14 +57,14 @@ class MainWindow(QMainWindow):
             self.rect()
         )
 
-    def show_processing_overlay(self):
+    def show_processing_overlay(self) -> None:
         self.processing_overlay.setGeometry(
             self.rect()
         )
 
         self.processing_overlay.start()
 
-    def show_results_view(self, result):
+    def show_results_view(self, result: CompletedPayload) -> None:
         self.processing_overlay.stop()
 
         display_result = result[
@@ -91,17 +100,29 @@ class MainWindow(QMainWindow):
             self.results_view
         )
 
-    def show_processing_error(self, message):
+    def show_processing_error(self, message: str) -> None:
         self.processing_overlay.stop()
 
         self.upload_view.show_processing_error(
             message
         )
 
-    def hide_processing_overlay(self, *args):
+    def hide_processing_overlay(self, *args: Any) -> None:
         self.processing_overlay.stop()
 
-    def resizeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
+        # Closing stops any processing or export that is still running,
+        # silently, and removes the files they leave behind.
+        logger.info("Window closing")
+
+        self.upload_view.view_model.shutdown()
+
+        if self.results_view is not None:
+            self.results_view.view_model.shutdown()
+
+        super().closeEvent(event)
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
         super().resizeEvent(event)
 
         if hasattr(

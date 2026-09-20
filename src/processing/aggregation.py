@@ -1,16 +1,18 @@
-def create_aggregation():
+from typing import cast
+
+from ..records import Summary, TicketRecord
+from .rules import PRIORITIES, STATUSES
+
+
+def create_aggregation() -> Summary:
 
     return {
         "tickets_by_status": {
-            "open": 0,
-            "closed": 0,
-            "in_progress": 0
+            status: 0 for status in STATUSES
         },
 
         "tickets_by_priority": {
-            "low": 0,
-            "medium": 0,
-            "high": 0
+            priority: 0 for priority in PRIORITIES
         },
 
         "hours_by_customer": {},
@@ -19,7 +21,7 @@ def create_aggregation():
     }
 
 
-def add_valid_record(summary, row):
+def add_valid_record(summary: Summary, row: TicketRecord) -> None:
 
     summary["tickets_by_status"][
         row["status"]
@@ -30,7 +32,8 @@ def add_valid_record(summary, row):
     ] += 1
 
     customer = row["customer"]
-    hours = row["hours"]
+    # A valid record always has its hours.
+    hours = cast(float, row["hours"])
 
     if customer not in summary["hours_by_customer"]:
         summary["hours_by_customer"][customer] = hours
@@ -38,16 +41,3 @@ def add_valid_record(summary, row):
         summary["hours_by_customer"][customer] += hours
 
     summary["total_hours"] += hours
-
-
-def aggregate_csv(valid_records):
-
-    summary = create_aggregation()
-
-    for row in valid_records:
-        add_valid_record(
-            summary,
-            row
-        )
-
-    return summary
