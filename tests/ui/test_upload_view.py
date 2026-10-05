@@ -2,8 +2,8 @@ from unittest.mock import patch
 
 from PySide6.QtWidgets import QLabel
 
-from src.processing.rules import FORMAT_NOTE, format_hints
-from src.ui.upload_view import UploadView
+from csv_extractor.processing.rules import FORMAT_NOTE, format_hints
+from csv_extractor.ui.upload_view import UploadView
 
 
 def test_upload_view_creates_view_model(qtbot):
@@ -55,7 +55,7 @@ def test_upload_view_emits_processing_started_when_file_is_selected(qtbot):
     qtbot.addWidget(view)
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getOpenFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getOpenFileName",
         return_value=("C:/files/test.csv", "CSV Files (*.csv)")
     ), patch.object(
         view.view_model,
@@ -78,7 +78,7 @@ def test_upload_view_stores_selected_filename(qtbot):
     qtbot.addWidget(view)
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getOpenFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getOpenFileName",
         return_value=("C:/files/test.csv", "CSV Files (*.csv)")
     ), patch.object(
         view.view_model,
@@ -95,7 +95,7 @@ def test_upload_view_disables_upload_button_when_file_is_selected(qtbot):
     qtbot.addWidget(view)
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getOpenFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getOpenFileName",
         return_value=("C:/files/test.csv", "CSV Files (*.csv)")
     ), patch.object(
         view.view_model,
@@ -112,7 +112,7 @@ def test_upload_view_does_nothing_when_file_selection_is_cancelled(qtbot):
     qtbot.addWidget(view)
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getOpenFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getOpenFileName",
         return_value=("", "")
     ), patch.object(
         view.view_model,
@@ -135,7 +135,7 @@ def test_upload_view_hides_previous_error_when_new_file_is_selected(qtbot):
     assert not view.error_message.isHidden()
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getOpenFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getOpenFileName",
         return_value=("C:/files/test.csv", "CSV Files (*.csv)")
     ), patch.object(
         view.view_model,
@@ -167,7 +167,7 @@ def test_upload_view_processing_error_reenables_upload_button(qtbot):
     # Patching the whole module works on every platform: winsound
     # exists only on Windows.
     with patch(
-        "src.ui.upload_view.winsound"
+        "csv_extractor.ui.upload_view.winsound"
     ) as winsound:
         view.show_processing_error("Invalid CSV file.")
 
@@ -183,7 +183,7 @@ def test_upload_view_processing_error_works_without_winsound(qtbot):
     view.upload_button.setEnabled(False)
 
     with patch(
-        "src.ui.upload_view.winsound",
+        "csv_extractor.ui.upload_view.winsound",
         None
     ):
         view.show_processing_error("Invalid CSV file.")
@@ -196,10 +196,10 @@ def test_upload_view_download_demo_file_does_nothing_when_cancelled(qtbot):
     qtbot.addWidget(view)
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getSaveFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getSaveFileName",
         return_value=("", "")
     ), patch(
-        "src.ui.upload_view.DemoFileService.download_demo_file"
+        "csv_extractor.ui.upload_view.DemoFileService.download_demo_file"
     ) as download_demo_file:
 
         view.download_demo_file()
@@ -212,10 +212,10 @@ def test_upload_view_downloads_demo_file_to_selected_destination(qtbot):
     qtbot.addWidget(view)
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getSaveFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getSaveFileName",
         return_value=("C:/files/demo.csv", "CSV Files (*.csv)")
     ), patch(
-        "src.ui.upload_view.DemoFileService.download_demo_file"
+        "csv_extractor.ui.upload_view.DemoFileService.download_demo_file"
     ) as download_demo_file:
 
         view.download_demo_file()
@@ -230,10 +230,10 @@ def test_upload_view_shows_error_when_demo_file_download_fails(qtbot):
     qtbot.addWidget(view)
 
     with patch(
-        "src.ui.upload_view.QFileDialog.getSaveFileName",
+        "csv_extractor.ui.upload_view.QFileDialog.getSaveFileName",
         return_value=("C:/files/demo.csv", "CSV Files (*.csv)")
     ), patch(
-        "src.ui.upload_view.DemoFileService.download_demo_file",
+        "csv_extractor.ui.upload_view.DemoFileService.download_demo_file",
         side_effect=FileNotFoundError(
             "The demo file could not be found."
         )

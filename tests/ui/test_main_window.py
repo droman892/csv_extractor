@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 from PySide6.QtCore import QSize, Signal
 from PySide6.QtWidgets import QWidget
 
-from src.ui.main_window import MainWindow
-from src.ui.upload_view import UploadView
+from csv_extractor.ui.main_window import MainWindow
+from csv_extractor.ui.upload_view import UploadView
 
 
 class FakeViewModel(QWidget):
@@ -116,7 +116,7 @@ def test_show_results_view_stops_processing_overlay(qtbot):
     }
 
     with patch(
-        "src.ui.main_window.ResultsView",
+        "csv_extractor.ui.main_window.ResultsView",
         FakeResultsView
     ):
         window.show_results_view(result)

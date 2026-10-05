@@ -53,7 +53,6 @@ class ResultsExportService:
 
                 ResultsExportService._write_title_section(
                     writer,
-                    csv_file,
                     result
                 )
 
@@ -103,7 +102,6 @@ class ResultsExportService:
     @staticmethod
     def _write_title_section(
         writer: Any,
-        csv_file: Any,
         result: ProcessingResult
     ) -> None:
         writer.writerow([
@@ -115,12 +113,9 @@ class ResultsExportService:
             safe_cell(Path(result["filename"]).name)
         ])
 
-        # Written as a plain line so a text editor shows it without
-        # quotes. The csv writer would wrap it in quotes because of its
-        # commas. The cost: a spreadsheet splits the line at the commas
-        # into several cells. The note is fixed text with no quotes or
-        # line breaks (checked by a test), so nothing else can go wrong.
-        csv_file.write(VALID_RECORDS_NOTE + "\r\n")
+        writer.writerow([
+            VALID_RECORDS_NOTE
+        ])
 
         writer.writerow([])
 

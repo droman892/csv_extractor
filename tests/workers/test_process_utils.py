@@ -3,7 +3,7 @@ from queue import Queue
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from src.workers.process_utils import (
+from csv_extractor.workers.process_utils import (
     details_path_for,
     poll_result,
     remove_file,

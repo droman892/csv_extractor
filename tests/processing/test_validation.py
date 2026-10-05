@@ -1,5 +1,5 @@
 import pytest
-from src.processing.validation import (
+from csv_extractor.processing.validation import (
     validate_ticket_id,
     validate_customer,
     validate_priority,

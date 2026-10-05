@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- The code is now a regular package, `src/csv_extractor/`, run with `python -m csv_extractor`. `run.py` is gone; the `.exe` is built from the same entry point.
+- The sample CSV ships inside the package and is found the same way from source and from the `.exe`.
+- The build output is named `CSV-Extractor.exe`, matching the release download link.
+- The export's "valid records only" note is a single cell, so spreadsheets no longer split it across columns.
+
 ## 0.1.0 (2026-09-19)
 
 First release.

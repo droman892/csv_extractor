@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
-from src.processing.invalid_tickets import iter_invalid_tickets
-from src.processing.processor import process_csv
+from csv_extractor.processing.invalid_tickets import iter_invalid_tickets
+from csv_extractor.processing.processor import process_csv
 
 
 def test_process_csv_returns_summary(tmp_path):
@@ -93,22 +93,22 @@ def test_process_csv_passes_valid_records_to_aggregation():
     }
 
     with patch(
-        "src.processing.processor.find_duplicate_ticket_ids",
+        "csv_extractor.processing.processor.find_duplicate_ticket_ids",
         return_value={}
     ), patch(
-        "src.processing.processor.read_csv",
+        "csv_extractor.processing.processor.read_csv",
         return_value=iter(raw_rows)
     ):
         with patch(
-            "src.processing.processor.validate_row",
+            "csv_extractor.processing.processor.validate_row",
             return_value=validation_result
         ) as mock_validate_row:
             with patch(
-                "src.processing.processor.create_aggregation",
+                "csv_extractor.processing.processor.create_aggregation",
                 return_value={}
             ) as mock_create_aggregation:
                 with patch(
-                    "src.processing.processor.add_valid_record"
+                    "csv_extractor.processing.processor.add_valid_record"
                 ) as mock_add_valid_record:
 
                     result = process_csv("anything.csv")
@@ -168,14 +168,14 @@ def test_process_csv_passes_invalid_records_to_result():
     }
 
     with patch(
-        "src.processing.processor.find_duplicate_ticket_ids",
+        "csv_extractor.processing.processor.find_duplicate_ticket_ids",
         return_value={}
     ), patch(
-        "src.processing.processor.read_csv",
+        "csv_extractor.processing.processor.read_csv",
         return_value=iter(raw_rows)
     ):
         with patch(
-            "src.processing.processor.validate_row",
+            "csv_extractor.processing.processor.validate_row",
             return_value=validation_result
         ) as mock_validate_row:
 
@@ -195,7 +195,7 @@ def test_process_csv_passes_invalid_records_to_result():
 
 def test_process_csv_propagates_file_not_found_error():
     with patch(
-        "src.processing.processor.read_csv",
+        "csv_extractor.processing.processor.read_csv",
         side_effect=FileNotFoundError
     ):
         with pytest.raises(FileNotFoundError):
@@ -456,7 +456,7 @@ def test_process_csv_deletes_its_details_file_when_processing_fails(
     csv_file = write_csv(tmp_path, rows)
 
     with patch(
-        "src.processing.processor.validate_row",
+        "csv_extractor.processing.processor.validate_row",
         side_effect=[
             {
                 "valid": False,

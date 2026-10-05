@@ -1,6 +1,6 @@
 from PySide6.QtTest import QTest
 
-from src.ui.processing_overlay import Spinner, ProcessingOverlay
+from csv_extractor.ui.processing_overlay import Spinner, ProcessingOverlay
 
 
 def test_spinner_initializes_with_zero_angle(qtbot):

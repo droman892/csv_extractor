@@ -78,7 +78,7 @@ class ProcessingResult(TypedDict):
     # Either every invalid ticket is in this list, or (when the processor
     # was given a file to write them to) the list is empty and
     # invalid_details_path names that file. Use iter_invalid_tickets() in
-    # src/processing/invalid_tickets.py to read them either way.
+    # processing/invalid_tickets.py to read them either way.
     invalid_records: list[TicketRecord]
     invalid_details_path: NotRequired[str]
 

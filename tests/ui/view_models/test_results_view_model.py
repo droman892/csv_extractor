@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from PySide6.QtCore import QObject, Signal, QThread
 
-from src.ui.view_models.results_view_model import ResultsViewModel
+from csv_extractor.ui.view_models.results_view_model import ResultsViewModel
 
 
 RESULT = {
@@ -245,10 +245,10 @@ def test_export_results_emits_export_started():
     )
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FakeExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         view_model.export_results(
@@ -265,10 +265,10 @@ def test_export_results_creates_worker_with_full_result_path_and_destination():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FakeExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         view_model.export_results(
@@ -298,10 +298,10 @@ def test_export_results_creates_thread():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FakeExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         view_model.export_results(
@@ -318,10 +318,10 @@ def test_export_results_moves_worker_to_thread():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FakeExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         view_model.export_results(
@@ -341,10 +341,10 @@ def test_export_results_starts_thread():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FakeExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         view_model.export_results(
@@ -367,10 +367,10 @@ def test_export_results_forwards_completed_signal():
     )
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FakeExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         view_model.export_results(
@@ -399,10 +399,10 @@ def test_export_results_forwards_failed_signal():
     )
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FakeExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         view_model.export_results(
@@ -427,10 +427,10 @@ def test_export_results_completed_worker_stops_thread(
     thread = QThread()
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         CompletingExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         with qtbot.waitSignal(
@@ -451,10 +451,10 @@ def test_export_results_failed_worker_stops_thread(
     thread = QThread()
 
     with patch(
-        "src.ui.view_models.results_view_model.ExportWorker",
+        "csv_extractor.ui.view_models.results_view_model.ExportWorker",
         FailingExportWorker
     ), patch(
-        "src.ui.view_models.results_view_model.QThread",
+        "csv_extractor.ui.view_models.results_view_model.QThread",
         return_value=thread
     ):
         with qtbot.waitSignal(

@@ -10,19 +10,18 @@ class UploadViewModel(QObject):
     def __init__(self) -> None:
         super().__init__()
 
-        # Note: this hides QObject.thread(); nothing calls that method.
-        self.thread: QThread | None = None  # type: ignore[assignment]
+        self.worker_thread: QThread | None = None
         self.worker: UploadWorker | None = None
 
     def upload_file(self, filename: str) -> None:
-        self.thread = QThread()
+        self.worker_thread = QThread()
         self.worker = UploadWorker(filename)
 
         self.worker.moveToThread(
-            self.thread
+            self.worker_thread
         )
 
-        self.thread.started.connect(
+        self.worker_thread.started.connect(
             self.worker.process_file
         )
 
@@ -35,35 +34,35 @@ class UploadViewModel(QObject):
         )
 
         self.worker.completed.connect(
-            self.thread.quit
+            self.worker_thread.quit
         )
 
         self.worker.failed.connect(
-            self.thread.quit
+            self.worker_thread.quit
         )
 
-        self.thread.finished.connect(
+        self.worker_thread.finished.connect(
             self.worker.deleteLater
         )
 
-        self.thread.finished.connect(
-            self.thread.deleteLater
+        self.worker_thread.finished.connect(
+            self.worker_thread.deleteLater
         )
 
-        self.thread.finished.connect(
+        self.worker_thread.finished.connect(
             self.processing_finished
         )
 
-        self.thread.start()
+        self.worker_thread.start()
 
     def processing_finished(self) -> None:
         self.worker = None
-        self.thread = None
+        self.worker_thread = None
 
     def shutdown(self) -> None:
         """Stop any processing in progress (the window is closing)."""
         worker = self.worker
-        thread = self.thread
+        thread = self.worker_thread
 
         try:
             if worker is not None:

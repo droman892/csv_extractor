@@ -1,6 +1,6 @@
 import pytest
 
-from src.processing.invalid_tickets import (
+from csv_extractor.processing.invalid_tickets import (
     iter_invalid_tickets,
     open_for_writing,
     read_invalid_tickets,

@@ -4,12 +4,12 @@ import os
 
 import pytest
 
-from src.processing.invalid_tickets import (
+from csv_extractor.processing.invalid_tickets import (
     open_for_writing,
     write_invalid_ticket
 )
-from src.processing.rules import VALID_RECORDS_NOTE
-from src.services.results_export_service import (
+from csv_extractor.processing.rules import VALID_RECORDS_NOTE
+from csv_extractor.services.results_export_service import (
     ResultsExportService,
     safe_cell
 )
@@ -116,9 +116,8 @@ def test_export_results_writes_the_note_on_its_own_line(tmp_path):
 
     rows = read_csv_file(destination)
 
-    # A spreadsheet splits the line at its commas; the pieces put back
-    # together are the note, and the line after it is the blank separator.
-    assert ",".join(rows[2]) == VALID_RECORDS_NOTE
+    # One cell, followed by the blank separator line.
+    assert rows[2] == [VALID_RECORDS_NOTE]
     assert rows[3] == []
     assert rows[4] == ["Overall"]
 

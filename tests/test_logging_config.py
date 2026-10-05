@@ -1,6 +1,6 @@
 import logging
 
-from src.logging_config import (
+from csv_extractor.logging_config import (
     MAX_LOG_BYTES,
     PACKAGE_LOGGER_NAME,
     default_log_path,
@@ -17,7 +17,7 @@ def flush(logger):
 def test_setup_logging_writes_to_the_log_file(tmp_path):
     setup_logging()
 
-    logger = logging.getLogger("src.some_module")
+    logger = logging.getLogger("csv_extractor.some_module")
     logger.info("hello from a test")
 
     flush(logging.getLogger(PACKAGE_LOGGER_NAME))
@@ -26,7 +26,7 @@ def test_setup_logging_writes_to_the_log_file(tmp_path):
 
     assert "hello from a test" in text
     assert "INFO" in text
-    assert "src.some_module" in text
+    assert "csv_extractor.some_module" in text
 
 
 def test_setup_logging_is_idempotent():
@@ -44,8 +44,8 @@ def test_the_log_level_comes_from_the_environment(monkeypatch, tmp_path):
 
     setup_logging()
 
-    logging.getLogger("src.some_module").info("too quiet to keep")
-    logging.getLogger("src.some_module").warning("worth keeping")
+    logging.getLogger("csv_extractor.some_module").info("too quiet to keep")
+    logging.getLogger("csv_extractor.some_module").warning("worth keeping")
 
     flush(logging.getLogger(PACKAGE_LOGGER_NAME))
 

@@ -1,21 +1,24 @@
 # PyInstaller spec for CSV Extractor.
 #
 # Build:   pyinstaller csv_extractor.spec
-# Output:  dist/CSV Extractor.exe (a single file)
+# Output:  dist/CSV-Extractor.exe (a single file)
 #
 # It is a one-file build for easy distribution (one .exe to hand
 # someone), at the cost of a slower start-up: each launch unpacks the
 # app into a temp folder before it runs. See docs/architecture.md if
 # start-up time ever needs to be a onedir build instead.
 
+from PyInstaller.utils.hooks import collect_data_files
+
 a = Analysis(
-    ['run.py'],
-    pathex=[],
+    ['src/csv_extractor/__main__.py'],
+    pathex=['src'],
     binaries=[],
-    # The upload screen's "try it with a sample file" link reads this
-    # file at runtime (src/services/demo_file_service.py); it is not
-    # imported code, so PyInstaller would not pick it up on its own.
-    datas=[('data/demo_data.csv', 'data')],
+    # Non-code files inside the package (the sample CSV in resources/).
+    # PyInstaller only follows imports, so it would not find them on its
+    # own; this keeps them at the same place inside the package, where
+    # demo_file_service.py looks them up.
+    datas=collect_data_files('csv_extractor'),
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -31,7 +34,8 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='CSV Extractor',
+    # No space, so the release download URL needs no escaping.
+    name='CSV-Extractor',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

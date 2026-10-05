@@ -1,16 +1,14 @@
-from pathlib import Path
-
 import pytest
 
-from src.services.demo_file_service import DemoFileService
+from csv_extractor.services.demo_file_service import DemoFileService
 
 
-def test_get_demo_file_path_returns_expected_path():
+def test_demo_file_ships_with_the_package():
     path = DemoFileService.get_demo_file_path()
 
-    assert isinstance(path, Path)
     assert path.name == "demo_data.csv"
-    assert path.parent.name == "data"
+    assert path.is_file()
+    assert path.read_text(encoding="utf-8-sig").startswith("ticket_id,")
 
 
 def test_demo_file_exists_returns_true_when_demo_file_exists(

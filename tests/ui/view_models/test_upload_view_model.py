@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from PySide6.QtCore import QObject, Signal, QThread
 
-from src.ui.view_models.upload_view_model import UploadViewModel
+from csv_extractor.ui.view_models.upload_view_model import UploadViewModel
 
 
 class FakeUploadWorker(QObject):
@@ -57,10 +57,10 @@ def test_upload_file_creates_worker_with_filename():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         FakeUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         view_model.upload_file("test.csv")
@@ -75,15 +75,15 @@ def test_upload_file_creates_thread():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         FakeUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         view_model.upload_file("test.csv")
 
-    assert view_model.thread is thread
+    assert view_model.worker_thread is thread
 
     thread.finished.emit()
 
@@ -93,10 +93,10 @@ def test_upload_file_moves_worker_to_thread():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         FakeUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         view_model.upload_file("test.csv")
@@ -111,10 +111,10 @@ def test_upload_file_starts_thread():
     thread = create_test_thread()
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         FakeUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         view_model.upload_file("test.csv")
@@ -135,10 +135,10 @@ def test_upload_file_forwards_completed_signal():
     )
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         FakeUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         view_model.upload_file("test.csv")
@@ -163,10 +163,10 @@ def test_upload_file_forwards_failed_signal():
     )
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         FakeUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         view_model.upload_file("test.csv")
@@ -185,10 +185,10 @@ def test_upload_file_completed_worker_stops_thread(qtbot):
     thread = QThread()
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         CompletingUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         with qtbot.waitSignal(
@@ -205,10 +205,10 @@ def test_upload_file_failed_worker_stops_thread(qtbot):
     thread = QThread()
 
     with patch(
-        "src.ui.view_models.upload_view_model.UploadWorker",
+        "csv_extractor.ui.view_models.upload_view_model.UploadWorker",
         FailingUploadWorker
     ), patch(
-        "src.ui.view_models.upload_view_model.QThread",
+        "csv_extractor.ui.view_models.upload_view_model.QThread",
         return_value=thread
     ):
         with qtbot.waitSignal(
@@ -224,22 +224,22 @@ def test_processing_finished_clears_worker_and_thread():
     view_model = UploadViewModel()
 
     view_model.worker = MagicMock()
-    view_model.thread = MagicMock()
+    view_model.worker_thread = MagicMock()
 
     view_model.processing_finished()
 
     assert view_model.worker is None
-    assert view_model.thread is None
+    assert view_model.worker_thread is None
 
 
 def test_shutdown_stops_the_worker_and_the_thread():
     view_model = UploadViewModel()
 
     view_model.worker = MagicMock()
-    view_model.thread = MagicMock()
+    view_model.worker_thread = MagicMock()
 
     worker = view_model.worker
-    thread = view_model.thread
+    thread = view_model.worker_thread
 
     view_model.shutdown()
 
@@ -259,8 +259,8 @@ def test_shutdown_survives_a_worker_that_was_already_deleted():
     view_model.worker.stop.side_effect = RuntimeError(
         "Internal C++ object already deleted."
     )
-    view_model.thread = MagicMock()
+    view_model.worker_thread = MagicMock()
 
     view_model.shutdown()
 
-    view_model.thread.quit.assert_called_once()
+    view_model.worker_thread.quit.assert_called_once()

@@ -1,9 +1,9 @@
 import pytest
-from src.processing.aggregation import (
+from csv_extractor.processing.aggregation import (
     create_aggregation,
     add_valid_record
 )
-from src.processing.rules import PRIORITIES, STATUSES
+from csv_extractor.processing.rules import PRIORITIES, STATUSES
 
 
 def aggregate(records):

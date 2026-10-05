@@ -2,7 +2,7 @@
 
 Everything the application logs goes through loggers named after the
 module (``logging.getLogger(__name__)``), all of which sit under the
-``src`` package logger configured here.
+``csv_extractor`` package logger configured here.
 
 Rules for what gets logged:
   * Counts, durations, file names and error details: yes.
@@ -10,7 +10,8 @@ Rules for what gets logged:
     being processed are customer data and the log outlives them.
 
 Settings (environment variables):
-  CSV_EXTRACTOR_LOG_LEVEL  DEBUG, INFO (default), WARNING or ERROR
+  CSV_EXTRACTOR_LOG_LEVEL  INFO (default), WARNING or ERROR; an unknown
+                           value falls back to INFO
   CSV_EXTRACTOR_LOG_FILE   full path of the log file, to override the
                            default location
 """
@@ -20,7 +21,7 @@ import os
 import sys
 from pathlib import Path
 
-PACKAGE_LOGGER_NAME = "src"
+PACKAGE_LOGGER_NAME = "csv_extractor"
 
 LOG_FORMAT = (
     "%(asctime)s %(levelname)-7s [%(processName)s] "
