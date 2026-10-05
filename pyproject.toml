@@ -3,8 +3,8 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "csv-extractor"
-version = "0.1.0"
+name = "csv_extractor"
+version = "0.2.0"
 description = "Desktop app that validates support-ticket CSV files and reports what is wrong with them."
 readme = "README.md"
 requires-python = ">=3.11"

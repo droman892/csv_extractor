@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (2026-10-04)
 
 - The code is now a regular package, `src/csv_extractor/`, run with `python -m csv_extractor`. `run.py` is gone; the `.exe` is built from the same entry point.
 - The sample CSV ships inside the package and is found the same way from source and from the `.exe`.
