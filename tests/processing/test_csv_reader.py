@@ -1,8 +1,8 @@
 import pytest
 
-from src.config import MAX_LINE_LENGTH
-from src.processing.duplicates import find_duplicate_ticket_ids
-from src.processing.csv_reader import (
+from csv_extractor.config import MAX_LINE_LENGTH
+from csv_extractor.processing.duplicates import find_duplicate_ticket_ids
+from csv_extractor.processing.csv_reader import (
     read_csv,
     validate_columns
 )
@@ -236,7 +236,7 @@ def test_read_csv_rejects_files_over_the_row_limit(
     monkeypatch
 ):
     monkeypatch.setattr(
-        "src.processing.csv_reader.MAX_DATA_ROWS",
+        "csv_extractor.processing.csv_reader.MAX_DATA_ROWS",
         2
     )
 
@@ -356,7 +356,7 @@ def test_read_csv_skipping_in_tiny_pieces_finds_the_line_end(
     # The rest of a long line is skipped in pieces. With tiny pieces
     # the loop must still find the end of the line.
     monkeypatch.setattr(
-        "src.processing.csv_reader.SKIP_CHUNK_SIZE",
+        "csv_extractor.processing.csv_reader.SKIP_CHUNK_SIZE",
         7
     )
 
@@ -380,7 +380,7 @@ def test_read_csv_skipping_stops_at_every_kind_of_line_break(
 ):
     # Try every position of the line break relative to the piece size.
     monkeypatch.setattr(
-        "src.processing.csv_reader.SKIP_CHUNK_SIZE",
+        "csv_extractor.processing.csv_reader.SKIP_CHUNK_SIZE",
         4
     )
 
@@ -418,7 +418,7 @@ def test_read_csv_a_long_line_counts_toward_the_row_limit(
     monkeypatch
 ):
     monkeypatch.setattr(
-        "src.processing.csv_reader.MAX_DATA_ROWS",
+        "csv_extractor.processing.csv_reader.MAX_DATA_ROWS",
         2
     )
 

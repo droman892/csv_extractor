@@ -29,19 +29,12 @@ dev = [
     "pyinstaller>=6.10",
 ]
 
-# This is an application that is run from a clone of the repository
-# (python -m src.main), not a library, so there is nothing to package.
-# The empty list makes `pip install -e ".[dev]"` install only the
-# dependencies above.
-[tool.setuptools]
-packages = []
+# The package is found automatically in src/; this adds the sample CSV the
+# upload screen offers, which is data, not code.
+[tool.setuptools.package-data]
+csv_extractor = ["resources/*.csv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
-# Not ".pytest_cache" (the pytest default): that folder is stuck with a
-# broken ACL on at least one dev machine (Windows "Access is denied"
-# even to delete it), so a fresh name is used instead.
-cache_dir = ".cache/pytest"
 
 # mypy is configured in mypy.ini.

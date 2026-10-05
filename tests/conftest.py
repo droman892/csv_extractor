@@ -1,6 +1,6 @@
 import pytest
 
-from src.logging_config import reset_logging
+from csv_extractor.logging_config import reset_logging
 
 
 @pytest.fixture(autouse=True)

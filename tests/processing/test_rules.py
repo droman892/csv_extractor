@@ -1,7 +1,10 @@
+import csv
+import io
+
 import pytest
 
-from src.processing import rules
-from src.processing.validation import (
+from csv_extractor.processing import rules
+from csv_extractor.processing.validation import (
     validate_ticket_id,
     validate_customer,
     validate_priority,
@@ -75,9 +78,10 @@ def test_format_note_states_the_one_record_per_line_and_length_rules():
     assert "1,000 characters" in rules.FORMAT_NOTE
 
 
-def test_valid_records_note_is_safe_to_write_as_a_plain_line():
-    # The export writes it without CSV quoting, so it must not contain
-    # anything that quoting exists to protect.
-    assert '"' not in rules.VALID_RECORDS_NOTE
-    assert "\n" not in rules.VALID_RECORDS_NOTE
-    assert "\r" not in rules.VALID_RECORDS_NOTE
+def test_valid_records_note_is_one_unquoted_csv_cell():
+    # Nothing in it (commas, quotes, line breaks) makes the CSV writer
+    # quote it, so it reads the same in a text editor and a spreadsheet.
+    buffer = io.StringIO()
+    csv.writer(buffer).writerow([rules.VALID_RECORDS_NOTE])
+
+    assert buffer.getvalue() == rules.VALID_RECORDS_NOTE + "\r\n"

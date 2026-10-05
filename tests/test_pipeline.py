@@ -11,9 +11,9 @@ import csv
 import logging
 import os
 
-from src.workers.export_worker import ExportWorker
-from src.workers.process_utils import details_path_for, remove_result_files
-from src.workers.upload_worker import UploadWorker
+from csv_extractor.workers.export_worker import ExportWorker
+from csv_extractor.workers.process_utils import details_path_for, remove_result_files
+from csv_extractor.workers.upload_worker import UploadWorker
 
 
 HEADER = "ticket_id,customer,priority,status,hours\n"

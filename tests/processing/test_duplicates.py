@@ -1,6 +1,6 @@
 import pytest
 
-from src.processing.duplicates import find_duplicate_ticket_ids
+from csv_extractor.processing.duplicates import find_duplicate_ticket_ids
 
 
 HEADER = "ticket_id,customer,priority,status,hours\n"

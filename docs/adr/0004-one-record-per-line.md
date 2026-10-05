@@ -10,7 +10,7 @@ CSV allows a quoted field to contain a line break, so one record can span severa
 
 Each line is one record. A quoted field that continues onto the next line is reported: each line of the split record gets a "malformed row" issue that includes its line number. Blank lines are skipped.
 
-A line may be at most 1,000 characters long, not counting the line break (`MAX_LINE_LENGTH` in `src/config.py`). The reader asks for at most that many characters at a time. A longer line becomes one issue ("longer than 1,000 characters") that shows the start of the line (the first 200 characters), the rest is discarded in pieces without being kept, and reading continues with the next line. A header row over the limit refuses the whole file.
+A line may be at most 1,000 characters long, not counting the line break (`MAX_LINE_LENGTH` in `src/csv_extractor/config.py`). The reader asks for at most that many characters at a time. A longer line becomes one issue ("longer than 1,000 characters") that shows the start of the line (the first 200 characters), the rest is discarded in pieces without being kept, and reading continues with the next line. A header row over the limit refuses the whole file.
 
 ## Consequences
 

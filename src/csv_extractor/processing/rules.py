@@ -22,12 +22,12 @@ FORMAT_NOTE: str = (
     f"One record per line, up to {MAX_LINE_LENGTH:,} characters long."
 )
 
-# Shown on the results screen and written to the top of the export. The
-# export writes it as a plain line, not as a quoted CSV cell, so it must
-# not contain quotes or line breaks.
+# Shown on the results screen and written to the top of the export. It has
+# no commas, quotes or line breaks, so the CSV writer leaves it unquoted:
+# one plain cell in a spreadsheet and readable as-is in a text editor.
 VALID_RECORDS_NOTE: str = (
-    "Note: Only data from valid records is included in these sections: "
-    "Tickets by Status, Tickets by Priority, and Hours by Customer."
+    "Note: The Tickets by Status / Tickets by Priority / Hours by Customer "
+    "sections count valid records only."
 )
 
 

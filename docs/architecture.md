@@ -5,7 +5,8 @@ CSV Extractor is a PySide6 desktop app. The window stays responsive because the 
 ## Layers
 
 ```
-src/
+src/csv_extractor/
+  __main__.py           entry point: `python -m csv_extractor` and the .exe build
   main.py               starts logging and the window
   config.py             limits (max rows, rows shown on screen)
   logging_config.py     log file and levels
@@ -20,7 +21,7 @@ src/
     processor.py          process_csv(): ties the above together
   services/             file-level jobs
     results_export_service.py   writes the report CSV
-    demo_file_service.py        copies the demo file
+    demo_file_service.py        copies the demo file (resources/demo_data.csv)
   workers/              background processes and the Qt objects that watch them
     upload_worker.py      processing process + UploadWorker
     export_worker.py      export process + ExportWorker
@@ -86,4 +87,4 @@ Both are created in the system temp folder with a random name, so two runs never
 
 ## Data shapes
 
-`src/records.py` defines the dictionaries passed between layers (`RawRow`, `TicketRecord`, `ProcessingResult`, `DisplayResult` and so on) as `TypedDict`s. They are ordinary dicts at run time, and `mypy` checks the keys and types in CI.
+`src/csv_extractor/records.py` defines the dictionaries passed between layers (`RawRow`, `TicketRecord`, `ProcessingResult`, `DisplayResult` and so on) as `TypedDict`s. They are ordinary dicts at run time, and `mypy` checks the keys and types in CI.

@@ -4,13 +4,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.processing.invalid_tickets import (
+from csv_extractor.processing.invalid_tickets import (
     iter_invalid_tickets,
     open_for_writing,
     write_invalid_ticket
 )
-from src.workers.process_utils import details_path_for
-from src.workers.upload_worker import (
+from csv_extractor.workers.process_utils import details_path_for
+from csv_extractor.workers.upload_worker import (
     MAX_DISPLAYED_ROWS,
     UploadWorker,
     build_display_result,
@@ -302,10 +302,10 @@ def test_run_processing_puts_completed_result_in_queue():
     result_queue = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.process_csv",
+        "csv_extractor.workers.upload_worker.process_csv",
         return_value=RESULT
     ), patch(
-        "src.workers.upload_worker.save_full_result",
+        "csv_extractor.workers.upload_worker.save_full_result",
         return_value="C:/temp/result.pkl"
     ):
 
@@ -331,7 +331,7 @@ def test_run_processing_puts_value_error_in_queue():
     result_queue = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.process_csv",
+        "csv_extractor.workers.upload_worker.process_csv",
         side_effect=ValueError("Invalid CSV file.")
     ):
         run_processing(
@@ -351,7 +351,7 @@ def test_run_processing_puts_unexpected_error_in_queue():
     result_queue = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.process_csv",
+        "csv_extractor.workers.upload_worker.process_csv",
         side_effect=RuntimeError("Unexpected failure.")
     ):
         run_processing(
@@ -398,13 +398,13 @@ def test_process_file_creates_result_queue():
     fake_process = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.Queue",
+        "csv_extractor.workers.upload_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.workers.upload_worker.Process",
+        "csv_extractor.workers.upload_worker.Process",
         return_value=fake_process
     ), patch(
-        "src.workers.upload_worker.QTimer",
+        "csv_extractor.workers.upload_worker.QTimer",
         return_value=MagicMock()
     ):
         worker.process_file()
@@ -419,13 +419,13 @@ def test_process_file_creates_process_with_expected_arguments():
     fake_process = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.Queue",
+        "csv_extractor.workers.upload_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.workers.upload_worker.Process",
+        "csv_extractor.workers.upload_worker.Process",
         return_value=fake_process
     ) as process_class, patch(
-        "src.workers.upload_worker.QTimer",
+        "csv_extractor.workers.upload_worker.QTimer",
         return_value=MagicMock()
     ):
         worker.process_file()
@@ -448,13 +448,13 @@ def test_process_file_starts_process():
     fake_timer = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.Queue",
+        "csv_extractor.workers.upload_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.workers.upload_worker.Process",
+        "csv_extractor.workers.upload_worker.Process",
         return_value=fake_process
     ), patch(
-        "src.workers.upload_worker.QTimer",
+        "csv_extractor.workers.upload_worker.QTimer",
         return_value=fake_timer
     ):
         worker.process_file()
@@ -469,10 +469,10 @@ def test_process_file_creates_poll_timer():
     fake_process = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.Queue",
+        "csv_extractor.workers.upload_worker.Queue",
         return_value=fake_queue
     ), patch(
-        "src.workers.upload_worker.Process",
+        "csv_extractor.workers.upload_worker.Process",
         return_value=fake_process
     ):
         worker.process_file()
@@ -574,10 +574,10 @@ def test_process_file_chooses_a_unique_result_path_in_the_temp_folder():
 
     for worker in (first, second):
         with patch(
-            "src.workers.upload_worker.Queue",
+            "csv_extractor.workers.upload_worker.Queue",
             return_value=MagicMock()
         ), patch(
-            "src.workers.upload_worker.Process",
+            "csv_extractor.workers.upload_worker.Process",
             return_value=MagicMock()
         ):
             worker.process_file()
@@ -710,7 +710,7 @@ def test_run_processing_explains_a_file_that_is_not_utf8():
     result_queue = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.process_csv",
+        "csv_extractor.workers.upload_worker.process_csv",
         side_effect=UnicodeDecodeError(
             "utf-8",
             b"\xe9",
@@ -817,10 +817,10 @@ def test_run_processing_without_a_path_still_writes_both_files():
     result_queue = MagicMock()
 
     with patch(
-        "src.workers.upload_worker.process_csv",
+        "csv_extractor.workers.upload_worker.process_csv",
         return_value=RESULT
     ) as process_csv, patch(
-        "src.workers.upload_worker.save_full_result",
+        "csv_extractor.workers.upload_worker.save_full_result",
         return_value="C:/temp/result.pkl"
     ) as save:
         run_processing("test.csv", result_queue)

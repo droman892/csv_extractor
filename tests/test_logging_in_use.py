@@ -6,10 +6,10 @@ from queue import Queue
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from src.processing.processor import process_csv
-from src.workers.export_worker import run_export
-from src.workers.process_utils import poll_result, remove_file
-from src.workers.upload_worker import run_processing
+from csv_extractor.processing.processor import process_csv
+from csv_extractor.workers.export_worker import run_export
+from csv_extractor.workers.process_utils import poll_result, remove_file
+from csv_extractor.workers.upload_worker import run_processing
 
 
 HEADER = "ticket_id,customer,priority,status,hours\n"
@@ -19,7 +19,7 @@ def read_log_file(tmp_path):
     """run_processing / run_export set up logging as a real background
     process would, which sends the logs to the file rather than to
     pytest's capture, so the tests read the file."""
-    for handler in logging.getLogger("src").handlers:
+    for handler in logging.getLogger("csv_extractor").handlers:
         handler.flush()
 
     return (tmp_path / "test.log").read_text(encoding="utf-8")
@@ -92,7 +92,7 @@ def test_run_processing_logs_an_unexpected_error_with_traceback(
         raise KeyError("boom")
 
     monkeypatch.setattr(
-        "src.workers.upload_worker.process_csv",
+        "csv_extractor.workers.upload_worker.process_csv",
         explode
     )
 
@@ -131,7 +131,7 @@ def test_remove_file_logs_a_file_it_could_not_delete(
     def refuse(path):
         raise PermissionError("in use")
 
-    monkeypatch.setattr("src.workers.process_utils.os.remove", refuse)
+    monkeypatch.setattr("csv_extractor.workers.process_utils.os.remove", refuse)
 
     with caplog.at_level(logging.WARNING):
         remove_file(str(tmp_path / "x.pkl"))
