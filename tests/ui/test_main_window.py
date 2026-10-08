@@ -107,7 +107,7 @@ def test_show_results_view_stops_processing_overlay(qtbot):
     }
 
     full_result_path = (
-        "C:/temp/csv_extractor_result.pkl"
+        "C:/temp/csv_extractor_result.json"
     )
 
     result = {
@@ -232,7 +232,7 @@ def test_close_shuts_down_the_results_view_model(qtbot):
     window = MainWindow()
     qtbot.addWidget(window)
 
-    window.results_view = FakeResultsView({}, "result.pkl")
+    window.results_view = FakeResultsView({}, "result.json")
 
     window.close()
 

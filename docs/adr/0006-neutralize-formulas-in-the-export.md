@@ -1,10 +1,8 @@
 # 0006. Neutralize spreadsheet formulas in the export
 
-Status: accepted (2026-09).
-
 ## Context
 
-The report is a CSV file that people open in a spreadsheet, and it contains text copied from the uploaded file: customer names, ticket IDs, and the invalid values themselves. A cell that starts with `=`, `+`, `-`, `@`, a tab or a carriage return is executed as a formula by Excel, Google Sheets and LibreOffice. A hostile or careless input file could therefore run a formula, or leak data, on whoever opens the report ("CSV injection").
+The report is a CSV file that people open in a spreadsheet, and it contains text copied from the uploaded file: customer names, ticket IDs, and the invalid values themselves. A cell that starts with `=`, `+`, `-`, `@`, a tab, or a carriage return is executed as a formula by Excel, Google Sheets, and LibreOffice. A hostile or careless input file could therefore run a formula, or leak data, on whoever opens the report ("CSV injection").
 
 ## Decision
 

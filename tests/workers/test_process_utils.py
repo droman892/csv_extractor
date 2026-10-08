@@ -99,7 +99,7 @@ def test_stop_process_accepts_no_process():
 
 
 def test_remove_file_deletes_the_file(tmp_path):
-    path = tmp_path / "x.pkl"
+    path = tmp_path / "x.json"
     path.write_bytes(b"x")
 
     remove_file(str(path))
@@ -108,21 +108,21 @@ def test_remove_file_deletes_the_file(tmp_path):
 
 
 def test_remove_file_ignores_a_missing_file_or_no_path(tmp_path):
-    remove_file(str(tmp_path / "missing.pkl"))
+    remove_file(str(tmp_path / "missing.json"))
     remove_file(None)
     remove_file("")
 
 
 def test_details_path_sits_beside_the_result_file_with_the_same_name():
-    assert details_path_for("/tmp/csv_extractor_result_abc.pkl") == str(
+    assert details_path_for("/tmp/csv_extractor_result_abc.json") == str(
         Path("/tmp/csv_extractor_result_abc.invalid.jsonl")
     )
 
 
 def test_remove_result_files_deletes_both_files(tmp_path):
-    result = tmp_path / "result.pkl"
+    result = tmp_path / "result.json"
     details = tmp_path / "result.invalid.jsonl"
-    other = tmp_path / "other.pkl"
+    other = tmp_path / "other.json"
 
     for path in (result, details, other):
         path.write_bytes(b"x")
@@ -135,7 +135,7 @@ def test_remove_result_files_deletes_both_files(tmp_path):
 
 
 def test_remove_result_files_copes_with_missing_files_and_no_path(tmp_path):
-    remove_result_files(str(tmp_path / "missing.pkl"))
+    remove_result_files(str(tmp_path / "missing.json"))
     remove_result_files(None)
     remove_result_files("")
 
@@ -146,6 +146,6 @@ def test_remove_result_files_deletes_the_details_when_the_result_is_gone(
     details = tmp_path / "result.invalid.jsonl"
     details.write_bytes(b"x")
 
-    remove_result_files(str(tmp_path / "result.pkl"))
+    remove_result_files(str(tmp_path / "result.json"))
 
     assert not details.exists()

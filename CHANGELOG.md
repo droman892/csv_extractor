@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- The temporary result file is JSON instead of a pickle, so loading it can never run code. The "accepted risk" in the security notes is gone.
+
 ## 0.2.0 (2026-10-04)
 
 - The code is now a regular package, `src/csv_extractor/`, run with `python -m csv_extractor`. `run.py` is gone; the `.exe` is built from the same entry point.
@@ -11,7 +15,7 @@
 
 First release.
 
-- Desktop app (PySide6) that validates a support-ticket CSV against five rules and shows totals, summaries and the first 100 issues.
+- Desktop app (PySide6) that validates a support-ticket CSV against five rules and shows totals, summaries, and the first 100 issues.
 - Every row that shares a ticket ID is invalid, not just the second one.
 - One record per line; blank lines are skipped and split records are reported by line number.
 - Lines are limited to 1,000 characters (one constant). A longer line is reported and not read into memory, so a file with no line breaks can no longer exhaust memory.
@@ -20,5 +24,5 @@ First release.
 - Closing the window stops the work and deletes the temporary files.
 - A plain message for files that are not UTF-8, have the wrong columns, or cannot be read.
 - Log file that never contains row contents.
-- Tests (unit, view and end-to-end with real processes), mypy type checking and a Windows GitHub Actions workflow.
+- Tests (unit, view, and end-to-end with real processes), mypy type checking, and a Windows GitHub Actions workflow.
 - Packaged as a single Windows `.exe` with PyInstaller (`csv_extractor.spec`).

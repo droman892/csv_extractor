@@ -1,10 +1,12 @@
 from queue import Empty
 from unittest.mock import MagicMock, patch
 
+from csv_extractor.processing.processor import process_csv
 from csv_extractor.workers.export_worker import (
     ExportWorker,
     run_export,
 )
+from csv_extractor.workers.upload_worker import save_full_result
 
 
 RESULT = {
@@ -21,14 +23,14 @@ def test_run_export_puts_completed_result_in_queue():
         "csv_extractor.workers.export_worker.open",
         MagicMock()
     ), patch(
-        "csv_extractor.workers.export_worker.pickle.load",
+        "csv_extractor.workers.export_worker.json.load",
         return_value=RESULT
     ), patch(
         "csv_extractor.workers.export_worker.ResultsExportService.export_results"
     ) as export_results:
 
         run_export(
-            "result.pkl",
+            "result.json",
             "output.csv",
             result_queue
         )
@@ -53,7 +55,7 @@ def test_run_export_puts_failed_result_in_queue():
         "csv_extractor.workers.export_worker.open",
         MagicMock()
     ), patch(
-        "csv_extractor.workers.export_worker.pickle.load",
+        "csv_extractor.workers.export_worker.json.load",
         return_value=RESULT
     ), patch(
         "csv_extractor.workers.export_worker.ResultsExportService.export_results",
@@ -61,7 +63,7 @@ def test_run_export_puts_failed_result_in_queue():
     ) as export_results:
 
         run_export(
-            "result.pkl",
+            "result.json",
             "output.csv",
             result_queue
         )
@@ -79,13 +81,36 @@ def test_run_export_puts_failed_result_in_queue():
     )
 
 
+def test_run_export_reads_a_result_file_saved_by_the_upload_worker(
+    tmp_path
+):
+    csv_file = tmp_path / "t.csv"
+    csv_file.write_text(
+        "ticket_id,customer,priority,status,hours\n"
+        "100000001,Acme,high,open,2.5\n"
+        "100000002,Acme,urgent,open,2.5\n",
+        encoding="utf-8"
+    )
+
+    result_path = tmp_path / "result.json"
+    save_full_result(process_csv(csv_file), str(result_path))
+
+    report = tmp_path / "report.csv"
+    result_queue = MagicMock()
+
+    run_export(str(result_path), str(report), result_queue)
+
+    result_queue.put.assert_called_once_with(("completed", str(report)))
+    assert "t.csv" in report.read_text(encoding="utf-8")
+
+
 def test_export_worker_stores_full_result_path():
     worker = ExportWorker(
-        "result.pkl",
+        "result.json",
         "output.csv"
     )
 
-    assert worker.full_result_path == "result.pkl"
+    assert worker.full_result_path == "result.json"
 
 
 def test_export_worker_stores_destination_path():
