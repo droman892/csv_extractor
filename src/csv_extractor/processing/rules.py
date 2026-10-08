@@ -1,6 +1,6 @@
 """The ticket validation rules, defined once.
 
-Validation, aggregation and the format hints on the upload screen all read
+Validation, aggregation, and the format hints on the upload screen all read
 these values, so a rule can only be changed in one place and the screen
 cannot drift out of step with what validation actually enforces.
 """
@@ -23,7 +23,7 @@ FORMAT_NOTE: str = (
 )
 
 # Shown on the results screen and written to the top of the export. It has
-# no commas, quotes or line breaks, so the CSV writer leaves it unquoted:
+# no commas, quotes, or line breaks, so the CSV writer leaves it unquoted:
 # one plain cell in a spreadsheet and readable as-is in a text editor.
 VALID_RECORDS_NOTE: str = (
     "Note: The Tickets by Status / Tickets by Priority / Hours by Customer "

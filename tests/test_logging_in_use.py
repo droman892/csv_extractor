@@ -106,7 +106,7 @@ def test_run_processing_logs_an_unexpected_error_with_traceback(
 
 def test_run_export_logs_a_failure(tmp_path):
     run_export(
-        str(tmp_path / "missing.pkl"),
+        str(tmp_path / "missing.json"),
         str(tmp_path / "out.csv"),
         Queue()
     )
@@ -134,7 +134,7 @@ def test_remove_file_logs_a_file_it_could_not_delete(
     monkeypatch.setattr("csv_extractor.workers.process_utils.os.remove", refuse)
 
     with caplog.at_level(logging.WARNING):
-        remove_file(str(tmp_path / "x.pkl"))
+        remove_file(str(tmp_path / "x.json"))
 
     assert "Could not delete" in caplog.text
 
@@ -144,7 +144,7 @@ def test_remove_file_is_quiet_when_the_file_is_already_gone(
     caplog
 ):
     with caplog.at_level(logging.DEBUG):
-        remove_file(str(tmp_path / "missing.pkl"))
+        remove_file(str(tmp_path / "missing.json"))
 
     assert caplog.text == ""
 

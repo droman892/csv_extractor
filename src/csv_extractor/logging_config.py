@@ -5,12 +5,12 @@ module (``logging.getLogger(__name__)``), all of which sit under the
 ``csv_extractor`` package logger configured here.
 
 Rules for what gets logged:
-  * Counts, durations, file names and error details: yes.
+  * Counts, durations, file names, and error details: yes.
   * The contents of rows (customer names, ticket ids): never. The files
     being processed are customer data and the log outlives them.
 
 Settings (environment variables):
-  CSV_EXTRACTOR_LOG_LEVEL  INFO (default), WARNING or ERROR; an unknown
+  CSV_EXTRACTOR_LOG_LEVEL  INFO (default), WARNING, or ERROR; an unknown
                            value falls back to INFO
   CSV_EXTRACTOR_LOG_FILE   full path of the log file, to override the
                            default location

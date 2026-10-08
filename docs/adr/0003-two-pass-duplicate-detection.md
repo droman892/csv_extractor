@@ -1,7 +1,5 @@
 # 0003. Find duplicate ticket IDs in a first pass
 
-Status: accepted (2026-09).
-
 ## Context
 
 A ticket ID must appear only once. If two rows share an ID, neither can be trusted, so both are invalid. That cannot be decided in a single pass: the first row with an ID looks fine until the second one appears, and by then the first has already been counted.

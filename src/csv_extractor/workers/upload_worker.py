@@ -2,8 +2,8 @@
 # be written as Queue[...] for type checking but is not subscriptable.
 from __future__ import annotations
 
+import json
 import logging
-import pickle
 from contextlib import closing
 import tempfile
 import uuid
@@ -50,7 +50,7 @@ def new_result_path() -> str:
     """A unique path in the temp folder for the full result file."""
     return str(
         Path(tempfile.gettempdir())
-        / f"csv_extractor_result_{uuid.uuid4().hex}.pkl"
+        / f"csv_extractor_result_{uuid.uuid4().hex}.json"
     )
 
 
@@ -61,33 +61,33 @@ def save_full_result(
     # The caller normally chooses the path, so it knows which file to
     # delete if the process is stopped part-way through writing it.
     try:
-        result_file: IO[bytes]
+        result_file: IO[str]
 
         if path is None:
             result_file = tempfile.NamedTemporaryFile(
-                mode="wb",
+                mode="w",
+                encoding="utf-8",
                 prefix="csv_extractor_result_",
-                suffix=".pkl",
+                suffix=".json",
                 delete=False
             )
         else:
-            # "xb" refuses to open a file that already exists.
-            result_file = open(path, "xb")
+            # "x" refuses to open a file that already exists.
+            result_file = open(path, "x", encoding="utf-8")
 
-        # pickle is used because the summary holds Python objects that
-        # the export needs back unchanged. Loading a pickle can run code,
-        # so this file must only ever be read by run_export, and only
-        # from a path this app chose. See docs/security.md.
+        # JSON, not pickle: loading JSON only ever builds data, so a
+        # tampered file cannot run code. filename may be a Path, which
+        # JSON cannot hold, so it is saved as text. There is no
+        # default=str: any other unexpected type fails here, loudly.
         with result_file:
-            pickle.dump(
-                result,
-                result_file,
-                protocol=pickle.HIGHEST_PROTOCOL
+            json.dump(
+                {**result, "filename": str(result["filename"])},
+                result_file
             )
 
         return result_file.name
 
-    except (OSError, pickle.PickleError) as error:
+    except (OSError, TypeError, ValueError) as error:
         raise RuntimeError(
             "Unable to save the full processing result."
         ) from error

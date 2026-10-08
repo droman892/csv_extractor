@@ -1,7 +1,5 @@
 # 0007. Stop silently when the window closes
 
-Status: accepted (2026-09).
-
 ## Context
 
 Closing the window while a large file is processing or exporting could leave the background process running with nothing to show its result to, and could leave half-written files behind: a partial temporary result, or a partial report that looks like a real one.

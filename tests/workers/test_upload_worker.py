@@ -1,4 +1,5 @@
-import pickle
+import json
+from pathlib import Path
 from queue import Empty
 from unittest.mock import MagicMock, patch
 
@@ -9,6 +10,7 @@ from csv_extractor.processing.invalid_tickets import (
     open_for_writing,
     write_invalid_ticket
 )
+from csv_extractor.processing.processor import process_csv
 from csv_extractor.workers.process_utils import details_path_for
 from csv_extractor.workers.upload_worker import (
     MAX_DISPLAYED_ROWS,
@@ -306,7 +308,7 @@ def test_run_processing_puts_completed_result_in_queue():
         return_value=RESULT
     ), patch(
         "csv_extractor.workers.upload_worker.save_full_result",
-        return_value="C:/temp/result.pkl"
+        return_value="C:/temp/result.json"
     ):
 
         run_processing(
@@ -323,7 +325,7 @@ def test_run_processing_puts_completed_result_in_queue():
     assert value["display_result"]["filename"] == "test.csv"
 
     assert value["full_result_path"] == (
-        "C:/temp/result.pkl"
+        "C:/temp/result.json"
     )
 
 
@@ -501,7 +503,7 @@ def test_check_result_emits_completed_and_cleans_up():
     fake_queue = MagicMock()
     fake_queue.get_nowait.return_value = (
         "completed",
-        {"display_result": {}, "full_result_path": "x.pkl"}
+        {"display_result": {}, "full_result_path": "x.json"}
     )
 
     worker.result_queue = fake_queue
@@ -514,7 +516,7 @@ def test_check_result_emits_completed_and_cleans_up():
     worker.check_result()
 
     assert emitted == [
-        {"display_result": {}, "full_result_path": "x.pkl"}
+        {"display_result": {}, "full_result_path": "x.json"}
     ]
     worker.poll_timer.stop.assert_called_once()
     fake_process.join.assert_called_once()
@@ -585,24 +587,63 @@ def test_process_file_chooses_a_unique_result_path_in_the_temp_folder():
         worker.poll_timer.stop()
 
     assert first.full_result_path != second.full_result_path
-    assert first.full_result_path.endswith(".pkl")
+    assert first.full_result_path.endswith(".json")
 
 
 def test_save_full_result_writes_to_the_given_path(tmp_path):
-    path = tmp_path / "result.pkl"
+    path = tmp_path / "result.json"
 
-    assert save_full_result({"a": 1}, str(path)) == str(path)
+    assert save_full_result({"filename": "t.csv"}, str(path)) == str(path)
 
-    with open(path, "rb") as saved:
-        assert pickle.load(saved) == {"a": 1}
+    with open(path, encoding="utf-8") as saved:
+        assert json.load(saved) == {"filename": "t.csv"}
+
+
+def test_save_full_result_saves_a_path_filename_as_text(tmp_path):
+    path = tmp_path / "result.json"
+
+    save_full_result({"filename": Path("data") / "t.csv"}, str(path))
+
+    with open(path, encoding="utf-8") as saved:
+        assert json.load(saved)["filename"] == str(Path("data") / "t.csv")
+
+
+def test_save_full_result_rejects_a_value_json_cannot_hold(tmp_path):
+    path = tmp_path / "result.json"
+
+    with pytest.raises(RuntimeError):
+        save_full_result(
+            {"filename": "t.csv", "unexpected": {1, 2}},
+            str(path)
+        )
+
+
+def test_save_full_result_round_trips_a_real_result(tmp_path):
+    csv_file = tmp_path / "t.csv"
+    csv_file.write_text(
+        "ticket_id,customer,priority,status,hours\n"
+        "100000001,Acme,high,open,2.5\n"
+        "100000002,Acme,urgent,open,2.5\n",
+        encoding="utf-8"
+    )
+
+    result = process_csv(csv_file)
+    path = tmp_path / "result.json"
+
+    save_full_result(result, str(path))
+
+    with open(path, encoding="utf-8") as saved:
+        loaded = json.load(saved)
+
+    assert loaded == {**result, "filename": str(csv_file)}
 
 
 def test_save_full_result_will_not_overwrite_an_existing_file(tmp_path):
-    path = tmp_path / "result.pkl"
+    path = tmp_path / "result.json"
     path.write_bytes(b"keep me")
 
     with pytest.raises(RuntimeError):
-        save_full_result({"a": 1}, str(path))
+        save_full_result({"filename": "t.csv"}, str(path))
 
     assert path.read_bytes() == b"keep me"
 
@@ -615,7 +656,7 @@ def test_run_processing_saves_the_result_at_the_given_path(tmp_path):
         encoding="utf-8"
     )
 
-    path = tmp_path / "result.pkl"
+    path = tmp_path / "result.json"
     result_queue = MagicMock()
 
     run_processing(str(csv_file), result_queue, str(path))
@@ -630,7 +671,7 @@ def test_run_processing_saves_the_result_at_the_given_path(tmp_path):
 def test_stop_kills_a_running_process_and_deletes_the_partial_result(
     tmp_path
 ):
-    partial = tmp_path / "partial.pkl"
+    partial = tmp_path / "partial.json"
     partial.write_bytes(b"half")
 
     worker = UploadWorker("test.csv")
@@ -647,7 +688,7 @@ def test_stop_kills_a_running_process_and_deletes_the_partial_result(
 def test_stop_keeps_the_result_of_a_process_that_already_finished(
     tmp_path
 ):
-    finished = tmp_path / "result.pkl"
+    finished = tmp_path / "result.json"
     finished.write_bytes(b"complete")
 
     worker = UploadWorker("test.csv")
@@ -688,7 +729,7 @@ def test_nothing_is_emitted_after_stop():
 
 
 def test_a_failed_run_deletes_its_result_file(tmp_path):
-    leftover = tmp_path / "leftover.pkl"
+    leftover = tmp_path / "leftover.json"
     leftover.write_bytes(b"x")
 
     worker = UploadWorker("test.csv")
@@ -786,7 +827,7 @@ def test_run_processing_writes_the_invalid_tickets_beside_the_result_file(
         encoding="utf-8"
     )
 
-    path = tmp_path / "result.pkl"
+    path = tmp_path / "result.json"
     result_queue = MagicMock()
 
     run_processing(str(csv_file), result_queue, str(path))
@@ -797,8 +838,8 @@ def test_run_processing_writes_the_invalid_tickets_beside_the_result_file(
 
     details = details_path_for(str(path))
 
-    with open(path, "rb") as saved:
-        full_result = pickle.load(saved)
+    with open(path, encoding="utf-8") as saved:
+        full_result = json.load(saved)
 
     # The result file holds no invalid tickets; the details file does.
     assert full_result["invalid_records"] == []
@@ -821,7 +862,7 @@ def test_run_processing_without_a_path_still_writes_both_files():
         return_value=RESULT
     ) as process_csv, patch(
         "csv_extractor.workers.upload_worker.save_full_result",
-        return_value="C:/temp/result.pkl"
+        return_value="C:/temp/result.json"
     ) as save:
         run_processing("test.csv", result_queue)
 
@@ -834,7 +875,7 @@ def test_run_processing_without_a_path_still_writes_both_files():
 
 
 def test_stop_deletes_the_partial_details_file_too(tmp_path):
-    partial = tmp_path / "partial.pkl"
+    partial = tmp_path / "partial.json"
     partial.write_bytes(b"half")
     partial_details = tmp_path / "partial.invalid.jsonl"
     partial_details.write_text("half")
@@ -851,7 +892,7 @@ def test_stop_deletes_the_partial_details_file_too(tmp_path):
 
 
 def test_a_failed_run_deletes_the_details_file_too(tmp_path):
-    leftover = tmp_path / "leftover.pkl"
+    leftover = tmp_path / "leftover.json"
     leftover.write_bytes(b"x")
     leftover_details = tmp_path / "leftover.invalid.jsonl"
     leftover_details.write_text("x")

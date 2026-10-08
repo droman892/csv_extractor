@@ -2,8 +2,8 @@
 # be written as Queue[...] for type checking but is not subscriptable.
 from __future__ import annotations
 
+import json
 import logging
-import pickle
 from multiprocessing import Process, Queue
 from multiprocessing.queues import Queue as ProcessQueue
 from pathlib import Path
@@ -30,17 +30,9 @@ def run_export(
     try:
         with open(
             full_result_path,
-            "rb"
+            encoding="utf-8"
         ) as result_file:
-
-            # SECURITY: unpickling runs whatever code the file asks for,
-            # so it is only safe for a file this app wrote itself.
-            # full_result_path comes from the upload worker (a random
-            # name in the user's own temp folder, created exclusively),
-            # never from the CSV or from anything the user types. Do not
-            # point this at a file the user chooses. Accepted risk for a
-            # local single-user tool; see docs/security.md.
-            result = pickle.load(
+            result = json.load(
                 result_file
             )
 

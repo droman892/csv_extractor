@@ -89,7 +89,7 @@ def details_path_for(result_path: str) -> str:
     """Where the invalid tickets of a result are written.
 
     It sits beside the result file and shares its name:
-    csv_extractor_result_<id>.pkl -> csv_extractor_result_<id>.invalid.jsonl
+    csv_extractor_result_<id>.json -> csv_extractor_result_<id>.invalid.jsonl
     """
     return str(Path(result_path).with_suffix(".invalid.jsonl"))
 

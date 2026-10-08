@@ -7,7 +7,7 @@ class DemoFileService:
     @staticmethod
     def get_demo_file_path() -> Traversable:
         # The sample file ships inside the package, so the same lookup works
-        # from a clone, from an install and from the PyInstaller build
+        # from a clone, from an install, and from the PyInstaller build
         # (csv_extractor.spec collects the package's data files).
         return files("csv_extractor") / "resources" / "demo_data.csv"
 

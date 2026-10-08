@@ -44,7 +44,7 @@ RESULT = {
 
 
 FULL_RESULT_PATH = (
-    "C:/temp/csv_extractor_result.pkl"
+    "C:/temp/csv_extractor_result.json"
 )
 
 
@@ -483,7 +483,7 @@ def test_export_finished_clears_worker_and_thread():
 def test_shutdown_stops_the_export_before_deleting_the_full_result(
     tmp_path
 ):
-    full_result = tmp_path / "result.pkl"
+    full_result = tmp_path / "result.json"
     full_result.write_bytes(b"x")
 
     view_model = ResultsViewModel(RESULT, str(full_result))
@@ -511,7 +511,7 @@ def test_shutdown_stops_the_export_before_deleting_the_full_result(
 def test_shutdown_deletes_the_full_result_when_no_export_is_running(
     tmp_path
 ):
-    full_result = tmp_path / "result.pkl"
+    full_result = tmp_path / "result.json"
     full_result.write_bytes(b"x")
 
     view_model = ResultsViewModel(RESULT, str(full_result))
@@ -537,7 +537,7 @@ def test_export_results_fails_when_the_full_result_is_gone():
 
 
 def test_shutdown_deletes_the_invalid_ticket_file_too(tmp_path):
-    full_result = tmp_path / "result.pkl"
+    full_result = tmp_path / "result.json"
     full_result.write_bytes(b"x")
     details = tmp_path / "result.invalid.jsonl"
     details.write_text("x")
