@@ -1,4 +1,4 @@
-# Annotations are not evaluated at run time: multiprocessing's Queue can
+# Annotations are not evaluated at run time because multiprocessing's Queue can
 # be written as Queue[...] for type checking but is not subscriptable.
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ def poll_result(
 
     Returns:
         (status, value) - the message the process sent
-        None            - nothing yet; the process is still working
+        None            - nothing yet because the process is still working
 
     If the process has ended without sending anything (it crashed, ran out
     of memory, or was killed), a ("failed", message) result is returned

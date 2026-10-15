@@ -164,7 +164,7 @@ def test_upload_view_processing_error_reenables_upload_button(qtbot):
     view.selected_filename = "test.csv"
     view.upload_button.setEnabled(False)
 
-    # Patching the whole module works on every platform: winsound
+    # Patching the whole module works on every platform because winsound
     # exists only on Windows.
     with patch(
         "csv_extractor.ui.upload_view.winsound"

@@ -4,7 +4,7 @@
 # Output:  dist/CSV-Extractor.exe (a single file)
 #
 # It is a one-file build for easy distribution (one .exe to hand
-# someone), at the cost of a slower start-up: each launch unpacks the
+# someone), at the cost of a slower start-up, since each launch unpacks the
 # app into a temp folder before it runs. See docs/architecture.md if
 # start-up time ever needs to be a onedir build instead.
 
@@ -16,7 +16,7 @@ a = Analysis(
     binaries=[],
     # Non-code files inside the package (the sample CSV in resources/).
     # PyInstaller only follows imports, so it would not find them on its
-    # own; this keeps them at the same place inside the package, where
+    # own, and this keeps them at the same place inside the package, where
     # demo_file_service.py looks them up.
     datas=collect_data_files('csv_extractor'),
     hiddenimports=[],
@@ -42,7 +42,7 @@ exe = EXE(
     upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
-    # No console window: this is a GUI app, and a stray console would
+    # No console window because this is a GUI app, and a stray console would
     # also let its window steal focus on every launch.
     console=False,
     disable_windowed_traceback=False,

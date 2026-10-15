@@ -2,7 +2,7 @@
 
 A file where most rows are bad can have millions of invalid tickets, each
 with several errors. Holding them all in memory does not scale, so the
-processor can write each one to a file as it finds it (JSON Lines: one
+processor can write each one to a file as it finds it (JSON Lines, one
 ticket per line) and the report reads them back one at a time.
 """
 

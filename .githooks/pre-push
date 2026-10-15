@@ -1,7 +1,7 @@
 #!/bin/sh
 # Refuses the push if the test suite or mypy fail.
 #
-# Not active by default: .git/hooks is not tracked by git, so every
+# Not active by default because .git/hooks is not tracked by git, so every
 # clone that wants this must opt in once with:
 #   git config core.hooksPath .githooks
 #

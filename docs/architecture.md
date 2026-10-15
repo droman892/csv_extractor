@@ -15,7 +15,7 @@ src/csv_extractor/
     rules.py              the validation rules, defined once
     csv_reader.py         line-at-a-time reader (one record per line)
     duplicates.py         pass 1: which ticket_ids appear more than once
-    validation.py         per-field validators; marks duplicate rows invalid
+    validation.py         per-field validators, and marks duplicate rows invalid
     aggregation.py        summary counters for valid rows
     invalid_tickets.py    writing/reading invalid tickets as JSON Lines
     processor.py          process_csv(): ties the above together
@@ -27,14 +27,14 @@ src/csv_extractor/
     export_worker.py      export process + ExportWorker
     process_utils.py      poll, stop, and clean up processes and files
   ui/                   widgets
-    main_window.py        switches between the two views; handles closing
+    main_window.py        switches between the two views and handles closing
     upload_view.py        file choice and format hints
     results_view.py       totals, tables, export button
     processing_overlay.py spinner shown while a process runs
-    view_models/          own the worker threads; views talk only to these
+    view_models/          own the worker threads, and views talk only to these
 ```
 
-The rule that keeps this manageable: `processing` knows nothing about Qt or processes, `services` and `workers` know nothing about widgets, and views never start work themselves.
+The rule that keeps this manageable is that `processing` knows nothing about Qt or processes, `services` and `workers` know nothing about widgets, and views never start work themselves.
 
 ## What happens when a file is uploaded
 
@@ -74,14 +74,14 @@ Both are created in the system temp folder with a random name, so two runs never
 | File | Written by | Contents | Deleted |
 | --- | --- | --- | --- |
 | `csv_extractor_result_<id>.json` | processing process | the summary and counts (JSON) | when you go back to the upload screen, when processing fails or is stopped, or when the window closes |
-| `csv_extractor_result_<id>.invalid.jsonl` | processing process | one invalid ticket per line: ID and its errors | with the `.json` |
+| `csv_extractor_result_<id>.invalid.jsonl` | processing process | one invalid ticket per line, with its ID and errors | with the `.json` |
 
 `process_utils.remove_result_files()` deletes both together. A file that a stopped process was still writing is deleted too, so a half-written result can never be mistaken for a complete one.
 
 ## Failure handling
 
 - A wrong header, empty file, missing file, or non-UTF-8 file fails with a plain message on the upload screen and leaves no temp file behind.
-- A malformed line (unbalanced quote, wrong number of fields) becomes an issue in the report; it does not stop the run.
+- A malformed line (unbalanced quote, wrong number of fields) becomes an issue in the report instead of stopping the run.
 - If the child process dies without answering (crash, out of memory), the worker notices and reports that processing stopped unexpectedly instead of waiting forever.
 - Closing the window stops any running process without a prompt and deletes its partial output.
 

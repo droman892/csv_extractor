@@ -1,5 +1,4 @@
 import math
-from collections.abc import Callable
 from typing import Any, cast
 
 from ..records import (

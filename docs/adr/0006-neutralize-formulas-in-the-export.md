@@ -6,10 +6,10 @@ The report is a CSV file that people open in a spreadsheet, and it contains text
 
 ## Decision
 
-Every text value that comes from the input file is passed through `safe_cell()` before it is written. A value that starts with one of those characters gets a leading apostrophe, which makes spreadsheets treat it as plain text. Plain numbers such as `-3.0` are left alone: they cannot run anything, and the Invalid Value column often holds exactly such a number. Counts and hours the app computes itself are not text from the file and are not changed.
+Every text value that comes from the input file is passed through `safe_cell()` before it is written. A value that starts with one of those characters gets a leading apostrophe, which makes spreadsheets treat it as plain text. Plain numbers such as `-3.0` are left alone because they cannot run anything, and the Invalid Value column often holds exactly such a number. Counts and hours the app computes itself are not text from the file and are not changed.
 
 ## Consequences
 
 - Nothing in the report starts like a formula. This is checked by a unit test and by an end-to-end test that pushes a formula-like customer name all the way through to the report.
 - A value that legitimately starts with `-` or `=` shows an extra apostrophe in the report. That is deliberate.
-- The apostrophe rule is what spreadsheet applications document; it has not been tested against every spreadsheet version.
+- The apostrophe rule is what spreadsheet applications document, but it has not been tested against every spreadsheet version.

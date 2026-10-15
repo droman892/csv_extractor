@@ -1,7 +1,7 @@
 try:
     import winsound
 except ImportError:
-    # Not Windows: the error sound is skipped.
+    # Not Windows, so the error sound is skipped.
     winsound = None  # type: ignore[assignment]
 
 from PySide6.QtCore import Qt, Signal

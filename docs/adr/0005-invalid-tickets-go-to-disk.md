@@ -2,20 +2,20 @@
 
 ## Context
 
-The report must list every problem. Keeping the details of every invalid ticket in memory does not scale: memory and the size of the saved result grow with the number of invalid rows, so a file where most or all rows are bad is the worst case.
+The report must list every problem. Keeping the details of every invalid ticket in memory does not scale because memory and the size of the saved result grow with the number of invalid rows, so a file where most or all rows are bad is the worst case.
 
 ## Decision
 
-While processing, each invalid ticket (its ID and its errors, nothing else) is appended to a JSON Lines file. The counts stay exact in memory. The screen reads the first 100 issues from the file; the export streams the whole file into the report.
+While processing, each invalid ticket (its ID and its errors, nothing else) is appended to a JSON Lines file. The counts stay exact in memory. The screen reads the first 100 issues from the file, and the export streams the whole file into the report.
 
 ## Alternatives considered
 
 - Cap the number of kept tickets (for example at 100,000, with a "first N of M" note in the report). Rejected because the user wants every error listed.
-- Re-read the original CSV at export time instead of storing anything: no extra disk, but the report could disagree with what the screen showed if the file changed in between, and it doubles the processing time.
+- Re-read the original CSV at export time instead of storing anything. This needs no extra disk, but the report could disagree with what the screen showed if the file changed in between, and it doubles the processing time.
 
 ## Consequences
 
 - Processing is slower than the capped-in-memory alternative because every invalid ticket is written out, not just counted.
 - It needs disk space in the temp folder, proportional to the number of invalid tickets. The files are deleted when you go back to the upload screen or close the window.
 - A report with about five million lines is more than Excel can open (1,048,576 rows). The CSV itself is complete.
-- The file is JSON Lines, like the summary is JSON, so reading either back is safe even if the file is tampered with.
+- The file is JSON Lines and the summary is JSON, so reading either back is safe even if a file is tampered with.

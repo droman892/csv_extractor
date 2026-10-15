@@ -23,11 +23,11 @@ SKIP_CHUNK_SIZE: int = 64 * 1024
 def read_csv(filename: str | Path) -> Iterator[RawRow]:
     """Yield one dict per data line of the CSV file.
 
-    The application handles one record per line: a line is never joined
+    The application handles one record per line, meaning a line is never joined
     with the next one. Blank lines are skipped. A bad line is not raised
-    as an error; it is yielded with a "_csv_error" key so the caller can
-    report it. That includes a line longer than MAX_LINE_LENGTH: only
-    its first MAX_LINE_LENGTH characters are kept.
+    as an error. Instead, it is yielded with a "_csv_error" key so the caller can
+    report it. That includes a line longer than MAX_LINE_LENGTH, of which only
+    the first MAX_LINE_LENGTH characters are kept.
     """
     with open(
         filename,
@@ -127,7 +127,7 @@ def skip_rest_of_line(file: TextIO, piece: str) -> None:
     while piece and not piece.endswith("\n"):
         if piece.endswith("\r"):
             # Either a line break of its own, or the first half of
-            # "\r\n". Take the "\n" if it is there; otherwise the
+            # "\r\n". Take the "\n" if it is there. Otherwise the
             # character belongs to the next line, so put it back.
             position = file.tell()
 
@@ -144,7 +144,7 @@ def parse_row(
     line: str,
     line_number: int | None = None
 ) -> RawRow:
-    # One record per line: a quoted field cannot continue onto the next
+    # One record per line, so a quoted field cannot continue onto the next
     # line, so each line of such a record is reported as malformed.
     where = f"Line {line_number}: " if line_number else ""
 

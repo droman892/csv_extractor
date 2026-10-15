@@ -347,7 +347,7 @@ def test_process_csv_does_not_call_a_malformed_row_a_duplicate(tmp_path):
 
     result = process_csv(csv_file)
 
-    # The good row is not a duplicate: the bad line has no usable record.
+    # The good row is not a duplicate because the bad line has no usable record.
     assert result["valid_tickets_count"] == 1
     assert result["invalid_tickets_count"] == 1
     assert result["invalid_records"][0]["errors"][0]["field"] == "CSV"

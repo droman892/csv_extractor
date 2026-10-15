@@ -1,4 +1,4 @@
-# Annotations are not evaluated at run time: multiprocessing's Queue can
+# Annotations are not evaluated at run time because multiprocessing's Queue can
 # be written as Queue[...] for type checking but is not subscriptable.
 from __future__ import annotations
 

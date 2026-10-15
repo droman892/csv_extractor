@@ -29,7 +29,7 @@ dev = [
     "pyinstaller>=6.10",
 ]
 
-# The package is found automatically in src/; this adds the sample CSV the
+# The package is found automatically in src/, and this adds the sample CSV the
 # upload screen offers, which is data, not code.
 [tool.setuptools.package-data]
 csv_extractor = ["resources/*.csv"]

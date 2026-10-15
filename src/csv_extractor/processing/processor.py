@@ -36,10 +36,10 @@ def process_csv(
     - With invalid_details_path, each invalid ticket is written to that
       file (which must not exist yet) as it is found. "invalid_records"
       in the result is then empty and "invalid_details_path" names the
-      file. The caller owns the file; it is deleted here only if
+      file. The caller owns the file, and it is deleted here only if
       processing fails.
     - Without it, every invalid ticket is kept in "invalid_records".
-      Fine for small files and tests; the application always passes a
+      Fine for small files and tests, but the application always passes a
       path.
 
     Either way, read them with iter_invalid_tickets().

@@ -271,7 +271,7 @@ def generate_dataset(
         writer.writeheader()
 
         for ticket_number in range(row_count):
-            # Every ticket_id must be unique: the application treats
+            # Every ticket_id must be unique because the application treats
             # every row that shares a ticket_id as invalid.
             ticket_id = ticket_number
 

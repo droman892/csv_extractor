@@ -841,7 +841,7 @@ def test_run_processing_writes_the_invalid_tickets_beside_the_result_file(
     with open(path, encoding="utf-8") as saved:
         full_result = json.load(saved)
 
-    # The result file holds no invalid tickets; the details file does.
+    # The result file holds no invalid tickets, but the details file does.
     assert full_result["invalid_records"] == []
     assert full_result["invalid_details_path"] == details
     assert [

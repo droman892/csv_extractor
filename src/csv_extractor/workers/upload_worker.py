@@ -1,4 +1,4 @@
-# Annotations are not evaluated at run time: multiprocessing's Queue can
+# Annotations are not evaluated at run time because multiprocessing's Queue can
 # be written as Queue[...] for type checking but is not subscriptable.
 from __future__ import annotations
 
@@ -19,7 +19,6 @@ from ..logging_config import setup_logging
 from ..processing.invalid_tickets import iter_invalid_tickets
 from ..processing.processor import process_csv
 from ..records import (
-    CompletedPayload,
     DisplayIssue,
     DisplayResult,
     ProcessingResult,
@@ -75,10 +74,10 @@ def save_full_result(
             # "x" refuses to open a file that already exists.
             result_file = open(path, "x", encoding="utf-8")
 
-        # JSON, not pickle: loading JSON only ever builds data, so a
+        # JSON, not pickle, because loading JSON only ever builds data, so a
         # tampered file cannot run code. filename may be a Path, which
         # JSON cannot hold, so it is saved as text. There is no
-        # default=str: any other unexpected type fails here, loudly.
+        # default=str, so any other unexpected type fails here, loudly.
         with result_file:
             json.dump(
                 {**result, "filename": str(result["filename"])},
@@ -211,7 +210,7 @@ def run_processing(
 
     except UnicodeDecodeError as error:
 
-        # Must come before ValueError: it is a kind of ValueError.
+        # Must come before ValueError because it is a kind of ValueError.
         logger.warning("Not valid UTF-8: %s", error)
 
         result_queue.put(
@@ -302,7 +301,7 @@ class UploadWorker(QObject):
     def stop(self) -> None:
         """Stop processing (the window is closing) and delete its output.
 
-        Nothing is emitted afterwards: nobody is left to show a result.
+        Nothing is emitted afterwards because nobody is left to show a result.
         """
         self.stopped = True
 

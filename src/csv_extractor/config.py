@@ -5,8 +5,8 @@ MAX_DATA_ROWS: int = 5_000_000
 
 # The longest a single line may be, not counting the line break. A valid
 # ticket row is at most about 100 characters even when quoted, so this
-# leaves plenty of room for padding. Longer lines are reported, not read:
-# without a limit, a file with no line breaks would be read as one line,
+# leaves plenty of room for padding. Longer lines are reported, not read, because
+# without a limit a file with no line breaks would be read as one line,
 # all of it into memory.
 MAX_LINE_LENGTH: int = 1000
 

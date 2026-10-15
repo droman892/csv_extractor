@@ -21,7 +21,7 @@ def safe_cell(value: Any) -> Any:
 
     A leading apostrophe makes spreadsheets treat the cell as plain text.
     Non-strings (counts, hours) and plain numbers such as "-3.0" are left
-    alone: a bare number cannot run a formula, and the Invalid Value
+    alone because a bare number cannot run a formula, and the Invalid Value
     column often holds exactly such a number.
     """
     if (
@@ -276,7 +276,7 @@ class ResultsExportService:
 
         issue_number = 1
 
-        # Read one ticket at a time: there can be millions.
+        # Read one ticket at a time, since there can be millions.
         for record in iter_invalid_tickets(result):
             for error in record.get("errors", []):
                 writer.writerow([

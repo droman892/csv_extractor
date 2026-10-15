@@ -206,7 +206,7 @@ def test_read_csv_keeps_the_raw_line_of_a_bad_row(tmp_path):
 
 
 def test_read_csv_shortens_a_long_bad_line(tmp_path):
-    # Under the line limit but long: kept in the report only in part.
+    # Under the line limit but long, so only part of it is kept in the report only in part.
     csv_file = write_csv(
         tmp_path,
         '100000001,"' + "x" * (MAX_LINE_LENGTH - 100) + "\n"
@@ -268,7 +268,7 @@ def test_read_csv_rejects_a_file_with_the_wrong_columns(tmp_path):
 
 
 # A data line of exactly `length` characters (not counting the line
-# break): a valid row whose customer is padded with spaces to fit.
+# break), made from a valid row whose customer is padded with spaces to fit.
 def line_of_length(length):
     row = "100000001,Acme,high,open,1.0"
     return row + " " * (length - len(row))

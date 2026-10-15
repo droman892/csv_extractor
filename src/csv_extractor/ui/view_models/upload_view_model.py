@@ -68,7 +68,7 @@ class UploadViewModel(QObject):
             if worker is not None:
                 worker.stop()
         except RuntimeError:
-            # The worker was already deleted: it had finished.
+            # The worker was already deleted because it had finished.
             pass
 
         if thread is not None:

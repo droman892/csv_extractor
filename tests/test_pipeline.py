@@ -3,12 +3,11 @@
 The unit tests mock the pieces around each function. These start the real
 child processes through the real workers and check that the pieces fit
 together: file -> processing process -> result file -> export process ->
-report. (The workers are driven directly, without a QThread; the
+report. (The workers are driven directly, without a QThread, and the
 view-model tests cover the thread wiring.)
 """
 
 import csv
-import logging
 import os
 
 from csv_extractor.workers.export_worker import ExportWorker
@@ -50,7 +49,7 @@ def read_report(path):
 
 
 def run_upload(qtbot, csv_file):
-    """Run the real processing process; return ('completed'|'failed', value)."""
+    """Run the real processing process and return ('completed'|'failed', value)."""
     worker = UploadWorker(str(csv_file))
 
     outcome = []
@@ -291,7 +290,7 @@ def test_every_invalid_ticket_is_listed_in_the_report(qtbot, tmp_path):
     display = value["display_result"]
 
     try:
-        # The screen shows a page of them; the counts are the real totals.
+        # The screen shows a page of them, but the counts are the real totals.
         assert len(display["invalid_records"]) == 100
         assert display["invalid_tickets_count"] == invalid_count
         assert display["total_invalid_error_count"] == invalid_count * 2
@@ -321,7 +320,7 @@ def test_every_invalid_ticket_is_listed_in_the_report(qtbot, tmp_path):
         str(200000000 + i) for i in range(invalid_count)
     }
 
-    # No note about the list being cut short: nothing is cut.
+    # No note about the list being cut short because nothing is cut.
     assert not [
         row for row in rows
         if row and row[0].startswith("Note: details are listed")

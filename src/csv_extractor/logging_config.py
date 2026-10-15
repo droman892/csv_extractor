@@ -10,7 +10,7 @@ Rules for what gets logged:
     being processed are customer data and the log outlives them.
 
 Settings (environment variables):
-  CSV_EXTRACTOR_LOG_LEVEL  INFO (default), WARNING, or ERROR; an unknown
+  CSV_EXTRACTOR_LOG_LEVEL  INFO (default), WARNING, or ERROR, and an unknown
                            value falls back to INFO
   CSV_EXTRACTOR_LOG_FILE   full path of the log file, to override the
                            default location
@@ -57,9 +57,7 @@ def default_log_path() -> Path:
 def _log_level() -> int:
     name = os.environ.get("CSV_EXTRACTOR_LOG_LEVEL", "INFO").upper()
 
-    level = logging.getLevelName(name)
-
-    return level if isinstance(level, int) else logging.INFO
+    return logging.getLevelNamesMapping().get(name, logging.INFO)
 
 
 def _rotate_if_large(path: Path) -> None:
@@ -67,14 +65,14 @@ def _rotate_if_large(path: Path) -> None:
         if path.exists() and path.stat().st_size > MAX_LOG_BYTES:
             path.replace(path.with_name(path.name + ".old"))
     except OSError:
-        # Not worth failing start-up over; keep appending.
+        # Not worth failing start-up over, so keep appending.
         pass
 
 
 def setup_logging(rotate: bool = True) -> None:
     """Send the application's logs to stderr and to the log file.
 
-    Safe to call more than once and from every process: the background
+    Safe to call more than once and from every process. The background
     processes call it too, because on Windows they start fresh and do not
     inherit the main process's setup. Only the main process should
     rotate the file (rotate=True), since a rotated file cannot be
@@ -114,7 +112,7 @@ def setup_logging(rotate: bool = True) -> None:
 
     except OSError as error:
         logger.warning(
-            "Could not open the log file %s (%s); "
+            "Could not open the log file %s (%s), so "
             "logging to the console only.",
             path,
             error

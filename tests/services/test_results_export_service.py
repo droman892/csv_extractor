@@ -92,7 +92,7 @@ def test_export_results_writes_title_section(tmp_path):
 
 
 def test_export_results_writes_the_note_without_quotes(tmp_path):
-    # Read the raw text: the csv module hides quoting.
+    # Read the raw text, because the csv module hides quoting.
     destination = tmp_path / "results.csv"
 
     ResultsExportService.export_results(

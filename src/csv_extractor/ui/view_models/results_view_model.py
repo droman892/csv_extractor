@@ -142,7 +142,7 @@ class ResultsViewModel(QObject):
     def shutdown(self) -> None:
         """Stop any export in progress, then delete the full result.
 
-        The order matters: an export that is still running reads the
+        The order matters because an export that is still running reads the
         full result file, so it must be stopped before that is deleted.
         """
         worker = self.export_worker
@@ -152,7 +152,7 @@ class ResultsViewModel(QObject):
             if worker is not None:
                 worker.stop()
         except RuntimeError:
-            # The worker was already deleted: it had finished.
+            # The worker was already deleted because it had finished.
             pass
 
         if thread is not None:

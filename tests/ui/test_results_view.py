@@ -1,7 +1,3 @@
-from unittest.mock import MagicMock, patch
-
-from PySide6.QtCore import Qt
-
 from csv_extractor.ui.results_view import ResultsView
 
 

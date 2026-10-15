@@ -1,6 +1,6 @@
 """The shapes of the data passed between the layers.
 
-These are TypedDicts: at run time they are ordinary dicts (so the code and
+These are TypedDicts. At run time they are ordinary dicts (so the code and
 its tests can build and compare them as plain dicts), and a type checker
 such as mypy can check the keys and value types.
 """
@@ -47,7 +47,7 @@ class InvalidTicket(TypedDict):
 class FieldValidation(TypedDict):
     """The outcome of validating one field."""
 
-    value: Any  # cleaned value (str, or float for hours); None if invalid
+    value: Any  # cleaned value (str, or float for hours), or None if invalid
     valid: bool
     error: str | None
 
