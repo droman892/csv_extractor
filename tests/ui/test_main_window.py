@@ -72,6 +72,19 @@ def test_main_window_creates_processing_overlay(qtbot):
     assert not window.processing_overlay.isVisible()
 
 
+def test_returning_to_upload_view_reuses_processing_overlay(qtbot):
+    window = MainWindow()
+    qtbot.addWidget(window)
+
+    overlay = window.processing_overlay
+
+    window.show_upload_view()
+    window.show_upload_view()
+
+    assert window.processing_overlay is overlay
+    assert window.findChildren(type(overlay)) == [overlay]
+
+
 def test_show_processing_overlay_starts_overlay(qtbot):
     window = MainWindow()
     qtbot.addWidget(window)
