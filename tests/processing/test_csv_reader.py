@@ -99,9 +99,24 @@ def test_validate_columns_reports_multiple_missing_columns():
 
     with pytest.raises(
         ValueError,
-        match="hours.*priority.*status"
+        match="priority.*status.*hours"
     ):
         validate_columns(fieldnames)
+
+
+def test_validate_columns_lists_missing_columns_in_upload_screen_order():
+    fieldnames = [
+        "ticket_number",
+        "status_value"
+    ]
+
+    with pytest.raises(ValueError) as error:
+        validate_columns(fieldnames)
+
+    assert str(error.value) == (
+        "Missing required columns: "
+        "ticket_id, customer, priority, status, hours"
+    )
 
 
 # -------------------------------------------------------------------

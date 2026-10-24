@@ -135,16 +135,12 @@ class ResultsView(QWidget):
             full_result_path
         )
 
+        # export_completed and export_failed are connected by MainWindow,
+        # which hides the spinner before calling export_completed or
+        # export_failed here. Both open a modal dialog, so connecting them
+        # here too would leave the spinner running behind the dialog.
         self.view_model.export_started.connect(
             self.export_started
-        )
-
-        self.view_model.export_completed.connect(
-            self.export_completed
-        )
-
-        self.view_model.export_failed.connect(
-            self.export_failed
         )
 
         filename = self.view_model.get_filename()
@@ -384,13 +380,18 @@ class ResultsView(QWidget):
 
         self.setLayout(main_layout)
 
+        # Passing self as the context object makes Qt drop these calls if
+        # the view is deleted before they run, so they never touch deleted
+        # widgets.
         QTimer.singleShot(
             0,
+            self,
             self.finalize_table_heights
         )
 
         QTimer.singleShot(
             0,
+            self,
             self.update_filename_display
         )
 
@@ -941,6 +942,9 @@ class ResultsView(QWidget):
         if not tables:
             return
 
+        # Runs the pending layout, style and resize events first, so the
+        # header and row heights read below are the real ones instead of
+        # Qt's defaults for widgets that have not been laid out yet.
         QApplication.processEvents()
 
         reference_table = None
@@ -1139,5 +1143,6 @@ class ResultsView(QWidget):
 
             QTimer.singleShot(
                 0,
+                self,
                 self.update_filename_display
             )

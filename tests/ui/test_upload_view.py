@@ -191,7 +191,41 @@ def test_upload_view_processing_error_works_without_winsound(qtbot):
     assert view.upload_button.isEnabled()
 
 
-def test_upload_view_download_demo_file_does_nothing_when_cancelled(qtbot):
+def test_upload_view_elides_long_filename_the_same_way_every_time(qtbot):
+    view = UploadView()
+    qtbot.addWidget(view)
+    view.resize(800, 600)
+    view.show()
+    qtbot.waitExposed(view)
+
+    view.selected_filename = "a_very_long_file_name_" * 10 + ".csv"
+
+    with patch("csv_extractor.ui.upload_view.winsound", None):
+        view.show_processing_error("Missing required columns: hours")
+        first_message = view.error_message.text()
+
+        view.show_processing_error("Missing required columns: hours")
+        second_message = view.error_message.text()
+
+    assert "…" in first_message
+    assert first_message == second_message
+
+
+def test_upload_view_long_error_does_not_squeeze_the_format_rows(qtbot):
+    view = UploadView()
+    qtbot.addWidget(view)
+    view.resize(800, 600)
+    view.show()
+    qtbot.waitExposed(view)
+
+    view.show_error("A very long error message. " * 40)
+    qtbot.wait(10)
+
+    for label in view.findChildren(QLabel, "columnDescription"):
+        assert label.height() >= label.sizeHint().height()
+
+
+def test_upload_view_download_demo_data_file_does_nothing_when_cancelled(qtbot):
     view = UploadView()
     qtbot.addWidget(view)
 
@@ -199,15 +233,15 @@ def test_upload_view_download_demo_file_does_nothing_when_cancelled(qtbot):
         "csv_extractor.ui.upload_view.QFileDialog.getSaveFileName",
         return_value=("", "")
     ), patch(
-        "csv_extractor.ui.upload_view.DemoFileService.download_demo_file"
-    ) as download_demo_file:
+        "csv_extractor.ui.upload_view.DemoDataFileService.download_demo_data_file"
+    ) as download_demo_data_file:
 
-        view.download_demo_file()
+        view.download_demo_data_file()
 
-    download_demo_file.assert_not_called()
+    download_demo_data_file.assert_not_called()
 
 
-def test_upload_view_downloads_demo_file_to_selected_destination(qtbot):
+def test_upload_view_downloads_demo_data_file_to_selected_destination(qtbot):
     view = UploadView()
     qtbot.addWidget(view)
 
@@ -215,17 +249,17 @@ def test_upload_view_downloads_demo_file_to_selected_destination(qtbot):
         "csv_extractor.ui.upload_view.QFileDialog.getSaveFileName",
         return_value=("C:/files/demo.csv", "CSV Files (*.csv)")
     ), patch(
-        "csv_extractor.ui.upload_view.DemoFileService.download_demo_file"
-    ) as download_demo_file:
+        "csv_extractor.ui.upload_view.DemoDataFileService.download_demo_data_file"
+    ) as download_demo_data_file:
 
-        view.download_demo_file()
+        view.download_demo_data_file()
 
-    download_demo_file.assert_called_once_with(
+    download_demo_data_file.assert_called_once_with(
         "C:/files/demo.csv"
     )
 
 
-def test_upload_view_shows_error_when_demo_file_download_fails(qtbot):
+def test_upload_view_shows_error_when_demo_data_file_download_fails(qtbot):
     view = UploadView()
     qtbot.addWidget(view)
 
@@ -233,16 +267,16 @@ def test_upload_view_shows_error_when_demo_file_download_fails(qtbot):
         "csv_extractor.ui.upload_view.QFileDialog.getSaveFileName",
         return_value=("C:/files/demo.csv", "CSV Files (*.csv)")
     ), patch(
-        "csv_extractor.ui.upload_view.DemoFileService.download_demo_file",
+        "csv_extractor.ui.upload_view.DemoDataFileService.download_demo_data_file",
         side_effect=FileNotFoundError(
-            "The demo file could not be found."
+            "The demo data file could not be found."
         )
     ):
 
-        view.download_demo_file()
+        view.download_demo_data_file()
 
     assert view.error_message.text() == (
-        "The demo file could not be found."
+        "The demo data file could not be found."
     )
     assert not view.error_message.isHidden()
 

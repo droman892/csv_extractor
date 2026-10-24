@@ -1,7 +1,5 @@
 import logging
 
-from typing import Any
-
 from PySide6.QtGui import QCloseEvent, QResizeEvent
 from PySide6.QtWidgets import QMainWindow
 
@@ -92,11 +90,11 @@ class MainWindow(QMainWindow):
         )
 
         self.results_view.view_model.export_completed.connect(
-            self.hide_processing_overlay
+            self.show_export_completed
         )
 
         self.results_view.view_model.export_failed.connect(
-            self.hide_processing_overlay
+            self.show_export_error
         )
 
         self.setCentralWidget(
@@ -111,10 +109,25 @@ class MainWindow(QMainWindow):
             message
         )
 
-    def hide_processing_overlay(self, *args: Any) -> None:
-        # Hides the spinner. Accepts and ignores any signal arguments so
-        # it can be connected to both the export success and failure signals.
+    def show_export_completed(self, destination_path: str) -> None:
+        # Hides the spinner before the results screen opens its modal
+        # "Export Complete" dialog, which blocks until the user closes it.
         self.processing_overlay.stop()
+
+        if self.results_view is not None:
+            self.results_view.export_completed(
+                destination_path
+            )
+
+    def show_export_error(self, message: str) -> None:
+        # Hides the spinner before the results screen opens its modal
+        # "Export Failed" dialog, which blocks until the user closes it.
+        self.processing_overlay.stop()
+
+        if self.results_view is not None:
+            self.results_view.export_failed(
+                message
+            )
 
     def closeEvent(self, event: QCloseEvent) -> None:
         # Closing stops any processing or export that is still running,

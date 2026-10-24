@@ -5,15 +5,10 @@ from typing import TextIO
 
 from ..config import MAX_DATA_ROWS, MAX_LINE_LENGTH
 from ..records import RawRow
+from .rules import COLUMNS
 
 
-REQUIRED_COLUMNS: set[str] = {
-    "ticket_id",
-    "status",
-    "priority",
-    "customer",
-    "hours",
-}
+REQUIRED_COLUMNS: tuple[str, ...] = COLUMNS
 
 # When the rest of an over-long line is thrown away, it is read in pieces
 # of this size, so memory use does not depend on how long the line is.
@@ -271,14 +266,20 @@ def validate_columns(fieldnames: list[str] | None) -> list[str]:
             "CSV file does not contain a header row."
         )
 
-    missing_columns = (
-        REQUIRED_COLUMNS - set(fieldnames)
-    )
+    present_columns = set(fieldnames)
+
+    # Listed in REQUIRED_COLUMNS order so the message matches the
+    # upload screen.
+    missing_columns = [
+        column
+        for column in REQUIRED_COLUMNS
+        if column not in present_columns
+    ]
 
     if missing_columns:
         raise ValueError(
             f"Missing required columns: "
-            f"{', '.join(sorted(missing_columns))}"
+            f"{', '.join(missing_columns)}"
         )
 
     return fieldnames

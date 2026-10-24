@@ -7,6 +7,16 @@ cannot drift out of step with what validation actually enforces.
 
 from ..config import MAX_LINE_LENGTH
 
+# The required columns, in the order the upload screen lists them and
+# error messages name them.
+COLUMNS: tuple[str, ...] = (
+    "ticket_id",
+    "customer",
+    "priority",
+    "status",
+    "hours",
+)
+
 TICKET_ID_LENGTH: int = 9
 MAX_CUSTOMER_LENGTH: int = 30
 
@@ -41,14 +51,15 @@ def _join_choices(choices: tuple[str, ...]) -> str:
 
 def format_hints() -> list[tuple[str, str]]:
     """(column, description) pairs for the 'Expected CSV Format' table."""
-    return [
-        ("ticket_id", f"Exactly {TICKET_ID_LENGTH} digits"),
-        ("customer", f"Required, up to {MAX_CUSTOMER_LENGTH} characters"),
-        ("priority", _join_choices(PRIORITIES)),
-        ("status", _join_choices(STATUSES)),
-        (
-            "hours",
+    descriptions = {
+        "ticket_id": f"Exactly {TICKET_ID_LENGTH} digits",
+        "customer": f"Required, up to {MAX_CUSTOMER_LENGTH} characters",
+        "priority": _join_choices(PRIORITIES),
+        "status": _join_choices(STATUSES),
+        "hours": (
             f"{MIN_HOURS:g}–{MAX_HOURS:g}, "
             f"in increments of {HOURS_STEP:g}"
         ),
-    ]
+    }
+
+    return [(column, descriptions[column]) for column in COLUMNS]

@@ -1,3 +1,5 @@
+import shiboken6
+
 from csv_extractor.ui.results_view import ResultsView
 
 
@@ -162,3 +164,36 @@ def test_results_view_displays_priority_values(qtbot):
         "Medium",
         "Low"
     ]
+
+def test_results_view_deleted_before_deferred_layout_runs(qtbot):
+    # The constructor defers layout work with QTimer.singleShot. If the view
+    # is deleted before that runs, the pending calls must be dropped instead
+    # of running on deleted widgets. pytest-qt fails the test if any of
+    # them raises inside the event loop.
+    view = ResultsView(
+        RESULT,
+        RESULT
+    )
+
+    shiboken6.delete(view)
+
+    qtbot.wait(10)
+
+
+def test_results_view_deleted_before_resize_update_runs(qtbot):
+    view = ResultsView(
+        RESULT,
+        RESULT
+    )
+
+    view.show()
+    qtbot.waitExposed(view)
+
+    view.resize(
+        view.width() + 100,
+        view.height()
+    )
+
+    shiboken6.delete(view)
+
+    qtbot.wait(10)

@@ -17,7 +17,7 @@ a = Analysis(
     # Non-code files inside the package (the sample CSV in resources/).
     # PyInstaller only follows imports, so it would not find them on its
     # own, and this keeps them at the same place inside the package, where
-    # demo_file_service.py looks them up.
+    # demo_data_file_service.py looks them up.
     datas=collect_data_files('csv_extractor'),
     hiddenimports=[],
     hookspath=[],

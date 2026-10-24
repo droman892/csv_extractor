@@ -14,11 +14,12 @@ from PySide6.QtWidgets import (
     QWidget,
     QGridLayout,
     QFrame,
-    QApplication
+    QApplication,
+    QScrollArea
 )
 
 from ..processing.rules import FORMAT_NOTE, format_hints
-from ..services.demo_file_service import DemoFileService
+from ..services.demo_data_file_service import DemoDataFileService
 from .view_models.upload_view_model import UploadViewModel
 
 
@@ -96,10 +97,6 @@ class UploadView(QWidget):
 
         self.selected_filename: str | None = None
 
-        self.view_model.processing_failed.connect(
-            self.show_processing_error
-        )
-
         title = QLabel("CSV Extractor")
         title.setObjectName("appTitle")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -123,6 +120,7 @@ class UploadView(QWidget):
         format_grid.setHorizontalSpacing(8)
         format_grid.setVerticalSpacing(8)
         format_grid.setContentsMargins(120, 0, 120, 0)
+        format_grid.setColumnMinimumWidth(0, 90)
 
         for row, (column, validation) in enumerate(columns):
             column_label = QLabel(column)
@@ -136,21 +134,18 @@ class UploadView(QWidget):
             format_grid.addWidget(column_label, row, 0)
             format_grid.addWidget(validation_label, row, 1)
 
-        format_grid.setColumnMinimumWidth(0, 90)
-        format_grid.setColumnMinimumWidth(1, 0)
-
         format_note = QLabel(FORMAT_NOTE)
         format_note.setObjectName("formatNote")
         format_note.setAlignment(Qt.AlignmentFlag.AlignCenter)
         format_note.setWordWrap(True)
 
-        demo_file = QLabel()
-        demo_file.setObjectName("demoDataFile")
-        demo_file.setText(
-            'Demo File: <a href="#">demo_data.csv</a>'
+        demo_data_file = QLabel()
+        demo_data_file.setObjectName("demoDataFile")
+        demo_data_file.setText(
+            'Demo Data File: <a href="#">demo_data_file.csv</a>'
         )
-        demo_file.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        demo_file.linkActivated.connect(self.download_demo_file)
+        demo_data_file.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        demo_data_file.linkActivated.connect(self.download_demo_data_file)
 
         self.upload_button = QPushButton("Upload CSV File")
         self.upload_button.setCursor(
@@ -166,52 +161,70 @@ class UploadView(QWidget):
         self.error_message.setWordWrap(True)
         self.error_message.hide()
 
-        card_layout = QVBoxLayout()
-        card_layout.setSpacing(16)
-        card_layout.setContentsMargins(40, 32, 40, 32)
+        self.card_layout = QVBoxLayout()
+        self.card_layout.setSpacing(16)
+        self.card_layout.setContentsMargins(40, 32, 40, 32)
 
-        card_layout.addWidget(title)
-        card_layout.addWidget(description)
-        card_layout.addSpacing(12)
-        card_layout.addWidget(format_title)
-        card_layout.addLayout(format_grid)
-        card_layout.addWidget(format_note)
-        card_layout.addWidget(demo_file)
-        card_layout.addSpacing(12)
+        self.card_layout.addWidget(title)
+        self.card_layout.addWidget(description)
+        self.card_layout.addSpacing(12)
+        self.card_layout.addWidget(format_title)
+        self.card_layout.addLayout(format_grid)
+        self.card_layout.addWidget(format_note)
+        self.card_layout.addWidget(demo_data_file)
+        self.card_layout.addSpacing(12)
 
-        card_layout.addWidget(
+        self.card_layout.addWidget(
             self.upload_button,
             0,
             Qt.AlignmentFlag.AlignHCenter
         )
 
-        card_layout.addWidget(self.error_message)
+        self.card_layout.addWidget(self.error_message)
 
-        card = QFrame()
-        card.setObjectName("contentCard")
-        card.setFixedWidth(600)
-        card.setLayout(card_layout)
+        self.card = QFrame()
+        self.card.setObjectName("contentCard")
+        self.card.setFixedWidth(600)
+        self.card.setLayout(self.card_layout)
 
-        layout = QVBoxLayout()
-        layout.setContentsMargins(40, 40, 40, 40)
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(40, 24, 40, 24)
 
-        layout.addStretch()
+        content_layout.addStretch()
 
-        layout.addWidget(
-            card,
+        content_layout.addWidget(
+            self.card,
             0,
             Qt.AlignmentFlag.AlignHCenter
         )
 
-        layout.addStretch()
+        content_layout.addStretch()
+
+        content = QWidget()
+        content.setLayout(content_layout)
+
+        # The window's minimum height does not grow when the error message
+        # appears. Without the scroll area, Qt would squeeze the card to fit
+        # and cut off the format rows. With it, the card keeps its full
+        # height (see fit_card_to_contents) and the screen scrolls only if
+        # the window is too short.
+        scroll_area = QScrollArea()
+        scroll_area.setObjectName("uploadScrollArea")
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        scroll_area.setWidget(content)
+
+        layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(scroll_area)
 
         self.setLayout(layout)
 
-    def download_demo_file(self) -> None:
+    def download_demo_data_file(self) -> None:
         destination_path, _ = QFileDialog.getSaveFileName(
             self,
             "Save Demo CSV File",
-            "demo_data.csv",
+            "demo_data_file.csv",
             "CSV Files (*.csv)",
         )
 
@@ -219,7 +232,7 @@ class UploadView(QWidget):
             return
 
         try:
-            DemoFileService.download_demo_file(destination_path)
+            DemoDataFileService.download_demo_data_file(destination_path)
         except (FileNotFoundError, OSError) as error:
             self.show_error(str(error))
 
@@ -236,6 +249,7 @@ class UploadView(QWidget):
 
         self.selected_filename = filename.split("/")[-1]
         self.error_message.hide()
+        self.fit_card_to_contents()
 
         self.upload_button.setEnabled(False)
         self.processing_started.emit()
@@ -244,6 +258,12 @@ class UploadView(QWidget):
 
     def show_processing_error(self, message: str) -> None:
         self.upload_button.setEnabled(True)
+
+        # A label that has never been shown has never been laid out, so its
+        # width() is Qt's default (640) instead of its real width. Showing it
+        # and applying the layout first gives the real width every time.
+        self.error_message.show()
+        self.card_layout.activate()
 
         available_width = self.error_message.width()
 
@@ -270,6 +290,8 @@ class UploadView(QWidget):
             f"{prefix}{elided_filename}{suffix}{message}"
         )
 
+        # Paints the hidden spinner and the new error message before the
+        # beep, so the sound plays when the error appears and not before.
         QApplication.processEvents()
 
         if winsound is not None:
@@ -280,3 +302,14 @@ class UploadView(QWidget):
     def show_error(self, message: str) -> None:
         self.error_message.setText(message)
         self.error_message.show()
+        self.fit_card_to_contents()
+
+    def fit_card_to_contents(self) -> None:
+        # Qt asks the centered card how tall it must be at the full width
+        # of the window instead of at its own fixed width, so it
+        # underestimates the height its word-wrapped labels need and
+        # squeezes the format rows. The card's width is fixed, so the real
+        # height is known and can be set as its minimum.
+        self.card.setMinimumHeight(
+            self.card.heightForWidth(self.card.width())
+        )

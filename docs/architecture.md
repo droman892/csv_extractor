@@ -21,7 +21,7 @@ src/csv_extractor/
     processor.py          process_csv(): ties the above together
   services/             file-level jobs
     results_export_service.py   writes the report CSV
-    demo_file_service.py        copies the demo file (resources/demo_data.csv)
+    demo_data_file_service.py   copies the demo data file (resources/demo_data_file.csv)
   workers/              background processes and the Qt objects that watch them
     upload_worker.py      processing process + UploadWorker
     export_worker.py      export process + ExportWorker

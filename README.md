@@ -65,7 +65,7 @@ python -m csv_extractor
 
 ## Using it
 
-1. Click **Upload CSV File** and choose a file. To try it first, click the **demo_data.csv** link on the upload screen to save a sample file, then upload that.
+1. Click **Upload CSV File** and choose a file. To try it first, click the **demo_data_file.csv** link on the upload screen to save a sample file, then upload that.
 2. Wait for the results screen. It shows the totals, the two summary tables, hours by customer (first 100 customers, alphabetical), and the first 100 validation issues.
 3. Click **Export Results** to save the full report as a CSV file. Click **Upload Another File** to start over.
 
