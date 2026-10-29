@@ -21,34 +21,42 @@ class UploadViewModel(QObject):
             self.worker_thread
         )
 
+        # Starts the work once the thread is running.
         self.worker_thread.started.connect(
             self.worker.process_file
         )
 
+        # Passes the result on to the screen.
         self.worker.completed.connect(
             self.processing_completed
         )
 
+        # Passes the error message on to the screen.
         self.worker.failed.connect(
             self.processing_failed
         )
 
+        # Stops the thread's event loop after a success.
         self.worker.completed.connect(
             self.worker_thread.quit
         )
 
+        # Stops the thread's event loop after a failure.
         self.worker.failed.connect(
             self.worker_thread.quit
         )
 
+        # Deletes the worker once the thread has stopped.
         self.worker_thread.finished.connect(
             self.worker.deleteLater
         )
 
+        # Deletes the thread object once the thread has stopped.
         self.worker_thread.finished.connect(
             self.worker_thread.deleteLater
         )
 
+        # Clears the references so the next upload starts fresh.
         self.worker_thread.finished.connect(
             self.processing_finished
         )

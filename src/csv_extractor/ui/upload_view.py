@@ -231,6 +231,8 @@ class UploadView(QWidget):
         if not destination_path:
             return
 
+        # Called directly, not through a view model, because the copy is
+        # instant and has no state or lifecycle to manage.
         try:
             DemoDataFileService.download_demo_data_file(destination_path)
         except (FileNotFoundError, OSError) as error:
