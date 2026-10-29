@@ -29,8 +29,6 @@ from PySide6.QtWidgets import (
 class ResultsView(QWidget):
     upload_another_file_requested = Signal()
 
-    MAX_DISPLAYED_ROWS = MAX_DISPLAYED_ROWS
-
     def __init__(
         self,
         display_result: DisplayResult,
@@ -614,7 +612,7 @@ class ResultsView(QWidget):
 
         displayed_customers = min(
             len(customer_rows),
-            self.MAX_DISPLAYED_ROWS
+            MAX_DISPLAYED_ROWS
         )
 
         count_label = QLabel(
@@ -644,7 +642,7 @@ class ResultsView(QWidget):
             return frame
 
         displayed_rows = customer_rows[
-            :self.MAX_DISPLAYED_ROWS
+            :MAX_DISPLAYED_ROWS
         ]
 
         table = QTableWidget()
@@ -765,7 +763,7 @@ class ResultsView(QWidget):
 
         displayed_errors = min(
             len(invalid_rows),
-            self.MAX_DISPLAYED_ROWS
+            MAX_DISPLAYED_ROWS
         )
 
         count_label = QLabel(
@@ -795,7 +793,7 @@ class ResultsView(QWidget):
             return frame
 
         displayed_rows = invalid_rows[
-            :self.MAX_DISPLAYED_ROWS
+            :MAX_DISPLAYED_ROWS
         ]
 
         table = QTableWidget()

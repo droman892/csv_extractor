@@ -1,5 +1,6 @@
 import shiboken6
 
+from csv_extractor.config import MAX_DISPLAYED_ROWS
 from csv_extractor.ui.results_view import ResultsView
 
 
@@ -164,6 +165,55 @@ def test_results_view_displays_priority_values(qtbot):
         "Medium",
         "Low"
     ]
+
+
+def oversized_result():
+    # More rows than the display limit, as if the worker had not trimmed them.
+    row_count = MAX_DISPLAYED_ROWS + 5
+
+    return {
+        **RESULT,
+        "summary": {
+            **RESULT["summary"],
+            "hours_by_customer": {
+                f"Customer {index}": 1.0
+                for index in range(row_count)
+            }
+        },
+        "invalid_records": [
+            {
+                "ticket_id": str(index),
+                "field": "hours",
+                "invalid_value": "45",
+                "reason": "Hours must be between 0 and 40."
+            }
+            for index in range(row_count)
+        ],
+        "total_customer_count": row_count,
+        "total_invalid_record_count": row_count,
+        "total_invalid_error_count": row_count
+    }
+
+
+def test_results_view_caps_customer_table_at_display_limit(qtbot):
+    view = ResultsView(
+        oversized_result(),
+        None
+    )
+    qtbot.addWidget(view)
+
+    assert view.customer_table.rowCount() == MAX_DISPLAYED_ROWS
+
+
+def test_results_view_caps_validation_table_at_display_limit(qtbot):
+    view = ResultsView(
+        oversized_result(),
+        None
+    )
+    qtbot.addWidget(view)
+
+    assert view.validation_table.rowCount() == MAX_DISPLAYED_ROWS
+
 
 def test_results_view_deleted_before_deferred_layout_runs(qtbot):
     # The constructor defers layout work with QTimer.singleShot. If the view
