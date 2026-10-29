@@ -9,15 +9,15 @@ from multiprocessing.process import BaseProcess
 from multiprocessing.queues import Queue as ProcessQueue
 from queue import Empty
 
-from ..records import WorkerMessage
+from ..records import WorkerData
 
 logger = logging.getLogger(__name__)
 
 
 def poll_result(
     process: BaseProcess | None,
-    result_queue: ProcessQueue[WorkerMessage]
-) -> WorkerMessage | None:
+    result_queue: ProcessQueue[WorkerData]
+) -> WorkerData | None:
     """Check a background process for its result without blocking.
 
     Returns:

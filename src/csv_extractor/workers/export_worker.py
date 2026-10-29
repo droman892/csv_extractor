@@ -11,7 +11,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Signal, Slot, QTimer
 
 from ..logging_config import setup_logging
-from ..records import WorkerMessage
+from ..records import WorkerData
 from ..services.results_export_service import ResultsExportService
 from .process_utils import poll_result, remove_file, stop_process
 
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 def run_export(
     full_result_path: str,
     destination_path: str | Path,
-    result_queue: ProcessQueue[WorkerMessage]
+    result_queue: ProcessQueue[WorkerData]
 ) -> None:
     # This runs in its own process, which does not share the main
     # process's logging setup.
@@ -76,7 +76,7 @@ class ExportWorker(QObject):
         self.destination_path = destination_path
 
         self.process: Process | None = None
-        self.result_queue: ProcessQueue[WorkerMessage] | None = None
+        self.result_queue: ProcessQueue[WorkerData] | None = None
         self.poll_timer: QTimer | None = None
 
         self.stopped = False

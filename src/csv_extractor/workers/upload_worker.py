@@ -22,7 +22,7 @@ from ..records import (
     DisplayIssue,
     DisplayResult,
     ProcessingResult,
-    WorkerMessage
+    WorkerData
 )
 from .process_utils import (
     details_path_for,
@@ -169,7 +169,7 @@ def build_display_result(result: ProcessingResult) -> DisplayResult:
 
 def run_processing(
     filename: str,
-    result_queue: ProcessQueue[WorkerMessage],
+    result_queue: ProcessQueue[WorkerData],
     full_result_path: str | None = None
 ) -> None:
 
@@ -264,7 +264,7 @@ class UploadWorker(QObject):
 
         self.filename = filename
         self.process: Process | None = None
-        self.result_queue: ProcessQueue[WorkerMessage] | None = None
+        self.result_queue: ProcessQueue[WorkerData] | None = None
         self.poll_timer: QTimer | None = None
 
         self.full_result_path: str | None = None

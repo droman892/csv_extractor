@@ -13,7 +13,7 @@ from typing import Any, NotRequired, TypedDict
 RawRow = dict[str, str]
 
 # What a background process puts on its queue: ("completed" | "failed", value)
-WorkerMessage = tuple[str, Any]
+WorkerData = tuple[str, Any]
 
 
 class FieldError(TypedDict):
