@@ -10,3 +10,4 @@ data/demo_data_5_000_000.csv
 *.egg-info/
 build/
 dist/
+docs/personal_notes.txt

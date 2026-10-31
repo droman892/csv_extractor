@@ -1,8 +1,13 @@
 # Changelog
 
-## Unreleased
+## 0.2.1 (2026-10-31)
 
 - The temporary result file is JSON instead of a pickle, so loading it can never run code. The "accepted risk" in the security notes is gone.
+- The upload screen and the missing-columns error list the required columns in the same order.
+- A long filename in an upload error is shortened instead of stretching the message, and the error appears before the beep.
+- Returning to the upload screen no longer leaves an extra hidden processing overlay behind.
+- The bundled sample file is now `demo_data_file.csv`.
+- CI audits the dependencies for known vulnerabilities.
 
 ## 0.2.0 (2026-10-04)
 
