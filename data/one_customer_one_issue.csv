@@ -1,0 +1,7 @@
+ticket_id,customer,priority,status,hours
+100000001,Acme Corporation,high,open,4.5
+100000002,Acme Corporation,medium,in_progress,8
+100000003,Acme Corporation,low,closed,1.5
+100000004,Acme Corporation,high,closed,12
+100000005,Acme Corporation,medium,open,2.25
+100000006,Acme Corporation,low,in_progress,6

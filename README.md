@@ -23,16 +23,17 @@ CSV Extractor does that check the same way every time and shows the result in on
 
 ## Demo
 
-_Screenshots are to be added._
+The upload screen lists the expected format and offers a sample file.
 
-<!--
-When the screenshots exist, put them in docs/images/ and replace the line above with:
+![Upload screen showing the expected CSV format](docs/images/upload.png)
 
-| Upload | Results | Exported report |
-| --- | --- | --- |
-| ![Upload screen](docs/images/upload.png) | ![Results screen](docs/images/results.png) | ![Report opened in a spreadsheet](docs/images/report.png) |
+The results for [`data/one_customer_one_issue.csv`](data/one_customer_one_issue.csv), a six-ticket file with one hours value that is not a half-hour step.
 
--->
+![Results screen with totals, summaries, and one validation issue](docs/images/results.png)
+
+The exported report for the same file, opened as text.
+
+![Exported report CSV opened in a text editor](docs/images/report.png)
 
 ## The rules
 
