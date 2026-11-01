@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 from PySide6.QtCore import QObject, Signal, QThread
 
@@ -478,6 +478,20 @@ def test_export_finished_clears_worker_and_thread():
 
     assert view_model.export_worker is None
     assert view_model.export_thread is None
+
+
+def test_export_finished_waits_for_the_thread_before_deleting_it():
+    view_model = create_view_model()
+
+    thread = MagicMock()
+    view_model.export_thread = thread
+
+    view_model.export_finished()
+
+    assert thread.method_calls == [
+        call.wait(),
+        call.deleteLater()
+    ]
 
 
 def test_shutdown_stops_the_export_before_deleting_the_full_result(

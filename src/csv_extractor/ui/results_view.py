@@ -615,10 +615,14 @@ class ResultsView(QWidget):
             MAX_DISPLAYED_ROWS
         )
 
+        noun = "customer" if displayed_customers == 1 else "customers"
+
         count_label = QLabel(
             f"— Showing {displayed_customers:,} "
-            f"customers out of {total_customers:,}"
+            f"{noun} out of {total_customers:,}"
         )
+
+        self.customer_count_label = count_label
 
         title_layout.addWidget(title)
         title_layout.addWidget(count_label)
@@ -766,10 +770,14 @@ class ResultsView(QWidget):
             MAX_DISPLAYED_ROWS
         )
 
+        noun = "error" if displayed_errors == 1 else "errors"
+
         count_label = QLabel(
             f"— Showing {displayed_errors:,} "
-            f"errors out of {total_invalid_errors:,}"
+            f"{noun} out of {total_invalid_errors:,}"
         )
+
+        self.validation_count_label = count_label
 
         title_layout.addWidget(title)
         title_layout.addWidget(count_label)

@@ -126,16 +126,22 @@ class ResultsViewModel(QObject):
         )
 
         self.export_thread.finished.connect(
-            self.export_thread.deleteLater
-        )
-
-        self.export_thread.finished.connect(
             self.export_finished
         )
 
         self.export_thread.start()
 
     def export_finished(self) -> None:
+        thread = self.export_thread
+
+        if thread is not None:
+            # finished is emitted from the thread just before it exits, so
+            # deleting the thread object straight away can abort with
+            # "QThread: Destroyed while thread is still running". Waiting
+            # for the exit first takes only moments.
+            thread.wait()
+            thread.deleteLater()
+
         self.export_worker = None
         self.export_thread = None
 

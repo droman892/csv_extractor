@@ -215,6 +215,52 @@ def test_results_view_caps_validation_table_at_display_limit(qtbot):
     assert view.validation_table.rowCount() == MAX_DISPLAYED_ROWS
 
 
+def single_row_result():
+    return {
+        **RESULT,
+        "summary": {
+            **RESULT["summary"],
+            "hours_by_customer": {
+                "Acme Corp": 12.0
+            }
+        },
+        "invalid_records": RESULT["invalid_records"][:1],
+        "total_customer_count": 1,
+        "total_invalid_record_count": 1,
+        "total_invalid_error_count": 1
+    }
+
+
+def test_results_view_count_labels_use_singular_for_one_row(qtbot):
+    view = ResultsView(
+        single_row_result(),
+        None
+    )
+    qtbot.addWidget(view)
+
+    assert view.customer_count_label.text() == (
+        "— Showing 1 customer out of 1"
+    )
+    assert view.validation_count_label.text() == (
+        "— Showing 1 error out of 1"
+    )
+
+
+def test_results_view_count_labels_use_plural_for_several_rows(qtbot):
+    view = ResultsView(
+        RESULT,
+        None
+    )
+    qtbot.addWidget(view)
+
+    assert view.customer_count_label.text() == (
+        "— Showing 2 customers out of 2"
+    )
+    assert view.validation_count_label.text() == (
+        "— Showing 2 errors out of 2"
+    )
+
+
 def test_results_view_deleted_before_deferred_layout_runs(qtbot):
     # The constructor defers layout work with QTimer.singleShot. If the view
     # is deleted before that runs, the pending calls must be dropped instead

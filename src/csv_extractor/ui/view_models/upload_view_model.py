@@ -51,12 +51,8 @@ class UploadViewModel(QObject):
             self.worker.deleteLater
         )
 
-        # Deletes the thread object once the thread has stopped.
-        self.worker_thread.finished.connect(
-            self.worker_thread.deleteLater
-        )
-
-        # Clears the references so the next upload starts fresh.
+        # Deletes the thread object and clears the references so the next
+        # upload starts fresh.
         self.worker_thread.finished.connect(
             self.processing_finished
         )
@@ -64,6 +60,16 @@ class UploadViewModel(QObject):
         self.worker_thread.start()
 
     def processing_finished(self) -> None:
+        thread = self.worker_thread
+
+        if thread is not None:
+            # finished is emitted from the thread just before it exits, so
+            # deleting the thread object straight away can abort with
+            # "QThread: Destroyed while thread is still running". Waiting
+            # for the exit first takes only moments.
+            thread.wait()
+            thread.deleteLater()
+
         self.worker = None
         self.worker_thread = None
 
